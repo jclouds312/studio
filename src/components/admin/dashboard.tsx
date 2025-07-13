@@ -1,5 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, DollarSign } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Users, Briefcase, DollarSign, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function AdminDashboard() {
   return (
@@ -47,13 +48,33 @@ export function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
-      <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Card>
             <CardHeader>
                 <CardTitle>Recent Activity</CardTitle>
+                 <CardDescription>Activity feed will be shown here...</CardDescription>
             </CardHeader>
             <CardContent>
-                <p>Activity feed will be shown here...</p>
+                <p>...</p>
+            </CardContent>
+        </Card>
+         <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <Star className="text-primary"/>
+                    Premium Services
+                </CardTitle>
+                 <CardDescription>Boost your job listings and find talent faster.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
+                <div className="p-4 border rounded-lg bg-secondary/30">
+                    <h4 className="font-semibold">Highlight your Job Post</h4>
+                    <p className="text-sm text-muted-foreground">Make your job listing stand out from the rest to attract more candidates.</p>
+                </div>
+                <Button>
+                    <DollarSign className="mr-2 h-4 w-4"/>
+                    Upgrade with Mercado Pago
+                </Button>
             </CardContent>
         </Card>
       </div>

@@ -7,6 +7,7 @@ export type Job = {
     description: string;
     companyLogo: string;
     category: 'tech' | 'design' | 'marketing' | 'sales';
+    contactPhone?: string;
 };
 
 export type UserProfile = {
@@ -20,7 +21,7 @@ export type UserProfile = {
 };
 
 export type CompanyProfile = {
-    id: string;
+    id:string;
     name: string;
     cuit: string; // CUIT for Argentina (instead of NIT)
     city: string;

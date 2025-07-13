@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase } from "lucide-react";
+import { MapPin, Search, Briefcase, MessageCircle } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
 import React, { useState, useMemo } from "react";
@@ -18,7 +18,8 @@ const allJobs: Job[] = [
     type: 'Full-time',
     description: 'We are looking for a skilled Frontend Developer to join our team. You will be responsible for building the ‘client-side’ of our web applications. You should be able to translate our company and customer needs into functional and appealing interactive applications.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'tech'
+    category: 'tech',
+    contactPhone: '+5491112345678'
   },
   {
     id: '2',
@@ -28,7 +29,8 @@ const allJobs: Job[] = [
     type: 'Contract',
     description: 'Creative Minds is seeking a talented UX/UI Designer to create amazing user experiences. The ideal candidate should have an eye for clean and artful design, possess superior UI skills and be able to translate high-level requirements into interaction flows and artifacts.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'design'
+    category: 'design',
+    contactPhone: '+5493511234567'
   },
   {
     id: '3',
@@ -38,7 +40,8 @@ const allJobs: Job[] = [
     type: 'Full-time',
     description: 'Join our backend team to design and implement scalable and robust server-side applications. You will work with a team of developers to build and maintain our core services, ensuring high performance and responsiveness to requests from the front-end.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'tech'
+    category: 'tech',
+    contactPhone: '+5491123456789'
   },
    {
     id: '4',
@@ -48,7 +51,8 @@ const allJobs: Job[] = [
     type: 'Part-time',
     description: 'We are hiring a Digital Marketing Manager to develop, implement, track and optimize our digital marketing campaigns across all digital channels. You should have a strong grasp of current marketing tools and strategies.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'marketing'
+    category: 'marketing',
+    contactPhone: '+5493411234567'
   },
   {
     id: '5',
@@ -58,11 +62,18 @@ const allJobs: Job[] = [
     type: 'Full-time',
     description: 'We are looking for a competitive and trustworthy Sales Executive to help us build up our business activities. Sales Executive responsibilities include discovering and pursuing new sales prospects, negotiating deals and maintaining customer satisfaction.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'sales'
+    category: 'sales',
+    contactPhone: '+5491134567890'
   }
 ];
 
 function JobListingCard({ job }: { job: Job }) {
+    const handleWhatsAppClick = () => {
+        if (job.contactPhone) {
+            window.open(`https://wa.me/${job.contactPhone.replace(/\D/g, '')}`, '_blank');
+        }
+    };
+
     return (
         <Card className="hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
             <CardHeader>
@@ -75,7 +86,11 @@ function JobListingCard({ job }: { job: Job }) {
                             <span className="flex items-center gap-1"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
                         </CardDescription>
                     </div>
-                    <div className="hidden sm:block">
+                    <div className="hidden sm:flex sm:items-start gap-2">
+                        <Button onClick={handleWhatsAppClick} variant="outline">
+                            <MessageCircle className="h-4 w-4 mr-2"/>
+                            WhatsApp
+                        </Button>
                         <Button>Apply Now</Button>
                     </div>
                 </div>
