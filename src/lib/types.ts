@@ -8,6 +8,7 @@ export type Job = {
     companyLogo: string;
     category: 'tech' | 'design' | 'marketing' | 'sales' | 'domestic' | 'construction' | 'other';
     isFeatured?: boolean;
+    whatsapp?: string;
 };
 
 export type User = {

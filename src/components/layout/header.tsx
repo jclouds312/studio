@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -9,8 +10,8 @@ import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname } from 'next/navigation';
 
 export function Header() {
-  const isLoggedIn = true; // Set to true for logged in user
-  const isAdmin = true; // Set to true for logged in admin to see the panel
+  const isLoggedIn = true; 
+  const isAdmin = true;
   
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith('/admin');
@@ -64,7 +65,7 @@ export function Header() {
                     <span className="sr-only">Abrir menú</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right">
+                <SheetContent side="right" className="p-0">
                    <SheetHeader className="p-4 border-b">
                      <SheetTitle>
                        <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
@@ -78,7 +79,7 @@ export function Header() {
                       <>
                         <Button variant="outline" asChild size="lg" className="justify-start gap-2">
                             <Link href="/profile">
-                                <Avatar className="w-8 h-8">
+                                <Avatar className="w-8 h-8 mr-2">
                                     <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
                                     <AvatarFallback>JV</AvatarFallback>
                                 </Avatar>
@@ -87,20 +88,20 @@ export function Header() {
                         </Button>
                        {isAdmin && (
                           <Button variant="outline" asChild size="lg" className="justify-start gap-2">
-                            <Link href="/admin"><Shield />Panel de Admin</Link>
+                            <Link href="/admin"><Shield className="mr-2 h-5 w-5"/>Panel de Admin</Link>
                           </Button>
                         )}
                         <Button variant="destructive" asChild size="lg" className="justify-start gap-2">
-                          <Link href="/"><LogOut />Cerrar Sesión</Link>
+                          <Link href="/"><LogOut className="mr-2 h-5 w-5"/>Cerrar Sesión</Link>
                         </Button>
                       </>
                     ) : (
                       <>
                         <Button variant="outline" asChild size="lg" className="justify-start gap-2">
-                          <Link href="/login"><LogIn />Iniciar Sesión</Link>
+                          <Link href="/login"><LogIn className="mr-2 h-5 w-5"/>Iniciar Sesión</Link>
                         </Button>
                         <Button asChild size="lg" className="justify-start gap-2">
-                          <Link href="/register"><UserPlus />Registrarse</Link>
+                          <Link href="/register"><UserPlus className="mr-2 h-5 w-5"/>Registrarse</Link>
                         </Button>
                       </>
                     )}

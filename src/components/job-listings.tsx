@@ -5,11 +5,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase, Star, Sparkles } from "lucide-react";
+import { MapPin, Search, Briefcase, Sparkles, Star, Phone } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
 import React, { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 export const allJobs: Job[] = [
   {
@@ -18,84 +19,102 @@ export const allJobs: Job[] = [
     company: 'Tech Solutions Inc.',
     location: 'Buenos Aires, AR',
     type: 'Full-time',
-    description: 'We are looking for a skilled Frontend Developer to join our team. You will be responsible for building the ‘client-side’ of our web applications. You should be able to translate our company and customer needs into functional and appealing interactive applications.',
+    description: 'Buscamos un desarrollador Frontend para unirse a nuestro equipo. Serás responsable de construir el lado del cliente de nuestras aplicaciones web. Debes ser capaz de traducir las necesidades de nuestra empresa y clientes en aplicaciones interactivas funcionales y atractivas.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'tech',
     isFeatured: true,
   },
   {
     id: '2',
-    title: 'UX/UI Designer',
+    title: 'Diseñador/a UX/UI',
     company: 'Creative Minds',
     location: 'Córdoba, AR',
     type: 'Contract',
-    description: 'Creative Minds is seeking a talented UX/UI Designer to create amazing user experiences. The ideal candidate should have an eye for clean and artful design, possess superior UI skills and be able to translate high-level requirements into interaction flows and artifacts.',
+    description: 'Creative Minds busca un talentoso Diseñador UX/UI para crear experiencias de usuario increíbles. El candidato ideal debe tener un ojo para el diseño limpio y artístico, poseer habilidades superiores de UI y ser capaz de traducir requisitos de alto nivel en flujos de interacción y artefactos.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'design'
   },
   {
     id: '3',
-    title: 'Backend Engineer (Node.js)',
+    title: 'Ingeniero/a Backend (Node.js)',
     company: 'Server Systems',
-    location: 'Remote',
+    location: 'Remoto',
     type: 'Full-time',
-    description: 'Join our backend team to design and implement scalable and robust server-side applications. You will work with a team of developers to build and maintain our core services, ensuring high performance and responsiveness to requests from the front-end.',
+    description: 'Únete a nuestro equipo de backend para diseñar e implementar aplicaciones del lado del servidor escalables y robustas. Trabajarás con un equipo de desarrolladores para construir y mantener nuestros servicios principales, asegurando un alto rendimiento y capacidad de respuesta a las solicitudes del front-end.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'tech'
   },
    {
     id: '4',
-    title: 'Digital Marketing Manager',
+    title: 'Manager de Marketing Digital',
     company: 'Growth Hackers',
     location: 'Rosario, AR',
     type: 'Part-time',
-    description: 'We are hiring a Digital Marketing Manager to develop, implement, track and optimize our digital marketing campaigns across all digital channels. You should have a strong grasp of current marketing tools and strategies.',
+    description: 'Estamos contratando un Manager de Marketing Digital para desarrollar, implementar, rastrear y optimizar nuestras campañas de marketing digital en todos los canales digitales. Debes tener un fuerte conocimiento de las herramientas y estrategias de marketing actuales.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'marketing'
   },
   {
     id: '5',
-    title: 'Sales Representative',
+    title: 'Representante de Ventas',
     company: 'Lead Gen',
     location: 'Buenos Aires, AR',
     type: 'Full-time',
-    description: 'We are looking for a competitive and trustworthy Sales Executive to help us build up our business activities. Sales Executive responsibilities include discovering and pursuing new sales prospects, negotiating deals and maintaining customer satisfaction.',
+    description: 'Buscamos un Ejecutivo de Ventas competitivo y confiable para ayudarnos a desarrollar nuestras actividades comerciales. Las responsabilidades del Ejecutivo de Ventas incluyen descubrir y buscar nuevos prospectos de ventas, negociar acuerdos y mantener la satisfacción del cliente.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'sales',
     isFeatured: true,
+  },
+   {
+    id: '6',
+    title: 'Pintor de Interiores',
+    company: 'Servicios Varios',
+    location: 'La Plata, AR',
+    type: 'Changa',
+    description: 'Se necesita pintor con experiencia para pintar un departamento de 2 ambientes. Se proveen materiales. Trabajo por día, pago al finalizar la jornada. Enviar fotos de trabajos previos por WhatsApp.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'domestic',
   }
 ];
 
 function JobListingCard({ job }: { job: Job }) {
     return (
         <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden">
-            {job.isFeatured && (
-                <div className="absolute top-2 right-2">
-                    <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
-                        <Sparkles className="h-4 w-4" />
-                        DESTACADO
-                    </Badge>
-                </div>
-            )}
-            <CardHeader>
-                <div className="flex flex-col sm:flex-row gap-4">
-                    <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-secondary p-1" data-ai-hint="company logo" />
-                    <div className="flex-grow">
-                        <CardTitle className="text-lg md:text-xl">{job.title}</CardTitle>
-                        <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 pt-1 text-sm">
-                            <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
-                            <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
-                        </CardDescription>
+            <Link href={`/jobs/${job.id}`} className="block">
+                {job.isFeatured && (
+                    <div className="absolute top-2 right-2">
+                        <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
+                            <Sparkles className="h-4 w-4" />
+                            DESTACADO
+                        </Badge>
                     </div>
-                </div>
-            </CardHeader>
-            <CardContent>
-                <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
-            </CardContent>
+                )}
+                <CardHeader>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-secondary p-1" data-ai-hint="company logo" />
+                        <div className="flex-grow">
+                            <CardTitle className="text-lg md:text-xl">{job.title}</CardTitle>
+                            <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 pt-1 text-sm">
+                                <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
+                                <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
+                            </CardDescription>
+                        </div>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
+                </CardContent>
+            </Link>
             <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-3">
-                 <Badge variant="secondary" className="text-xs">{job.type}</Badge>
+                 <Badge variant="secondary" className="text-xs capitalize">{job.type}</Badge>
                  <div className="flex gap-2 w-full sm:w-auto">
-                    <Button className="w-full sm:w-auto">Postularse</Button>
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                        <Star className="mr-2 h-4 w-4" />
+                        Guardar
+                    </Button>
+                    <Button className="w-full sm:w-auto" size="sm" asChild>
+                        <Link href={`/jobs/${job.id}`}>Ver Oferta</Link>
+                    </Button>
                  </div>
             </CardFooter>
         </Card>
@@ -116,7 +135,6 @@ export function JobListings() {
                 return keywordMatch && locationMatch && categoryMatch;
             });
         
-        // Sort featured jobs to the top
         jobs.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
 
         return jobs;
@@ -157,6 +175,9 @@ export function JobListings() {
                             <SelectItem value="design">Diseño</SelectItem>
                             <SelectItem value="marketing">Marketing</SelectItem>
                             <SelectItem value="sales">Ventas</SelectItem>
+                            <SelectItem value="domestic">Doméstico</SelectItem>
+                            <SelectItem value="construction">Construcción</SelectItem>
+                            <SelectItem value="other">Otro</SelectItem>
                         </SelectContent>
                     </Select>
                 </CardContent>
