@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle, Building } from 'lucide-react';
+import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle, Building, Award } from 'lucide-react';
 import React from 'react';
 import {
   AlertDialog,
@@ -25,80 +25,146 @@ import { Badge } from '@/components/ui/badge';
 import { useSession } from '@/hooks/use-session';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useToast } from "@/components/ui/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 
 const allPlans = [
     {
         name: 'Básico',
-        price: 'Gratis',
-        priceDetail: 'para siempre',
-        features: [
-            'Hasta 5 postulaciones por mes',
-            'Perfil público básico',
-            'Acceso a todas las ofertas',
-        ],
-        isPopular: false,
         userType: 'worker',
+        isPopular: false,
         description: 'Ideal para empezar tu búsqueda laboral.',
-        priceAmount: 0,
         icon: Briefcase,
+        pricing: [{
+            duration: 'monthly',
+            price: 'Gratis',
+            priceDetail: 'para siempre',
+            priceAmount: 0,
+            features: [
+                'Hasta 5 postulaciones por mes',
+                'Perfil público básico',
+                'Acceso a todas las ofertas',
+            ],
+        }]
     },
     {
         name: 'Profesional',
-        price: '$2.000',
-        priceDetail: 'por mes',
-        features: [
-            'Postulaciones ilimitadas',
-            'Perfil destacado en búsquedas',
-            'Acceso a estadísticas de perfil',
-            'Soporte prioritario por email',
-        ],
-        isPopular: true,
         userType: 'worker',
+        isPopular: true,
         description: 'Potencia tu perfil y destaca sobre los demás.',
-        priceAmount: 2000,
         icon: Star,
+        pricing: [
+            {
+                duration: 'monthly',
+                price: '$2.000',
+                priceDetail: 'por mes',
+                priceAmount: 2000,
+                features: [
+                    'Postulaciones ilimitadas',
+                    'Perfil destacado en búsquedas',
+                    'Acceso a estadísticas de perfil',
+                    'Soporte prioritario por email',
+                ],
+            },
+            {
+                duration: 'quarterly',
+                price: '$1.700',
+                priceDetail: 'por mes',
+                priceAmount: 1700 * 3,
+                discount: 'AHORRA 15%',
+                features: [
+                    'Todo lo del plan mensual',
+                    'Acceso a webinars de carrera exclusivos',
+                    'Revisión de CV por IA',
+                ],
+            },
+            {
+                duration: 'semi-annually',
+                price: '$1.500',
+                priceDetail: 'por mes',
+                priceAmount: 1500 * 6,
+                discount: 'AHORRA 25%',
+                features: [
+                    'Todo lo del plan trimestral',
+                    'Soporte VIP 24/7',
+                    'Consulta de 30 min con un coach laboral',
+                ],
+            },
+        ]
     },
     {
         name: 'Empresa',
-        price: '$10.000',
-        priceDetail: 'por mes',
-        features: [
-            'Publica hasta 5 ofertas de trabajo',
-            'Acceso a base de datos de candidatos',
-            'Dashboard de seguimiento de postulantes',
-            'Soporte por email',
-        ],
-        isPopular: false,
         userType: 'company',
+        isPopular: false,
         description: 'Perfecto para pequeñas y medianas empresas.',
-        priceAmount: 10000,
         icon: Building,
+        pricing: [{
+            duration: 'monthly',
+            price: '$10.000',
+            priceDetail: 'por mes',
+            priceAmount: 10000,
+            features: [
+                'Publica hasta 5 ofertas de trabajo',
+                'Acceso a base de datos de candidatos',
+                'Dashboard de seguimiento de postulantes',
+                'Soporte por email',
+            ],
+        }]
     },
     {
         name: 'Empresa Plus',
-        price: '$25.000',
-        priceDetail: 'por mes',
-        features: [
-            'Publicaciones ilimitadas',
-            'Destaca hasta 5 ofertas de trabajo',
-            'Herramientas avanzadas de filtrado',
-            'Soporte dedicado 24/7',
-        ],
-        isPopular: true,
         userType: 'company',
+        isPopular: true,
         description: 'La solución completa para grandes reclutadores.',
-        priceAmount: 25000,
         icon: Zap,
+        pricing: [
+            {
+                duration: 'monthly',
+                price: '$25.000',
+                priceDetail: 'por mes',
+                priceAmount: 25000,
+                features: [
+                    'Publicaciones ilimitadas',
+                    'Destaca hasta 5 ofertas de trabajo',
+                    'Herramientas avanzadas de filtrado',
+                    'Soporte dedicado 24/7',
+                ],
+            },
+            {
+                duration: 'quarterly',
+                price: '$22.000',
+                priceDetail: 'por mes',
+                priceAmount: 22000 * 3,
+                discount: 'AHORRA 12%',
+                features: [
+                    'Todo lo del plan mensual',
+                    'Publicaciones de la empresa en redes sociales',
+                    'Acceso a analíticas avanzadas de candidatos',
+                ],
+            },
+            {
+                duration: 'semi-annually',
+                price: '$20.000',
+                priceDetail: 'por mes',
+                priceAmount: 20000 * 6,
+                discount: 'AHORRA 20%',
+                features: [
+                    'Todo lo del plan trimestral',
+                    'Gestor de cuenta personal dedicado',
+                    'Candidatos pre-seleccionados por IA',
+                ],
+            }
+        ]
     },
 ];
 
-function PaymentModal({ planName, planPrice, planPriceAmount, userType, isPopular }: { planName: string, planPrice: string, planPriceAmount: number, userType: string, isPopular: boolean }) {
+function PaymentModal({ planName, pricingOption, isPopular }: { planName: string, pricingOption: any, isPopular: boolean }) {
     const [isPaying, setIsPaying] = React.useState(false);
     const [paymentSuccess, setPaymentSuccess] = React.useState(false);
     const { toast } = useToast();
   
     const handlePayment = async () => {
-      if(planPriceAmount <= 0) {
+      if(pricingOption.priceAmount <= 0) {
         setPaymentSuccess(true);
         return;
       }
@@ -109,8 +175,8 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType, isPopula
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title: `Suscripción Plan ${planName}`,
-                unit_price: planPriceAmount,
+                title: `Suscripción Plan ${planName} (${pricingOption.duration})`,
+                unit_price: pricingOption.priceAmount,
             }),
         });
 
@@ -141,12 +207,19 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType, isPopula
         setIsPaying(false);
       }
     };
-  
+
+    const totalAmount = pricingOption.priceAmount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+    const durationText = {
+        monthly: 'por 1 mes',
+        quarterly: 'por 3 meses',
+        'semi-annually': 'por 6 meses'
+    }[pricingOption.duration];
+
     return (
        <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
         <AlertDialogTrigger asChild>
           <Button className="w-full" size="lg" variant={isPopular ? 'default' : 'outline'}>
-            {planPriceAmount === 0 ? 'Comenzar Ahora' : 'Contratar Plan'}
+            {pricingOption.priceAmount === 0 ? 'Comenzar Ahora' : 'Contratar Plan'}
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -164,7 +237,8 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType, isPopula
                         Confirmar Pago
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                        Estás a punto de suscribirte al <strong>Plan {planName}</strong> por <span className="font-bold text-foreground">{planPrice}/mes</span>.
+                        Estás a punto de suscribirte al <strong>Plan {planName}</strong>.
+                        Se realizará un pago único de <span className="font-bold text-foreground">{totalAmount}</span> {durationText}.
                     </AlertDialogDescription>
                 </>
               )}
@@ -175,7 +249,7 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType, isPopula
               ) : (
                   <>
                       <AlertDialogCancel disabled={isPaying}>Cancelar</AlertDialogCancel>
-                      <Button onClick={handlePayment} disabled={planPriceAmount < 0}>
+                      <Button onClick={handlePayment} disabled={pricingOption.priceAmount < 0}>
                         {isPaying ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -184,7 +258,7 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType, isPopula
                         ) : (
                           <>
                             <CreditCard className="mr-2 h-4 w-4" />
-                             {planPriceAmount > 0 ? 'Pagar con Mercado Pago' : 'Confirmar'}
+                             {pricingOption.priceAmount > 0 ? 'Pagar con Mercado Pago' : 'Confirmar'}
                           </>
                         )}
                       </Button>
@@ -246,11 +320,11 @@ function AdminPlanView() {
                     </CardHeader>
                     <CardContent className="flex-grow space-y-6">
                         <div className="text-center">
-                            <span className="text-4xl font-bold">{plan.price}</span>
-                            <span className="text-muted-foreground"> {plan.priceDetail}</span>
+                            <span className="text-4xl font-bold">{plan.pricing[0].price}</span>
+                            <span className="text-muted-foreground"> {plan.pricing[0].priceDetail}</span>
                         </div>
                         <ul className="space-y-3 text-sm">
-                            {plan.features.map((feature, index) => (
+                            {plan.pricing[0].features.map((feature, index) => (
                                 <li key={index} className="flex items-start gap-3">
                                     <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
                                     <span>{feature}</span>
@@ -300,16 +374,16 @@ function CustomerPlanView() {
         </div>
 
         <Carousel 
-            className="w-full max-w-sm md:max-w-xl lg:max-w-2xl mx-auto"
+            className="w-full max-w-sm md:max-w-xl lg:max-w-4xl mx-auto"
             opts={{
                 align: "start",
                 loop: false,
             }}
         >
-            <CarouselContent>
+            <CarouselContent className="-ml-4">
                 {visiblePlans.map((plan, index) => (
-                    <CarouselItem key={index} className="md:basis-1/2">
-                         <div className="p-1">
+                    <CarouselItem key={index} className="pl-4 md:basis-1/2">
+                        <div className="p-1 h-full">
                             <Card className={cn(
                                 "flex flex-col h-full transition-all duration-300",
                                 plan.isPopular && "border-2 border-primary shadow-2xl"
@@ -329,36 +403,59 @@ function CustomerPlanView() {
                                     <CardTitle className="text-3xl">{plan.name}</CardTitle>
                                     <CardDescription className="text-base">{plan.description}</CardDescription>
                                 </CardHeader>
-                                <CardContent className="flex-grow space-y-6">
-                                    <div className="text-center">
-                                        <span className="text-5xl font-bold">{plan.price}</span>
-                                        <span className="text-muted-foreground text-lg"> {plan.priceDetail}</span>
-                                    </div>
-                                    <ul className="space-y-4 text-base">
-                                        {plan.features.map((feature, index) => (
-                                            <li key={index} className="flex items-start gap-3">
-                                                <CheckCircle className="h-6 w-6 text-green-500 mt-0.5 shrink-0" />
-                                                <span>{feature}</span>
-                                            </li>
+
+                                <Tabs defaultValue={plan.pricing[0].duration} className="w-full flex-grow flex flex-col">
+                                    <CardContent className="flex-grow space-y-6">
+                                        {plan.pricing.length > 1 && (
+                                            <TabsList className="grid w-full grid-cols-3">
+                                                <TabsTrigger value="monthly">Mensual</TabsTrigger>
+                                                <TabsTrigger value="quarterly">3 Meses</TabsTrigger>
+                                                <TabsTrigger value="semi-annually">6 Meses</TabsTrigger>
+                                            </TabsList>
+                                        )}
+
+                                        {plan.pricing.map((option) => (
+                                            <TabsContent key={option.duration} value={option.duration} className="m-0 flex-grow flex flex-col justify-between">
+                                                <div>
+                                                    <div className="text-center relative">
+                                                        {option.discount && (
+                                                            <Badge variant="destructive" className="absolute -top-2 right-0 rotate-12">
+                                                                {option.discount}
+                                                            </Badge>
+                                                        )}
+                                                        <span className="text-5xl font-bold">{option.price}</span>
+                                                        <span className="text-muted-foreground text-lg"> {option.priceDetail}</span>
+                                                    </div>
+                                                    <ul className="space-y-4 text-base mt-6">
+                                                        {option.features.map((feature, idx) => (
+                                                            <li key={idx} className="flex items-start gap-3">
+                                                                {feature.toLowerCase().startsWith('todo lo del') ? 
+                                                                    <Award className="h-6 w-6 text-amber-400 mt-0.5 shrink-0" /> :
+                                                                    <CheckCircle className="h-6 w-6 text-green-500 mt-0.5 shrink-0" />
+                                                                }
+                                                                <span>{feature}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                                <div className="pt-6">
+                                                    <PaymentModal 
+                                                        planName={plan.name} 
+                                                        pricingOption={option}
+                                                        isPopular={plan.isPopular || false}
+                                                    />
+                                                </div>
+                                            </TabsContent>
                                         ))}
-                                    </ul>
-                                </CardContent>
-                                <CardFooter>
-                                    <PaymentModal 
-                                        planName={plan.name} 
-                                        planPrice={plan.price} 
-                                        planPriceAmount={plan.priceAmount} 
-                                        userType={plan.userType}
-                                        isPopular={plan.isPopular || false}
-                                     />
-                                </CardFooter>
+                                    </CardContent>
+                                </Tabs>
                             </Card>
-                         </div>
+                        </div>
                     </CarouselItem>
                 ))}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex"/>
-            <CarouselNext className="hidden md:flex"/>
+            <CarouselPrevious className="hidden lg:flex"/>
+            <CarouselNext className="hidden lg:flex"/>
         </Carousel>
       </main>
     )
@@ -390,3 +487,5 @@ export default function SubscriptionsPage() {
     </div>
   );
 }
+
+    
