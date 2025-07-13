@@ -67,54 +67,54 @@ export function OverviewTab() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Users
+              Usuarios Totales
             </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">1,234</div>
             <p className="text-xs text-muted-foreground">
-              +20.1% from last month
+              +20.1% desde el mes pasado
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Active Job Listings
+              Publicaciones Activas
             </CardTitle>
             <Briefcase className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">573</div>
             <p className="text-xs text-muted-foreground">
-              +180.1% from last month
+              +180.1% desde el mes pasado
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">Ingresos</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">$45,231.89</div>
             <p className="text-xs text-muted-foreground">
-              +19% from last month
+              +19% desde el mes pasado
             </p>
           </CardContent>
         </Card>
         <Card>
            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Database Backup</CardTitle>
+            <CardTitle className="text-sm font-medium">Copia de Seguridad</CardTitle>
             <Download className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
              <p className="text-xs text-muted-foreground mb-4">
-              Download a JSON backup of the job listings.
+              Descarga un backup en formato JSON de las publicaciones.
             </p>
             <Button className="w-full" onClick={handleDownloadBackup}>
-                Download Backup
+                Descargar Backup de Datos
             </Button>
           </CardContent>
         </Card>
@@ -122,8 +122,8 @@ export function OverviewTab() {
       <div className="grid grid-cols-1 lg:grid-cols-7 gap-8">
         <Card className="lg:col-span-4">
             <CardHeader>
-                <CardTitle>User Growth</CardTitle>
-                 <CardDescription>New users in the last 6 months.</CardDescription>
+                <CardTitle>Crecimiento de Usuarios</CardTitle>
+                 <CardDescription>Nuevos usuarios en los últimos 6 meses.</CardDescription>
             </CardHeader>
             <CardContent className="pl-2">
                 <ChartContainer config={chartConfig} className="h-[300px] w-full">
@@ -149,20 +149,20 @@ export function OverviewTab() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Star className="text-primary"/>
-                    Premium Services
+                    Servicios Premium
                 </CardTitle>
-                 <CardDescription>Boost your job listings and find talent faster.</CardDescription>
+                 <CardDescription>Destaca tus publicaciones para encontrar talento más rápido.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
                 <div className="p-4 border rounded-lg bg-secondary/30">
-                    <h4 className="font-semibold">Highlight your Job Post</h4>
-                    <p className="text-sm text-muted-foreground">Make your job listing stand out from the rest to attract more candidates.</p>
+                    <h4 className="font-semibold">Destacar tu Publicación</h4>
+                    <p className="text-sm text-muted-foreground">Haz que tu oferta de trabajo se destaque del resto para atraer más candidatos.</p>
                 </div>
                  <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
                   <AlertDialogTrigger asChild>
                     <Button>
                         <DollarSign className="mr-2 h-4 w-4"/>
-                        Upgrade with Mercado Pago
+                        Pagar con Mercado Pago
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
