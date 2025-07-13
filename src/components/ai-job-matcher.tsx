@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { getJobRecommendations, type AIFormState } from '@/app/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -30,7 +31,7 @@ function SubmitButton() {
 
 export function AiJobMatcher() {
     const initialState: AIFormState = {};
-    const [state, dispatch] = useFormState(getJobRecommendations, initialState);
+    const [state, dispatch] = useActionState(getJobRecommendations, initialState);
     const { pending } = useFormStatus();
     const { toast } = useToast();
 
