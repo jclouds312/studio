@@ -7,12 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { Footer } from '@/components/layout/footer';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/components/ui/use-toast';
-import { User, allUsers } from '@/lib/users';
+import { useSession } from '@/hooks/use-session';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -35,45 +33,14 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { toast } = useToast();
+  const { login, loginWithSocial } = useSession();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  const handleLogin = (user: User) => {
-    localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('userEmail', user.email);
-    localStorage.setItem('userRole', user.role || 'user');
-    router.push('/');
-  };
-
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-    if (user && user.password === password) {
-       handleLogin(user);
-    } else {
-        toast({
-            title: "Error de autenticación",
-            description: "El email o la contraseña son incorrectos.",
-            variant: "destructive",
-        })
-    }
+    login(email, password);
   }
-
-  const handleSocialLogin = (simulatedEmail: string) => {
-    const user = allUsers.find(u => u.email.toLowerCase() === simulatedEmail.toLowerCase());
-    if (user) {
-        handleLogin(user);
-    } else {
-         toast({
-            title: "Error de autenticación",
-            description: "No se pudo iniciar sesión con esta cuenta.",
-            variant: "destructive",
-        })
-    }
-  };
 
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
@@ -111,11 +78,11 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" className="w-full" size="lg" onClick={() => handleSocialLogin('johnatanvallejomarulanda@gmail.com')}>
+                <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('johnatanvallejomarulanda@gmail.com')}>
                   <GoogleIcon className="mr-2 h-5 w-5" />
                   Google
                 </Button>
-                 <Button variant="outline" className="w-full" size="lg" onClick={() => handleSocialLogin('empresa.facebook@example.com')}>
+                 <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('empresa.facebook@example.com')}>
                   <FacebookIcon className="mr-2 h-5 w-5" />
                   Facebook
                 </Button>

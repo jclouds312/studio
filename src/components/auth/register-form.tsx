@@ -2,12 +2,11 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/components/ui/use-toast';
 import { Separator } from '@/components/ui/separator';
+import { useSession } from '@/hooks/use-session';
 
 interface RegisterFormProps {
     role: 'user' | 'company';
@@ -34,36 +33,21 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function RegisterForm({ role }: RegisterFormProps) {
-    const router = useRouter();
-    const { toast } = useToast();
+    const { register, loginWithSocial } = useSession();
 
-    const handleRegister = (e: React.FormEvent) => {
+    const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Simulate registration
-        localStorage.setItem('isLoggedIn', 'true');
-        // In a real app, you'd get the email from the form
-        const email = role === 'user' ? 'nuevo.usuario@example.com' : 'nueva.empresa@example.com';
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userRole', role);
-
-        toast({
-            title: "¡Registro Exitoso!",
-            description: "Tu cuenta ha sido creada.",
-        });
-
-        router.push('/');
+        const formData = new FormData(e.currentTarget);
+        const name = formData.get('name') as string;
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+        
+        register({ name, email, password, role });
     };
 
-     const handleSocialLogin = () => {
-        localStorage.setItem('isLoggedIn', 'true');
+    const handleSocialLogin = () => {
         const email = role === 'user' ? 'usuario.google@example.com' : 'empresa.google@example.com';
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userRole', role);
-        toast({
-            title: "¡Registro Exitoso!",
-            description: "Has iniciado sesión con tu cuenta social.",
-        });
-        router.push('/');
+        loginWithSocial(email);
     };
 
     const isWorker = role === 'user';
@@ -93,15 +77,15 @@ export function RegisterForm({ role }: RegisterFormProps) {
             <form className="space-y-4" onSubmit={handleRegister}>
                 <div className="space-y-1">
                     <Label htmlFor="name">{isWorker ? 'Nombre completo' : 'Nombre de la empresa'}</Label>
-                    <Input id="name" type="text" placeholder={isWorker ? 'Ej: Juan Pérez' : 'Ej: Tech Solutions Inc.'} required />
+                    <Input name="name" id="name" type="text" placeholder={isWorker ? 'Ej: Juan Pérez' : 'Ej: Tech Solutions Inc.'} required />
                 </div>
                 <div className="space-y-1">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="tu@email.com" required />
+                    <Input name="email" id="email" type="email" placeholder="tu@email.com" required />
                 </div>
                 <div className="space-y-1">
                     <Label htmlFor="password">Contraseña</Label>
-                    <Input id="password" type="password" required />
+                    <Input name="password" id="password" type="password" required />
                 </div>
                 <Button type="submit" className="w-full">
                     Crear Cuenta de {isWorker ? 'Trabajador' : 'Empresa'}

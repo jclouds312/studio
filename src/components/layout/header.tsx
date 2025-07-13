@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Link from 'next/link';
@@ -8,45 +7,22 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building } from 'lucide-react';
 import { SidebarTrigger } from '../ui/sidebar';
-import { usePathname, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { useToast } from '../ui/use-toast';
+import { usePathname } from 'next/navigation';
+import React, { useState } from 'react';
 import { ChatPanel } from '../chat/chat-panel';
+import { useSession } from '@/hooks/use-session';
 
 export function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
+  const { session, logout } = useSession();
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const { toast } = useToast();
   
   const pathname = usePathname();
-  const router = useRouter();
   const isAdminPage = pathname.startsWith('/admin');
 
-  useEffect(() => {
-    setIsMounted(true);
-    const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
-    const role = localStorage.getItem('userRole');
-    
-    setIsLoggedIn(loggedInStatus);
-    setUserRole(role);
-  }, [pathname]);
+  const isAdmin = session.isLoggedIn && session.user?.role === 'admin';
+  const isCompany = session.isLoggedIn && session.user?.role === 'company';
 
-  const handleLogout = () => {
-      localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('userRole');
-      setIsLoggedIn(false);
-      setUserRole(null);
-      toast({ title: 'Has cerrado sesión exitosamente.' });
-      router.push('/');
-  };
-
-  const isAdmin = userRole === 'admin';
-  const isCompany = userRole === 'company';
-
-  if (!isMounted) {
+  if (!session.isMounted) {
     return (
         <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-40">
             <div className="container mx-auto px-4">
@@ -70,7 +46,7 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
             <div className='flex items-center gap-2'>
-                {isAdminPage && isLoggedIn && <SidebarTrigger className="md:hidden"/>}
+                {isAdminPage && session.isLoggedIn && <SidebarTrigger className="md:hidden"/>}
                 <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                     <Briefcase className="h-6 w-6" />
                     <span className="font-bold text-xl" style={{ color: '#FFD700' }}>LaburoYA</span>
@@ -78,7 +54,7 @@ export function Header() {
             </div>
           
           <div className="flex items-center gap-2">
-            {isLoggedIn ? (
+            {session.isLoggedIn ? (
                <div className="hidden md:flex items-center gap-4">
                 {isAdmin && (
                   <Button variant="ghost" asChild>
@@ -102,11 +78,11 @@ export function Header() {
                   </Button>
                 <Link href="/profile">
                   <Avatar className='h-9 w-9 border-2 border-primary/50'>
-                    <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
-                    <AvatarFallback>U</AvatarFallback>
+                    <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
+                    <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
                   </Avatar>
                 </Link>
-                 <Button variant="ghost" onClick={handleLogout}>
+                 <Button variant="ghost" onClick={logout}>
                     <LogOut className="mr-2"/>Cerrar Sesión
                  </Button>
                </div>
@@ -139,13 +115,13 @@ export function Header() {
                       </SheetTitle>
                   </SheetHeader>
                   <div className="flex flex-col gap-4 p-4">
-                    {isLoggedIn ? (
+                    {session.isLoggedIn ? (
                       <>
                         <Button variant="outline" asChild size="lg" className="justify-start gap-2">
                             <Link href="/profile">
                                 <Avatar className="w-8 h-8 mr-2">
-                                    <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
-                                    <AvatarFallback>U</AvatarFallback>
+                                    <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
+                                    <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
                                 </Avatar>
                                 Mi Perfil
                             </Link>
@@ -165,7 +141,7 @@ export function Header() {
                             <Link href="/company/dashboard"><Building className="mr-2 h-5 w-5"/>Panel de Empresa</Link>
                           </Button>
                         )}
-                        <Button variant="destructive" size="lg" className="justify-start gap-2" onClick={handleLogout}>
+                        <Button variant="destructive" size="lg" className="justify-start gap-2" onClick={logout}>
                           <LogOut className="mr-2 h-5 w-5"/>Cerrar Sesión
                         </Button>
                       </>
