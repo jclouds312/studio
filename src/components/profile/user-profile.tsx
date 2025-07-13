@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Upload, Edit, FileText, Phone, Loader2 } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function UserProfile() {
@@ -19,9 +18,7 @@ export function UserProfile() {
     name: 'Juan Pérez',
     email: 'juan.perez@example.com',
     avatarUrl: 'https://placehold.co/128x128.png',
-    bio: 'Desarrollador Full Stack con 5 años de experiencia en tecnologías JavaScript. Apasionado por crear productos intuitivos y escalables. Buscando nuevos desafíos en el sector tecnológico.',
     phone: '+54 9 11 1234-5678',
-    cvFileName: 'CV_Juan_Perez.pdf',
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -39,7 +36,7 @@ export function UserProfile() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-2xl mx-auto">
       <Card className="shadow-2xl">
         <CardHeader className="text-center">
             <div className="relative w-32 h-32 mx-auto">
@@ -57,31 +54,19 @@ export function UserProfile() {
         <CardContent className="p-6 sm:p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <Label htmlFor="bio">Sobre mí</Label>
-              <Textarea id="bio" rows={5} defaultValue={user.bio} placeholder="Cuéntanos un poco sobre ti..." />
+              <Label htmlFor="name">Nombre completo</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                <Input id="name" type="text" className="pl-10" defaultValue={user.name} placeholder="Tu nombre completo"/>
+              </div>
             </div>
             
             <div>
-              <Label htmlFor="phone">Número de teléfono</Label>
+              <Label htmlFor="phone">Número de WhatsApp</Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                 <Input id="phone" type="tel" className="pl-10" defaultValue={user.phone} placeholder="+54 9 11 ...."/>
               </div>
-            </div>
-
-            <div>
-              <Label htmlFor="cv">Currículum Vitae (CV)</Label>
-              <div className="flex items-center gap-4">
-                <div className="flex-grow flex items-center gap-2 p-2 border rounded-md bg-secondary/30">
-                  <FileText className="h-5 w-5 text-primary"/>
-                  <span className="text-sm font-medium text-foreground truncate">{user.cvFileName}</span>
-                </div>
-                <Button variant="outline" type="button">
-                  <Upload className="mr-2 h-4 w-4"/>
-                  Subir nuevo
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">Sube tu CV en formato PDF (máx. 5MB).</p>
             </div>
             
             <div className="flex justify-end pt-4">
