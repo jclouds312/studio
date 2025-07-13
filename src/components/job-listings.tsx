@@ -98,13 +98,13 @@ function JobListingCard({ job }: { job: Job }) {
 export function JobListings() {
     const [keyword, setKeyword] = useState('');
     const [location, setLocation] = useState('');
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState('all');
 
     const filteredJobs = useMemo(() => {
         return allJobs.filter(job => {
             const keywordMatch = keyword.toLowerCase() ? job.title.toLowerCase().includes(keyword.toLowerCase()) || job.description.toLowerCase().includes(keyword.toLowerCase()) : true;
             const locationMatch = location.toLowerCase() ? job.location.toLowerCase().includes(location.toLowerCase()) : true;
-            const categoryMatch = category ? job.category === category : true;
+            const categoryMatch = category && category !== 'all' ? job.category === category : true;
             return keywordMatch && locationMatch && categoryMatch;
         });
     }, [keyword, location, category]);
@@ -139,7 +139,7 @@ export function JobListings() {
                              <SelectValue placeholder="Categoría" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">Todas</SelectItem>
+                            <SelectItem value="all">Todas</SelectItem>
                             <SelectItem value="tech">Tecnología</SelectItem>
                             <SelectItem value="design">Diseño</SelectItem>
                             <SelectItem value="marketing">Marketing</SelectItem>
