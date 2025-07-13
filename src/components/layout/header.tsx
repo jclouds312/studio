@@ -7,41 +7,58 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare } from 'lucide-react';
 import { SidebarTrigger } from '../ui/sidebar';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ChatPanel } from '../chat/chat-panel';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export function Header() {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false); 
-  const [isAdmin, setIsAdmin] = React.useState(false);
-  const [isChatOpen, setIsChatOpen] = React.useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   
   const pathname = usePathname();
+  const router = useRouter();
   const isAdminPage = pathname.startsWith('/admin');
 
   useEffect(() => {
+    setIsMounted(true);
     // Check localStorage on mount to see if user is logged in
     const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
     const userEmail = localStorage.getItem('userEmail');
     setIsLoggedIn(loggedInStatus);
     if (loggedInStatus && userEmail === 'john474nvallejo@gmail.com') {
         setIsAdmin(true);
+    } else {
+        setIsAdmin(false);
     }
-  }, []);
+  }, [pathname]);
 
-  const handleLogin = () => {
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('userEmail', 'john474nvallejo@gmail.com'); // Simulate specific admin user
-      setIsLoggedIn(true);
-      setIsAdmin(true);
-  };
-  
   const handleLogout = () => {
       localStorage.removeItem('isLoggedIn');
       localStorage.removeItem('userEmail');
       setIsLoggedIn(false);
       setIsAdmin(false);
+      router.push('/');
+      router.refresh();
   };
+
+  if (!isMounted) {
+    return (
+        <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-40">
+            <div className="container mx-auto px-4">
+                <div className="flex items-center justify-between h-16">
+                    <div className='flex items-center gap-2'>
+                        <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
+                            <Briefcase className="h-6 w-6" />
+                            <span className="font-bold text-xl" style={{ color: '#FFD700' }}>LaburoYA</span>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </header>
+    );
+  }
 
   return (
     <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-40">
@@ -76,9 +93,9 @@ export function Header() {
                     <AvatarFallback>JV</AvatarFallback>
                   </Avatar>
                 </Link>
-                 <Button variant="ghost" onClick={handleLogout} asChild>
-                    <Link href="/"><LogOut className="mr-2"/>Cerrar Sesión</Link>
-                </Button>
+                 <Button variant="ghost" onClick={handleLogout}>
+                    <LogOut className="mr-2"/>Cerrar Sesión
+                 </Button>
                </div>
             ) : (
               <div className="hidden md:flex items-center gap-2">
@@ -121,15 +138,15 @@ export function Header() {
                             </Link>
                         </Button>
                          <Button variant="outline" asChild size="lg" className="justify-start gap-2" onClick={() => setIsChatOpen(true)}>
-                            <Link href="#"><MessageSquare className="mr-2 h-5 w-5"/>Mensajes</Link>
+                            <span><MessageSquare className="mr-2 h-5 w-5"/>Mensajes</span>
                           </Button>
                        {isAdmin && (
                           <Button variant="outline" asChild size="lg" className="justify-start gap-2">
                             <Link href="/admin"><Shield className="mr-2 h-5 w-5"/>Panel de Admin</Link>
                           </Button>
                         )}
-                        <Button variant="destructive" asChild size="lg" className="justify-start gap-2" onClick={handleLogout}>
-                          <Link href="/"><LogOut className="mr-2 h-5 w-5"/>Cerrar Sesión</Link>
+                        <Button variant="destructive" size="lg" className="justify-start gap-2" onClick={handleLogout}>
+                          <LogOut className="mr-2 h-5 w-5"/>Cerrar Sesión
                         </Button>
                       </>
                     ) : (

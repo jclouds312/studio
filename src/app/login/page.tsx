@@ -31,6 +31,7 @@ export default function LoginPage() {
     localStorage.setItem('userEmail', 'john474nvallejo@gmail.com');
     // Redirect to home page
     router.push('/');
+    router.refresh(); // Force a refresh to update the header state
   };
 
   return (
