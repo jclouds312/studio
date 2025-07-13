@@ -25,7 +25,7 @@ body {
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 276 40% 88%;
-    --input: 276 40% 92%;
+    --input: 276 30% 35%;
     --ring: 48 96% 58%;
     --chart-1: 48 96% 58%;
     --chart-2: 38 90% 65%;
@@ -60,7 +60,7 @@ body {
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 276 15% 30%;
-    --input: 276 15% 28%;
+    --input: 276 20% 25%;
     --ring: 48 96% 68%;
     --chart-1: 48 96% 68%;
     --chart-2: 38 90% 75%;
@@ -97,4 +97,13 @@ body {
 
 html {
   background: hsl(var(--background));
+}
+
+input {
+    color: hsl(var(--foreground));
+}
+
+input::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 0.8;
 }

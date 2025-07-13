@@ -2,10 +2,11 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Briefcase, UserPlus } from 'lucide-react';
+import { Menu, Briefcase, UserPlus, Shield } from 'lucide-react';
 
 export function Header() {
-  const isLoggedIn = false; // Mock state
+  const isLoggedIn = true; // Mock state for admin
+  const isAdmin = true;
 
   return (
     <header className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-50">
@@ -18,12 +19,19 @@ export function Header() {
           
           <div className="flex items-center gap-4">
             {isLoggedIn ? (
-               <Link href="/profile">
-                <Avatar>
-                  <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
-                  <AvatarFallback>U</AvatarFallback>
-                </Avatar>
-              </Link>
+               <div className="flex items-center gap-4">
+                {isAdmin && (
+                  <Button variant="ghost" asChild>
+                    <Link href="/admin"><Shield className="mr-2"/>Admin Panel</Link>
+                  </Button>
+                )}
+                <Link href="/profile">
+                  <Avatar>
+                    <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
+                    <AvatarFallback>JV</AvatarFallback>
+                  </Avatar>
+                </Link>
+               </div>
             ) : (
               <div className="hidden md:flex items-center gap-2">
                   <Button variant="ghost" asChild>
@@ -54,13 +62,23 @@ export function Header() {
                   </SheetHeader>
                   <div className="flex flex-col gap-4 p-4">
                     {isLoggedIn ? (
+                      <>
                         <Link href="/profile" className="flex items-center gap-3 text-lg font-medium">
                          <Avatar>
                           <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
-                          <AvatarFallback>U</AvatarFallback>
+                          <AvatarFallback>JV</AvatarFallback>
                          </Avatar>
                          Mi Perfil
                        </Link>
+                       {isAdmin && (
+                          <Button variant="outline" asChild size="lg">
+                            <Link href="/admin">Panel de Admin</Link>
+                          </Button>
+                        )}
+                        <Button variant="destructive" asChild size="lg">
+                          <Link href="/">Cerrar Sesión</Link>
+                        </Button>
+                      </>
                     ) : (
                       <>
                         <Button variant="outline" asChild size="lg">
