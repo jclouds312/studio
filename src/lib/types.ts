@@ -30,10 +30,11 @@ export type User = {
     id: string;
     name: string;
     email: string;
+    password?: string;
     avatar?: string;
     phone?: string;
     location?: string;
-    role?: 'admin' | 'user' | 'company';
+    role: 'admin' | 'user' | 'company';
     status?: 'Verificado' | 'Pendiente' | 'Suspendido';
     createdAt?: string;
     // Expanded profile fields

@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { Header } from '@/components/layout/header';
@@ -13,6 +12,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
+import { User, allUsers } from '@/lib/users';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -34,27 +34,25 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
     )
 }
 
-const adminEmails = ['johnatanvallejomarulanda@gmail.com', 'admin@laburoya.com'];
-
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  const handleLogin = (userEmail: string) => {
+  const handleLogin = (user: User) => {
     localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('userEmail', userEmail);
+    localStorage.setItem('userEmail', user.email);
+    localStorage.setItem('userRole', user.role || 'user');
     router.push('/');
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (adminEmails.includes(email.toLowerCase()) && password === 'julio2025') {
-       handleLogin(email);
-    } else if (email) {
-       // For any other email, simulate a normal user login
-       handleLogin(email);
+    const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    if (user && user.password === password) {
+       handleLogin(user);
     } else {
         toast({
             title: "Error de autenticación",
@@ -65,7 +63,16 @@ export default function LoginPage() {
   }
 
   const handleSocialLogin = (simulatedEmail: string) => {
-    handleLogin(simulatedEmail);
+    const user = allUsers.find(u => u.email.toLowerCase() === simulatedEmail.toLowerCase());
+    if (user) {
+        handleLogin(user);
+    } else {
+         toast({
+            title: "Error de autenticación",
+            description: "No se pudo iniciar sesión con esta cuenta.",
+            variant: "destructive",
+        })
+    }
   };
 
   return (
@@ -87,7 +94,7 @@ export default function LoginPage() {
               </div>
               <div className="space-y-1">
                 <Label htmlFor="password">Contraseña</Label>
-                <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)}/>
+                <Input id="password" type="password" placeholder="Tu contraseña" required value={password} onChange={(e) => setPassword(e.target.value)}/>
               </div>
               <Button type="submit" className="w-full">
                 Iniciar Sesión
@@ -108,7 +115,7 @@ export default function LoginPage() {
                   <GoogleIcon className="mr-2 h-5 w-5" />
                   Google
                 </Button>
-                 <Button variant="outline" className="w-full" size="lg" onClick={() => handleSocialLogin('usuario.facebook@example.com')}>
+                 <Button variant="outline" className="w-full" size="lg" onClick={() => handleSocialLogin('empresa.facebook@example.com')}>
                   <FacebookIcon className="mr-2 h-5 w-5" />
                   Facebook
                 </Button>

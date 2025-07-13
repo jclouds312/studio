@@ -18,47 +18,8 @@ import Image from "next/image";
 import React from "react";
 import { UserFormModal } from "../modals/user-form-modal";
 import type { User } from "@/lib/types";
+import { allUsers } from '@/lib/users';
 import Link from "next/link";
-
-const usersData: User[] = [
-    {
-        id: '1',
-        name: 'Juan Pérez',
-        email: 'juan.perez@example.com',
-        avatar: 'https://placehold.co/40x40.png',
-        role: 'user',
-        status: 'Verificado',
-        createdAt: '2023-10-27'
-    },
-    {
-        id: '2',
-        name: 'Ana García',
-        email: 'ana.garcia@example.com',
-        avatar: 'https://placehold.co/40x40.png',
-        role: 'user',
-        status: 'Pendiente',
-        createdAt: '2023-10-26'
-    },
-    {
-        id: '3',
-        name: 'Johnatan Vallejo',
-        email: 'johnatanvallejomarulanda@gmail.com',
-        avatar: 'https://placehold.co/40x40.png',
-        role: 'admin',
-        status: 'Verificado',
-        createdAt: '2023-10-25'
-    },
-     {
-        id: '4',
-        name: 'Admin LaburoYA',
-        email: 'admin@laburoya.com',
-        avatar: 'https://placehold.co/40x40.png',
-        role: 'admin',
-        status: 'Verificado',
-        createdAt: '2024-01-01'
-    },
-];
-
 
 export function UsersTab() {
     const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -110,7 +71,7 @@ export function UsersTab() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {usersData.map(user => (
+                            {allUsers.map(user => (
                                 <TableRow key={user.id}>
                                     <TableCell className="font-medium">
                                         <div className="flex items-center gap-3">
