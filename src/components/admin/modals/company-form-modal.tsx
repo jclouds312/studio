@@ -24,7 +24,7 @@ export function CompanyFormModal({ isOpen, setIsOpen, company }: CompanyFormModa
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
@@ -58,11 +58,29 @@ export function CompanyFormModal({ isOpen, setIsOpen, company }: CompanyFormModa
             </Label>
             <Input id="cuit" defaultValue={company?.cuit} className="col-span-3" />
           </div>
+           <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="address" className="text-right">
+              Dirección
+            </Label>
+            <Input id="address" defaultValue={company?.address} className="col-span-3" />
+          </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="city" className="text-right">
               Ciudad
             </Label>
             <Input id="city" defaultValue={company?.city} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="province" className="text-right">
+              Provincia
+            </Label>
+            <Input id="province" defaultValue={company?.province} className="col-span-3" />
+          </div>
+           <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="phone" className="text-right">
+              Teléfono
+            </Label>
+            <Input id="phone" type="tel" defaultValue={company?.phone} className="col-span-3" />
           </div>
            <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="status" className="text-right">

@@ -24,7 +24,10 @@ const companiesData: CompanyProfile[] = [
         id: '1',
         name: 'Tech Solutions Inc.',
         cuit: '30-12345678-9',
-        city: 'Buenos Aires',
+        address: 'Av. Corrientes 1234',
+        city: 'CABA',
+        province: 'Buenos Aires',
+        phone: '11-4321-9876',
         logoUrl: 'https://placehold.co/40x40.png',
         status: 'Activa',
     },
@@ -32,7 +35,10 @@ const companiesData: CompanyProfile[] = [
         id: '2',
         name: 'Creative Minds',
         cuit: '30-98765432-1',
+        address: 'Bv. San Juan 567',
         city: 'Córdoba',
+        province: 'Córdoba',
+        phone: '351-123-4567',
         logoUrl: 'https://placehold.co/40x40.png',
         status: 'Activa',
     },
@@ -40,7 +46,10 @@ const companiesData: CompanyProfile[] = [
         id: '3',
         name: 'Server Systems',
         cuit: '30-55555555-5',
+        address: 'N/A',
         city: 'Remoto',
+        province: 'N/A',
+        phone: 'N/A',
         logoUrl: 'https://placehold.co/40x40.png',
         status: 'Inactiva',
     },
@@ -77,8 +86,8 @@ export function CompaniesTab() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Empresa</TableHead>
+                                <TableHead>Ubicación</TableHead>
                                 <TableHead>CUIT</TableHead>
-                                <TableHead>Ciudad</TableHead>
                                 <TableHead>Estado</TableHead>
                                 <TableHead>
                                     <span className="sr-only">Acciones</span>
@@ -94,8 +103,8 @@ export function CompaniesTab() {
                                             <span className="font-semibold">{company.name}</span>
                                         </div>
                                     </TableCell>
+                                    <TableCell>{company.city}, {company.province}</TableCell>
                                     <TableCell>{company.cuit}</TableCell>
-                                    <TableCell>{company.city}</TableCell>
                                     <TableCell>
                                         <Badge variant={company.status === 'Activa' ? 'default' : 'secondary'} className={company.status === 'Activa' ? 'bg-green-500/80 text-white' : ''}>
                                             {company.status}

@@ -45,9 +45,11 @@ export type User = {
 export type CompanyProfile = {
     id:string;
     name: string;
-    cuit: string; 
+    cuit: string;
+    address?: string;
     city: string;
     province?: string;
+    phone?: string;
     logoUrl?: string;
     status?: 'Activa' | 'Inactiva' | 'Pendiente';
 };
