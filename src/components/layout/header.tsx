@@ -5,13 +5,16 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut } from 'lucide-react';
+import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare } from 'lucide-react';
 import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname } from 'next/navigation';
+import { ChatPanel } from '../chat/chat-panel';
+import React from 'react';
 
 export function Header() {
   const isLoggedIn = true; 
   const isAdmin = true;
+  const [isChatOpen, setIsChatOpen] = React.useState(false);
   
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith('/admin');
@@ -28,7 +31,7 @@ export function Header() {
                 </Link>
             </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {isLoggedIn ? (
                <div className="hidden md:flex items-center gap-4">
                 {isAdmin && (
@@ -39,6 +42,10 @@ export function Header() {
                     </Link>
                   </Button>
                 )}
+                 <Button variant="ghost" size="icon" onClick={() => setIsChatOpen(true)}>
+                    <MessageSquare />
+                    <span className="sr-only">Abrir Chat</span>
+                  </Button>
                 <Link href="/profile">
                   <Avatar className='h-9 w-9 border-2 border-primary/50'>
                     <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
@@ -86,6 +93,9 @@ export function Header() {
                                 Mi Perfil
                             </Link>
                         </Button>
+                         <Button variant="outline" asChild size="lg" className="justify-start gap-2" onClick={() => setIsChatOpen(true)}>
+                            <Link href="#"><MessageSquare className="mr-2 h-5 w-5"/>Mensajes</Link>
+                          </Button>
                        {isAdmin && (
                           <Button variant="outline" asChild size="lg" className="justify-start gap-2">
                             <Link href="/admin"><Shield className="mr-2 h-5 w-5"/>Panel de Admin</Link>
@@ -112,6 +122,7 @@ export function Header() {
           </div>
         </div>
       </div>
+      <ChatPanel isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
     </header>
   );
 }

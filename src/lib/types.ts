@@ -1,3 +1,4 @@
+
 export type Job = {
     id: string;
     title: string;
@@ -15,8 +16,11 @@ export type User = {
     id: string;
     name: string;
     email: string;
-    avatarUrl?: string;
+    avatar?: string;
     phone?: string;
+    role?: 'admin' | 'user' | 'company';
+    status?: 'Verificado' | 'Pendiente' | 'Suspendido';
+    createdAt?: string;
 };
 
 export type CompanyProfile = {
@@ -24,6 +28,7 @@ export type CompanyProfile = {
     name: string;
     cuit: string; 
     city: string;
-    province: string;
+    province?: string;
     logoUrl?: string;
+    status?: 'Activa' | 'Inactiva' | 'Pendiente';
 };

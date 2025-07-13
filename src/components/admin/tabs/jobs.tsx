@@ -14,17 +14,29 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { JobFormModal } from "../modals/job-form-modal";
+import React from "react";
+import type { Job } from "@/lib/types";
 
 export function JobsTab() {
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [selectedJob, setSelectedJob] = React.useState<Job | null>(null);
+
+    const handleOpenModal = (job: Job | null = null) => {
+        setSelectedJob(job);
+        setIsModalOpen(true);
+    };
 
     return (
+        <>
+        <JobFormModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} job={selectedJob}/>
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                     <CardTitle>Publicaciones</CardTitle>
                     <CardDescription>Gestiona todas las publicaciones de trabajo en la plataforma.</CardDescription>
                 </div>
-                 <Button size="sm" className="gap-1">
+                 <Button size="sm" className="gap-1" onClick={() => handleOpenModal()}>
                     <PlusCircle className="h-3.5 w-3.5" />
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                         Crear Publicación
@@ -71,7 +83,7 @@ export function JobsTab() {
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
                                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                                        <DropdownMenuItem>Editar</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleOpenModal(job)}>Editar</DropdownMenuItem>
                                         <DropdownMenuItem>Desactivar</DropdownMenuItem>
                                         <DropdownMenuItem className="text-destructive">Eliminar</DropdownMenuItem>
                                         </DropdownMenuContent>
@@ -83,5 +95,6 @@ export function JobsTab() {
                 </Table>
             </CardContent>
         </Card>
+        </>
     )
 }
