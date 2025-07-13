@@ -23,7 +23,7 @@ export function Header() {
                 {isAdminPage && <SidebarTrigger className="md:hidden"/>}
                 <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                     <Briefcase className="h-6 w-6" />
-                    <span className="font-bold text-xl">Conexión Laboral</span>
+                    <span className="font-bold text-xl" style={{ color: '#FFD700' }}>LaburoYA</span>
                 </Link>
             </div>
           
@@ -69,7 +69,7 @@ export function Header() {
                      <SheetTitle>
                        <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                           <Briefcase className="h-6 w-6" />
-                          <span className="font-bold text-lg">Conexión Laboral</span>
+                          <span className="font-bold text-lg" style={{ color: '#FFD700' }}>LaburoYA</span>
                         </Link>
                       </SheetTitle>
                   </SheetHeader>
