@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from '../ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,6 +20,7 @@ const user = {
     role: 'admin' as const,
     avatarUrl: 'https://placehold.co/128x128.png',
     phone: '+54 9 11 1234-5678',
+    location: 'Buenos Aires, CABA',
     applications: [
         { id: '1', title: 'Frontend Developer', company: 'Tech Solutions Inc.', status: 'En revisión' },
         { id: '2', title: 'Diseñador/a UX/UI', company: 'Creative Minds', status: 'Rechazado' },
@@ -88,6 +89,14 @@ function EditProfileTab() {
                     <div className="relative">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                         <Input id="phone" type="tel" className="pl-10" defaultValue={user.phone} placeholder="+54 9 11 ...."/>
+                    </div>
+                    </div>
+
+                    <div>
+                    <Label htmlFor="location">Localidad</Label>
+                    <div className="relative">
+                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                        <Input id="location" type="text" className="pl-10" defaultValue={user.location} placeholder="Ej: Buenos Aires, CABA"/>
                     </div>
                     </div>
 

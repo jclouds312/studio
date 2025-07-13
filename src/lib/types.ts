@@ -32,6 +32,7 @@ export type User = {
     email: string;
     avatar?: string;
     phone?: string;
+    location?: string;
     role?: 'admin' | 'user' | 'company';
     status?: 'Verificado' | 'Pendiente' | 'Suspendido';
     createdAt?: string;
