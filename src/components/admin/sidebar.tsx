@@ -25,32 +25,32 @@ export function AdminSidebar() {
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                        <SidebarMenuButton href="#" asChild tooltip="Publicaciones">
-                             <Link href="#">
+                        <SidebarMenuButton href="/admin" asChild tooltip="Publicaciones">
+                             <Link href="/admin">
                                 <Briefcase />
                                 <span>Publicaciones</span>
                              </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                        <SidebarMenuButton href="#" asChild tooltip="Usuarios">
-                             <Link href="#">
+                        <SidebarMenuButton href="/admin" asChild tooltip="Usuarios">
+                             <Link href="/admin">
                                 <Users />
                                 <span>Usuarios</span>
                              </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                        <SidebarMenuButton href="#" asChild tooltip="Empresas">
-                            <Link href="#">
+                        <SidebarMenuButton href="/admin" asChild tooltip="Empresas">
+                            <Link href="/admin">
                              <Building />
                              <span>Empresas</span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                      <SidebarMenuItem>
-                        <SidebarMenuButton href="#" asChild tooltip="Ajustes">
-                             <Link href="#">
+                        <SidebarMenuButton href="/admin" asChild tooltip="Ajustes">
+                             <Link href="/admin">
                                 <Settings />
                                 <span>Ajustes</span>
                              </Link>

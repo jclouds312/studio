@@ -1,6 +1,7 @@
 
 'use client';
 
+import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -13,8 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input";
+import { useToast } from '@/hooks/use-toast';
 
-const categories = [
+const initialCategories = [
     { id: 'tech', name: 'Tecnología', description: 'Desarrollo de software, IT, etc.'},
     { id: 'design', name: 'Diseño', description: 'Diseño gráfico, UX/UI, etc.'},
     { id: 'marketing', name: 'Marketing', description: 'Marketing digital, SEO, etc.'},
@@ -24,6 +26,35 @@ const categories = [
 ];
 
 export function CategoriesTab() {
+    const { toast } = useToast();
+    const [categories, setCategories] = React.useState(initialCategories);
+    const [newName, setNewName] = React.useState('');
+    const [newDesc, setNewDesc] = React.useState('');
+
+    const handleAddCategory = () => {
+        if (!newName || !newDesc) {
+            toast({
+                title: 'Error',
+                description: 'Por favor, completa ambos campos.',
+                variant: 'destructive'
+            });
+            return;
+        }
+
+        const newCategory = {
+            id: newName.toLowerCase().replace(/\s+/g, '-'),
+            name: newName,
+            description: newDesc,
+        };
+
+        setCategories([...categories, newCategory]);
+        setNewName('');
+        setNewDesc('');
+        toast({
+            title: 'Categoría Añadida',
+            description: `La categoría "${newName}" ha sido creada.`,
+        });
+    };
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -84,13 +115,13 @@ export function CategoriesTab() {
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
                              <label htmlFor="cat-name">Nombre</label>
-                             <Input id="cat-name" placeholder="Ej: Gastronomía"/>
+                             <Input id="cat-name" placeholder="Ej: Gastronomía" value={newName} onChange={(e) => setNewName(e.target.value)}/>
                         </div>
                         <div className="space-y-2">
                              <label htmlFor="cat-desc">Descripción</label>
-                             <Input id="cat-desc" placeholder="Breve descripción"/>
+                             <Input id="cat-desc" placeholder="Breve descripción" value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
                         </div>
-                        <Button className="w-full">
+                        <Button className="w-full" onClick={handleAddCategory}>
                             <PlusCircle className="h-4 w-4 mr-2"/>
                             Añadir Categoría
                         </Button>

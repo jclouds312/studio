@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, Edit, Loader2, User, Phone, FileText } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { Separator } from '../ui/separator';
 
 export function UserProfile() {
@@ -41,6 +41,10 @@ export function UserProfile() {
     const file = event.target.files?.[0];
     if (file) {
       setFileName(file.name);
+      toast({
+        title: "Archivo Cargado",
+        description: `Se ha cargado el archivo: ${file.name}`,
+      });
     }
   };
 
