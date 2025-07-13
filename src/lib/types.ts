@@ -6,4 +6,5 @@ export type Job = {
     type: 'Full-time' | 'Part-time' | 'Contract';
     description: string;
     companyLogo: string;
+    category: 'tech' | 'design' | 'marketing' | 'sales';
 };

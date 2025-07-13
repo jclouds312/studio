@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Search, Briefcase } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
+import React, { useState, useMemo } from "react";
 
-const mockJobs: Job[] = [
+const allJobs: Job[] = [
   {
     id: '1',
     title: 'Frontend Developer',
@@ -16,7 +17,8 @@ const mockJobs: Job[] = [
     location: 'Buenos Aires, AR',
     type: 'Full-time',
     description: 'We are looking for a skilled Frontend Developer to join our team. You will be responsible for building the ‘client-side’ of our web applications. You should be able to translate our company and customer needs into functional and appealing interactive applications.',
-    companyLogo: 'https://placehold.co/56x56.png'
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'tech'
   },
   {
     id: '2',
@@ -25,7 +27,8 @@ const mockJobs: Job[] = [
     location: 'Córdoba, AR',
     type: 'Contract',
     description: 'Creative Minds is seeking a talented UX/UI Designer to create amazing user experiences. The ideal candidate should have an eye for clean and artful design, possess superior UI skills and be able to translate high-level requirements into interaction flows and artifacts.',
-    companyLogo: 'https://placehold.co/56x56.png'
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'design'
   },
   {
     id: '3',
@@ -34,7 +37,8 @@ const mockJobs: Job[] = [
     location: 'Remote',
     type: 'Full-time',
     description: 'Join our backend team to design and implement scalable and robust server-side applications. You will work with a team of developers to build and maintain our core services, ensuring high performance and responsiveness to requests from the front-end.',
-    companyLogo: 'https://placehold.co/56x56.png'
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'tech'
   },
    {
     id: '4',
@@ -43,8 +47,19 @@ const mockJobs: Job[] = [
     location: 'Rosario, AR',
     type: 'Part-time',
     description: 'We are hiring a Digital Marketing Manager to develop, implement, track and optimize our digital marketing campaigns across all digital channels. You should have a strong grasp of current marketing tools and strategies.',
-    companyLogo: 'https://placehold.co/56x56.png'
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'marketing'
   },
+  {
+    id: '5',
+    title: 'Sales Representative',
+    company: 'Lead Gen',
+    location: 'Buenos Aires, AR',
+    type: 'Full-time',
+    description: 'We are looking for a competitive and trustworthy Sales Executive to help us build up our business activities. Sales Executive responsibilities include discovering and pursuing new sales prospects, negotiating deals and maintaining customer satisfaction.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'sales'
+  }
 ];
 
 function JobListingCard({ job }: { job: Job }) {
@@ -81,38 +96,69 @@ function JobListingCard({ job }: { job: Job }) {
 }
 
 export function JobListings() {
+    const [keyword, setKeyword] = useState('');
+    const [location, setLocation] = useState('');
+    const [category, setCategory] = useState('');
+
+    const filteredJobs = useMemo(() => {
+        return allJobs.filter(job => {
+            const keywordMatch = keyword.toLowerCase() ? job.title.toLowerCase().includes(keyword.toLowerCase()) || job.description.toLowerCase().includes(keyword.toLowerCase()) : true;
+            const locationMatch = location.toLowerCase() ? job.location.toLowerCase().includes(location.toLowerCase()) : true;
+            const categoryMatch = category ? job.category === category : true;
+            return keywordMatch && locationMatch && categoryMatch;
+        });
+    }, [keyword, location, category]);
+
     return (
         <div className="space-y-6">
             <Card className="shadow-lg">
                 <CardHeader>
-                    <CardTitle>Find Your Next Job</CardTitle>
+                    <CardTitle>Encuentra tu próximo trabajo</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col md:flex-row gap-4 items-center">
                     <div className="flex-grow relative w-full">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                        <Input placeholder="Job title or keyword" className="pl-10" />
+                        <Input 
+                            placeholder="Puesto o palabra clave" 
+                            className="pl-10"
+                            value={keyword}
+                            onChange={(e) => setKeyword(e.target.value)}
+                        />
                     </div>
                     <div className="flex-grow relative w-full">
                         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                        <Input placeholder="City or region" className="pl-10" />
+                        <Input 
+                            placeholder="Ciudad o región" 
+                            className="pl-10"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                        />
                     </div>
-                    <Select>
+                    <Select value={category} onValueChange={setCategory}>
                         <SelectTrigger className="w-full md:w-[200px]">
-                             <SelectValue placeholder="Category" />
+                             <SelectValue placeholder="Categoría" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="tech">Technology</SelectItem>
-                            <SelectItem value="design">Design</SelectItem>
+                            <SelectItem value="">Todas</SelectItem>
+                            <SelectItem value="tech">Tecnología</SelectItem>
+                            <SelectItem value="design">Diseño</SelectItem>
                             <SelectItem value="marketing">Marketing</SelectItem>
-                            <SelectItem value="sales">Sales</SelectItem>
+                            <SelectItem value="sales">Ventas</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button className="w-full md:w-auto flex-shrink-0">Find Jobs</Button>
                 </CardContent>
             </Card>
 
             <div className="space-y-4">
-                {mockJobs.map(job => <JobListingCard key={job.id} job={job} />)}
+                {filteredJobs.length > 0 ? (
+                    filteredJobs.map(job => <JobListingCard key={job.id} job={job} />)
+                ) : (
+                    <Card>
+                        <CardContent className="pt-6">
+                            <p className="text-center text-muted-foreground">No se encontraron trabajos con esos criterios. Intenta con otros filtros.</p>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
         </div>
     );
