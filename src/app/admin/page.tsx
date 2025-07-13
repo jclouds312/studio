@@ -19,7 +19,7 @@ export default function AdminLayout() {
                 <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
                 <SidebarInset>
                     <main className="flex-1 container mx-auto py-8 px-4">
-                        <AdminDashboard activeTab={activeTab} />
+                        <AdminDashboard activeTab={activeTab} setActiveTab={setActiveTab} />
                     </main>
                 </SidebarInset>
             </div>

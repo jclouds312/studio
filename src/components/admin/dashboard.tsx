@@ -11,7 +11,12 @@ import { PaymentsTab } from "./tabs/payments";
 import { MarketingTab } from "./tabs/marketing";
 import React from "react";
 
-export function AdminDashboard({ activeTab }: { activeTab: string }) {
+interface AdminDashboardProps {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+}
+
+export function AdminDashboard({ activeTab, setActiveTab }: AdminDashboardProps) {
 
   return (
     <div className="space-y-8">
@@ -20,7 +25,7 @@ export function AdminDashboard({ activeTab }: { activeTab: string }) {
         </div>
       <Tabs value={activeTab} className="space-y-4">
         <TabsContent value="overview" className="space-y-4">
-            <OverviewTab />
+            <OverviewTab setActiveTab={setActiveTab} />
         </TabsContent>
          <TabsContent value="jobs" className="space-y-4">
             <JobsTab />

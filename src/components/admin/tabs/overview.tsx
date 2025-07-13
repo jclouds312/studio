@@ -2,7 +2,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, Code, KeyRound, Separator } from "lucide-react";
+import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, Code, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allJobs } from "@/components/job-listings";
 import {
@@ -23,6 +23,7 @@ import packageJson from '@/../package.json';
 import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
 
 const chartData = [
@@ -41,8 +42,11 @@ const chartConfig = {
   },
 } satisfies import("@/components/ui/chart").ChartConfig
 
+interface OverviewTabProps {
+  setActiveTab: (tab: string) => void;
+}
 
-export function OverviewTab() {
+export function OverviewTab({ setActiveTab }: OverviewTabProps) {
   const { toast } = useToast();
   const [isPaying, setIsPaying] = React.useState(false);
   const [paymentSuccess, setPaymentSuccess] = React.useState(false);
@@ -107,7 +111,7 @@ export function OverviewTab() {
   return (
     <div className="space-y-8">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-        <Card>
+        <Card onClick={() => setActiveTab('users')} className="cursor-pointer hover:border-primary transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Usuarios Totales
@@ -121,7 +125,7 @@ export function OverviewTab() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card onClick={() => setActiveTab('jobs')} className="cursor-pointer hover:border-primary transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Publicaciones Activas
@@ -135,7 +139,7 @@ export function OverviewTab() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card onClick={() => setActiveTab('payments')} className="cursor-pointer hover:border-primary transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Ingresos (Mes)</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
