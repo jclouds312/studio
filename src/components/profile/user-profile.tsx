@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, ClipboardList } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from '../ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
+import { ChatPanel } from '../chat/chat-panel';
 
 const user = {
     name: 'Johnatan Vallejo',
@@ -161,7 +162,7 @@ function EditProfileTab() {
   )
 }
 
-function ApplicationsTab() {
+function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
     return (
         <Card>
             <CardHeader>
@@ -175,6 +176,7 @@ function ApplicationsTab() {
                             <TableHead>Puesto</TableHead>
                             <TableHead>Empresa</TableHead>
                             <TableHead>Estado</TableHead>
+                            <TableHead>Acciones</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -186,6 +188,12 @@ function ApplicationsTab() {
                                     <Badge variant={app.status === 'Contactado' ? 'default' : (app.status === 'Rechazado' ? 'destructive' : 'secondary')}>
                                         {app.status}
                                     </Badge>
+                                </TableCell>
+                                <TableCell>
+                                    <Button variant="outline" size="sm" onClick={onChatOpen}>
+                                        <MessageSquare className="mr-2 h-4 w-4"/>
+                                        Chatear
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -235,7 +243,11 @@ function StatsTab() {
 
 
 export function UserProfile() {
+  const [isChatOpen, setIsChatOpen] = React.useState(false);
+
   return (
+    <>
+    <ChatPanel isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
     <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex flex-col items-center text-center space-y-4">
         <div className="relative w-32 h-32">
@@ -278,14 +290,13 @@ export function UserProfile() {
             <EditProfileTab />
         </TabsContent>
         <TabsContent value="applications" className="mt-6">
-            <ApplicationsTab />
+            <ApplicationsTab onChatOpen={() => setIsChatOpen(true)} />
         </TabsContent>
         <TabsContent value="stats" className="mt-6">
             <StatsTab />
         </TabsContent>
       </Tabs>
     </div>
+    </>
   );
 }
-
-    

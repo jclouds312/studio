@@ -8,14 +8,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare } from 'lucide-react';
 import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname, useRouter } from 'next/navigation';
-import { ChatPanel } from '../chat/chat-panel';
 import React, { useEffect, useState } from 'react';
 import { useToast } from '../ui/use-toast';
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { toast } = useToast();
   
@@ -86,9 +84,11 @@ export function Header() {
                     </Link>
                   </Button>
                 )}
-                 <Button variant="ghost" size="icon" onClick={() => setIsChatOpen(true)}>
+                 <Button variant="ghost" size="icon" asChild>
+                   <Link href="/profile">
                     <MessageSquare />
                     <span className="sr-only">Abrir Chat</span>
+                   </Link>
                   </Button>
                 <Link href="/profile">
                   <Avatar className='h-9 w-9 border-2 border-primary/50'>
@@ -140,8 +140,10 @@ export function Header() {
                                 Mi Perfil
                             </Link>
                         </Button>
-                         <Button variant="outline" asChild size="lg" className="justify-start gap-2" onClick={() => setIsChatOpen(true)}>
-                            <span><MessageSquare className="mr-2 h-5 w-5"/>Mensajes</span>
+                         <Button variant="outline" asChild size="lg" className="justify-start gap-2">
+                            <Link href="/profile">
+                                <MessageSquare className="mr-2 h-5 w-5"/>Mensajes
+                            </Link>
                           </Button>
                        {isAdmin && (
                           <Button variant="outline" asChild size="lg" className="justify-start gap-2">
@@ -169,7 +171,6 @@ export function Header() {
           </div>
         </div>
       </div>
-      <ChatPanel isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
     </header>
   );
 }
