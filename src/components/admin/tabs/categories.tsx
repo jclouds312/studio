@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input";
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
 const initialCategories = [
     { id: 'tech', name: 'Tecnología', description: 'Desarrollo de software, IT, etc.'},
@@ -114,11 +114,11 @@ export function CategoriesTab() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
-                             <label htmlFor="cat-name">Nombre</label>
+                             <Label htmlFor="cat-name">Nombre</Label>
                              <Input id="cat-name" placeholder="Ej: Gastronomía" value={newName} onChange={(e) => setNewName(e.target.value)}/>
                         </div>
                         <div className="space-y-2">
-                             <label htmlFor="cat-desc">Descripción</label>
+                             <Label htmlFor="cat-desc">Descripción</Label>
                              <Input id="cat-desc" placeholder="Breve descripción" value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
                         </div>
                         <Button className="w-full" onClick={handleAddCategory}>

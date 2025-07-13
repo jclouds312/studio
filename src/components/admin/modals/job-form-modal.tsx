@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Job } from "@/lib/types";
 import { Switch } from "@/components/ui/switch";
+import React, { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface JobFormModalProps {
   isOpen: boolean;
@@ -17,8 +19,50 @@ interface JobFormModalProps {
 }
 
 export function JobFormModal({ isOpen, setIsOpen, job }: JobFormModalProps) {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState<Partial<Job>>({});
   const title = job ? 'Editar Publicación' : 'Crear Nueva Publicación';
   const description = job ? 'Modifica los detalles de la publicación.' : 'Completa el formulario para crear una nueva oferta de trabajo.';
+
+  useEffect(() => {
+    if (job) {
+      setFormData(job);
+    } else {
+      setFormData({
+        title: '',
+        company: '',
+        location: '',
+        type: 'Full-time',
+        category: 'tech',
+        description: '',
+        whatsapp: '',
+        isFeatured: false,
+      });
+    }
+  }, [job, isOpen]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({...prev, [id]: value}));
+  };
+
+  const handleSelectChange = (id: string, value: string) => {
+    setFormData(prev => ({...prev, [id]: value}));
+  };
+
+  const handleSwitchChange = (id: string, checked: boolean) => {
+    setFormData(prev => ({...prev, [id]: checked}));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+        title: "¡Éxito!",
+        description: `La publicación "${formData.title}" ha sido guardada correctamente.`,
+    });
+    setIsOpen(false);
+  };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -27,85 +71,87 @@ export function JobFormModal({ isOpen, setIsOpen, job }: JobFormModalProps) {
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="title" className="text-right">
-              Título
-            </Label>
-            <Input id="title" defaultValue={job?.title} className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="company" className="text-right">
-              Empresa
-            </Label>
-            <Input id="company" defaultValue={job?.company} className="col-span-3" />
-          </div>
-           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="location" className="text-right">
-              Ubicación
-            </Label>
-            <Input id="location" defaultValue={job?.location} className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="type" className="text-right">
-              Tipo
-            </Label>
-             <Select defaultValue={job?.type}>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Seleccionar tipo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Full-time">Full-time</SelectItem>
-                <SelectItem value="Part-time">Part-time</SelectItem>
-                <SelectItem value="Contract">Contract</SelectItem>
-                <SelectItem value="Changa">Changa</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="category" className="text-right">
-              Categoría
-            </Label>
-             <Select defaultValue={job?.category}>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Seleccionar categoría" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="tech">Tecnología</SelectItem>
-                <SelectItem value="design">Diseño</SelectItem>
-                <SelectItem value="marketing">Marketing</SelectItem>
-                <SelectItem value="sales">Ventas</SelectItem>
-                <SelectItem value="domestic">Doméstico</SelectItem>
-                <SelectItem value="construction">Construcción</SelectItem>
-                <SelectItem value="other">Otro</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-4 items-start gap-4">
-            <Label htmlFor="description" className="text-right pt-2">
-              Descripción
-            </Label>
-            <Textarea id="description" defaultValue={job?.description} className="col-span-3" rows={5} />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="whatsapp" className="text-right">
-              WhatsApp
-            </Label>
-            <Input id="whatsapp" defaultValue={job?.whatsapp} className="col-span-3" placeholder="+54911..." />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="featured" className="text-right">
-              Destacada
-            </Label>
-            <div className="col-span-3 flex items-center">
-                 <Switch id="featured" defaultChecked={job?.isFeatured} />
+        <form onSubmit={handleSubmit}>
+            <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="title" className="text-right">
+                Título
+                </Label>
+                <Input id="title" value={formData.title || ''} onChange={handleInputChange} className="col-span-3" />
             </div>
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancelar</Button>
-          <Button type="submit">Guardar Cambios</Button>
-        </DialogFooter>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="company" className="text-right">
+                Empresa
+                </Label>
+                <Input id="company" value={formData.company || ''} onChange={handleInputChange} className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="location" className="text-right">
+                Ubicación
+                </Label>
+                <Input id="location" value={formData.location || ''} onChange={handleInputChange} className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="type" className="text-right">
+                Tipo
+                </Label>
+                <Select value={formData.type} onValueChange={(value) => handleSelectChange('type', value)}>
+                <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Seleccionar tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="Full-time">Full-time</SelectItem>
+                    <SelectItem value="Part-time">Part-time</SelectItem>
+                    <SelectItem value="Contract">Contract</SelectItem>
+                    <SelectItem value="Changa">Changa</SelectItem>
+                </SelectContent>
+                </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="category" className="text-right">
+                Categoría
+                </Label>
+                <Select value={formData.category} onValueChange={(value) => handleSelectChange('category', value)}>
+                <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Seleccionar categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="tech">Tecnología</SelectItem>
+                    <SelectItem value="design">Diseño</SelectItem>
+                    <SelectItem value="marketing">Marketing</SelectItem>
+                    <SelectItem value="sales">Ventas</SelectItem>
+                    <SelectItem value="domestic">Doméstico</SelectItem>
+                    <SelectItem value="construction">Construcción</SelectItem>
+                    <SelectItem value="other">Otro</SelectItem>
+                </SelectContent>
+                </Select>
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+                <Label htmlFor="description" className="text-right pt-2">
+                Descripción
+                </Label>
+                <Textarea id="description" value={formData.description || ''} onChange={handleInputChange} className="col-span-3" rows={5} />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="whatsapp" className="text-right">
+                WhatsApp
+                </Label>
+                <Input id="whatsapp" value={formData.whatsapp || ''} onChange={handleInputChange} className="col-span-3" placeholder="+54911..." />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="isFeatured" className="text-right">
+                Destacada
+                </Label>
+                <div className="col-span-3 flex items-center">
+                    <Switch id="isFeatured" checked={formData.isFeatured || false} onCheckedChange={(checked) => handleSwitchChange('isFeatured', checked)} />
+                </div>
+            </div>
+            </div>
+            <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancelar</Button>
+                <Button type="submit">Guardar Cambios</Button>
+            </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
