@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare, Trash2, Link as LinkIcon } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare, Trash2, Link as LinkIcon, Star } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from '../ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -338,6 +338,23 @@ export function UserProfile() {
             )}
         </div>
       </div>
+
+       <Card className="bg-gradient-to-r from-primary/80 to-primary/60 text-primary-foreground text-center p-6 rounded-lg shadow-lg">
+          <CardHeader className="p-0 mb-2">
+            <CardTitle>¡Potencia tu Búsqueda!</CardTitle>
+            <CardDescription className="text-primary-foreground/80">
+              Con nuestros planes premium, accede a funciones exclusivas y destaca sobre los demás.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <Button asChild className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+                <Link href="/subscriptions">
+                    <Star className="mr-2 h-4 w-4" />
+                    Ver Planes Premium
+                </Link>
+            </Button>
+          </CardContent>
+        </Card>
       
       <Tabs defaultValue="edit-profile" className="w-full">
         <TabsList className="grid w-full grid-cols-4">

@@ -1,29 +1,23 @@
 
 'use client';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { OverviewTab } from "./tabs/overview";
 import { JobsTab } from "./tabs/jobs";
 import { UsersTab } from "./tabs/users";
 import { CompaniesTab } from "./tabs/companies";
 import { CategoriesTab } from "./tabs/categories";
+import { PaymentsTab } from "./tabs/payments";
 import React from "react";
 
-export function AdminDashboard({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (value: string) => void }) {
+export function AdminDashboard({ activeTab }: { activeTab: string }) {
 
   return (
     <div className="space-y-8">
         <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
         </div>
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview">Resumen</TabsTrigger>
-          <TabsTrigger value="jobs">Publicaciones</TabsTrigger>
-          <TabsTrigger value="users">Usuarios</TabsTrigger>
-          <TabsTrigger value="companies">Empresas</TabsTrigger>
-          <TabsTrigger value="categories">Categorías</TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} className="space-y-4">
         <TabsContent value="overview" className="space-y-4">
             <OverviewTab />
         </TabsContent>
@@ -38,6 +32,9 @@ export function AdminDashboard({ activeTab, setActiveTab }: { activeTab: string,
         </TabsContent>
         <TabsContent value="categories" className="space-y-4">
             <CategoriesTab />
+        </TabsContent>
+         <TabsContent value="payments" className="space-y-4">
+            <PaymentsTab />
         </TabsContent>
       </Tabs>
     </div>

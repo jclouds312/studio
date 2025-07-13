@@ -57,3 +57,16 @@ export type CompanyProfile = {
     logoUrl?: string;
     status?: 'Activa' | 'Inactiva' | 'Pendiente';
 };
+
+export type Transaction = {
+    id: string;
+    user: {
+        name: string;
+        email: string;
+        avatar?: string;
+    };
+    plan: 'Básico' | 'Profesional' | 'Premium';
+    status: 'Pagado' | 'Pendiente' | 'Fallido';
+    amount: number;
+    date: string;
+};

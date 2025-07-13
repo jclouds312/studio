@@ -1,0 +1,187 @@
+
+'use client';
+
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { CheckCircle, Star, Briefcase, Zap } from 'lucide-react';
+import React from 'react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import Image from "next/image";
+import { Loader2, Sparkles, CreditCard } from "lucide-react";
+import { cn } from '@/lib/utils';
+
+const plans = [
+    {
+        name: 'Básico',
+        price: 'Gratis',
+        priceDetail: 'para siempre',
+        features: [
+            'Hasta 5 postulaciones por mes',
+            'Perfil público básico',
+            'Acceso a todas las ofertas',
+        ],
+        isPopular: false,
+    },
+    {
+        name: 'Profesional',
+        price: '$2.000',
+        priceDetail: 'por mes',
+        features: [
+            'Postulaciones ilimitadas',
+            'Perfil destacado en búsquedas',
+            'Acceso a estadísticas de perfil',
+            'Soporte prioritario por email',
+        ],
+        isPopular: true,
+    },
+    {
+        name: 'Empresa',
+        price: '$10.000',
+        priceDetail: 'por mes',
+        features: [
+            'Publica hasta 10 ofertas de trabajo',
+            'Acceso a base de datos de candidatos',
+            'Dashboard de seguimiento de postulantes',
+            'Soporte dedicado 24/7',
+        ],
+        isPopular: false,
+    },
+]
+
+function PaymentModal({ planName, planPrice }: { planName: string, planPrice: string }) {
+    const [isPaying, setIsPaying] = React.useState(false);
+    const [paymentSuccess, setPaymentSuccess] = React.useState(false);
+  
+    const handlePayment = () => {
+      setIsPaying(true);
+      setTimeout(() => {
+        setIsPaying(false);
+        setPaymentSuccess(true);
+      }, 2000);
+    };
+  
+    return (
+       <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
+        <AlertDialogTrigger asChild>
+          <Button className="w-full">
+            <Zap className="mr-2 h-4 w-4" />
+            {planName === 'Básico' ? 'Comenzar Ahora' : 'Contratar Plan'}
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Image src="https://www.mercadopago.com/v2/images/navigation-logo-small-with-text.png" alt="Mercado Pago" width={120} height={28} data-ai-hint="company logo"/>
+              Confirmar Pago
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {paymentSuccess ? (
+                <div className="text-center py-4">
+                  <Sparkles className="h-12 w-12 text-green-500 mx-auto mb-2"/>
+                  <h3 className="text-lg font-bold text-foreground">¡Pago exitoso!</h3>
+                  <p className="text-muted-foreground">Tu suscripción al plan {planName} ha sido activada.</p>
+                </div>
+              ) : (
+                <>
+                 Estás a punto de suscribirte al <strong>Plan {planName}</strong> por <span className="font-bold text-foreground">{planPrice}/mes</span>.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+              {paymentSuccess ? (
+                  <AlertDialogCancel>Cerrar</AlertDialogCancel>
+              ) : (
+                  <>
+                      <AlertDialogCancel disabled={isPaying}>Cancelar</AlertDialogCancel>
+                      <Button onClick={handlePayment} disabled={isPaying}>
+                        {isPaying ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Procesando...
+                          </>
+                        ) : (
+                          <>
+                            <CreditCard className="mr-2 h-4 w-4" />
+                            Pagar ahora
+                          </>
+                        )}
+                      </Button>
+                  </>
+              )}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    )
+}
+
+export default function SubscriptionsPage() {
+  return (
+    <div className="flex flex-col min-h-screen bg-transparent">
+      <Header />
+      <main className="flex-1 container mx-auto py-12 px-4">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold tracking-tight">Planes y Precios</h1>
+          <p className="text-lg text-muted-foreground mt-2">
+            Elige el plan que mejor se adapte a tus necesidades para encontrar trabajo o talento.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {plans.map((plan) => (
+                <Card key={plan.name} className={cn(
+                    "flex flex-col",
+                    plan.isPopular && "border-primary shadow-2xl relative"
+                )}>
+                    {plan.isPopular && (
+                        <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
+                            <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold flex items-center gap-1">
+                                <Star className="h-4 w-4"/>
+                                MÁS POPULAR
+                            </Badge>
+                        </div>
+                    )}
+                    <CardHeader className="text-center pt-8">
+                        <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                        <CardDescription>{
+                            plan.name === 'Básico' ? 'Para empezar a buscar' : 
+                            plan.name === 'Profesional' ? 'Para profesionales serios' : 'Para empresas que contratan'
+                        }</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-grow space-y-6">
+                        <div className="text-center">
+                            <span className="text-4xl font-bold">{plan.price}</span>
+                            <span className="text-muted-foreground"> {plan.priceDetail}</span>
+                        </div>
+                        <ul className="space-y-3 text-sm">
+                            {plan.features.map((feature, index) => (
+                                <li key={index} className="flex items-center gap-2">
+                                    <CheckCircle className="h-5 w-5 text-green-500" />
+                                    <span>{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </CardContent>
+                    <CardFooter>
+                        <PaymentModal planName={plan.name} planPrice={plan.price} />
+                    </CardFooter>
+                </Card>
+            ))}
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}

@@ -2,7 +2,7 @@
 'use client';
 
 import { Sidebar, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
-import { Briefcase, Users, Building, LayoutGrid, Tag } from "lucide-react";
+import { Briefcase, Users, Building, LayoutGrid, Tag, CreditCard } from "lucide-react";
 
 interface AdminSidebarProps {
     activeTab: string;
@@ -16,6 +16,7 @@ export function AdminSidebar({ activeTab, setActiveTab }: AdminSidebarProps) {
         { id: 'users', label: 'Usuarios', icon: Users },
         { id: 'companies', label: 'Empresas', icon: Building },
         { id: 'categories', label: 'Categorías', icon: Tag },
+        { id: 'payments', label: 'Pagos', icon: CreditCard },
     ];
 
     return (
