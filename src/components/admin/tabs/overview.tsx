@@ -23,8 +23,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import React from "react";
 import Image from "next/image";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Bar, CartesianGrid, XAxis, BarChart as RechartsBarChart } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
+import { Bar, CartesianGrid, XAxis, BarChart as RechartsBarChart, YAxis, Tooltip as RechartsTooltip } from "recharts";
 import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -32,6 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import type { Transaction, PaymentMetrics } from '@/lib/types';
 import Papa from 'papaparse';
 import { saveAs } from 'file-saver';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 
 // Datos simulados para el informe de pagos
@@ -83,21 +84,51 @@ const paymentMetrics: PaymentMetrics = {
 };
 
 
-const chartData = [
+const totalUsersData = [
   { month: "Enero", users: 186 },
   { month: "Febrero", users: 305 },
   { month: "Marzo", users: 237 },
   { month: "Abril", users: 273 },
   { month: "Mayo", users: 209 },
   { month: "Junio", users: 214 },
+];
+
+const byRoleData = [
+  { month: "Enero", trabajadores: 150, empresas: 36 },
+  { month: "Febrero", trabajadores: 250, empresas: 55 },
+  { month: "Marzo", trabajadores: 190, empresas: 47 },
+  { month: "Abril", trabajadores: 220, empresas: 53 },
+  { month: "Mayo", trabajadores: 160, empresas: 49 },
+  { month: "Junio", trabajadores: 170, empresas: 44 },
+];
+
+const byPlanData = [
+  { month: "Enero", basico: 100, profesional: 70, empresa: 16 },
+  { month: "Febrero", basico: 180, profesional: 95, empresa: 30 },
+  { month: "Marzo", basico: 140, profesional: 77, empresa: 20 },
+  { month: "Abril", basico: 160, profesional: 83, empresa: 30 },
+  { month: "Mayo", basico: 110, profesional: 79, empresa: 20 },
+  { month: "Junio", basico: 120, profesional: 74, empresa: 20 },
 ]
 
-const chartConfig = {
+const totalUsersChartConfig = {
   users: {
     label: "Usuarios",
     color: "hsl(var(--chart-1))",
   },
-} satisfies import("@/components/ui/chart").ChartConfig
+} satisfies import("@/components/ui/chart").ChartConfig;
+
+const byRoleChartConfig = {
+  trabajadores: { label: "Trabajadores", color: "hsl(var(--chart-1))" },
+  empresas: { label: "Empresas", color: "hsl(var(--chart-2))" },
+} satisfies import("@/components/ui/chart").ChartConfig;
+
+const byPlanChartConfig = {
+  basico: { label: "Básico", color: "hsl(var(--chart-1))" },
+  profesional: { label: "Profesional", color: "hsl(var(--chart-2))" },
+  empresa: { label: "Empresa", color: "hsl(var(--chart-3))" },
+} satisfies import("@/components/ui/chart").ChartConfig;
+
 
 interface OverviewTabProps {
   setActiveTab: (tab: string) => void;
@@ -178,7 +209,7 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
               </tr>
               ${backupData.map(row => `
                 <tr>
-                  ${Object.values(row).map(val => `<td>${val}</td>`).join('')}
+                  ${Object.values(row).map(val => `<td>${String(val).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')}</td>`).join('')}
                 </tr>
               `).join('')}
             </table>
@@ -369,29 +400,80 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-7 gap-8">
         <Card className="lg:col-span-4">
-            <CardHeader>
-                <CardTitle>Crecimiento de Usuarios</CardTitle>
-                 <CardDescription>Nuevos usuarios registrados en los últimos 6 meses.</CardDescription>
+           <Tabs defaultValue="total" className="flex flex-col h-full">
+            <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                    <CardTitle>Crecimiento de Usuarios</CardTitle>
+                    <CardDescription>Nuevos usuarios registrados en los últimos 6 meses.</CardDescription>
+                </div>
+                 <TabsList className="grid w-full grid-cols-3 max-w-[280px]">
+                    <TabsTrigger value="total">Total</TabsTrigger>
+                    <TabsTrigger value="role">Por Rol</TabsTrigger>
+                    <TabsTrigger value="plan">Por Plan</TabsTrigger>
+                </TabsList>
             </CardHeader>
-            <CardContent className="pl-2">
-                <ChartContainer config={chartConfig} className="h-[300px] w-full">
-                     <RechartsBarChart accessibilityLayer data={chartData}>
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                        dataKey="month"
-                        tickLine={false}
-                        tickMargin={10}
-                        axisLine={false}
-                        tickFormatter={(value) => value.slice(0, 3)}
-                        />
-                        <ChartTooltip
-                        cursor={false}
-                        content={<ChartTooltipContent indicator="dot" />}
-                        />
-                        <Bar dataKey="users" fill="var(--color-users)" radius={4} />
-                    </RechartsBarChart>
-                </ChartContainer>
+            <CardContent className="pl-2 flex-grow">
+                 <TabsContent value="total" className="h-[300px]">
+                     <ChartContainer config={totalUsersChartConfig} className="w-full h-full">
+                         <RechartsBarChart accessibilityLayer data={totalUsersData}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                            dataKey="month"
+                            tickLine={false}
+                            tickMargin={10}
+                            axisLine={false}
+                            tickFormatter={(value) => value.slice(0, 3)}
+                            />
+                            <YAxis tickLine={false} axisLine={false} />
+                            <ChartTooltip
+                            cursor={false}
+                            content={<ChartTooltipContent indicator="dot" />}
+                            />
+                            <Bar dataKey="users" fill="var(--color-users)" radius={4} />
+                        </RechartsBarChart>
+                    </ChartContainer>
+                </TabsContent>
+                 <TabsContent value="role" className="h-[300px]">
+                     <ChartContainer config={byRoleChartConfig} className="w-full h-full">
+                        <RechartsBarChart accessibilityLayer data={byRoleData} layout="vertical" stackOffset="expand">
+                             <XAxis type="number" hide={true} />
+                            <YAxis
+                                dataKey="month"
+                                type="category"
+                                tickLine={false}
+                                tickMargin={10}
+                                axisLine={false}
+                                tickFormatter={(value) => value.slice(0, 3)}
+                            />
+                             <ChartTooltip cursor={false} content={<ChartTooltipContent percent />} />
+                            <ChartLegend content={<ChartLegendContent />} />
+                             <Bar dataKey="trabajadores" stackId="a" fill="var(--color-trabajadores)" radius={[4, 0, 0, 4]} />
+                            <Bar dataKey="empresas" stackId="a" fill="var(--color-empresas)" radius={[0, 4, 4, 0]} />
+                        </RechartsBarChart>
+                    </ChartContainer>
+                </TabsContent>
+                <TabsContent value="plan" className="h-[300px]">
+                     <ChartContainer config={byPlanChartConfig} className="w-full h-full">
+                        <RechartsBarChart accessibilityLayer data={byPlanData} stackOffset="expand" layout="vertical">
+                           <XAxis type="number" hide={true} />
+                           <YAxis
+                                dataKey="month"
+                                type="category"
+                                tickLine={false}
+                                tickMargin={10}
+                                axisLine={false}
+                                tickFormatter={(value) => value.slice(0, 3)}
+                            />
+                           <ChartTooltip cursor={false} content={<ChartTooltipContent percent />} />
+                           <ChartLegend content={<ChartLegendContent />} />
+                           <Bar dataKey="basico" stackId="a" fill="var(--color-basico)" radius={[4, 0, 0, 4]} />
+                           <Bar dataKey="profesional" stackId="a" fill="var(--color-profesional)" />
+                           <Bar dataKey="empresa" stackId="a" fill="var(--color-empresa)" radius={[0, 4, 4, 0]} />
+                        </RechartsBarChart>
+                    </ChartContainer>
+                </TabsContent>
             </CardContent>
+          </Tabs>
         </Card>
          <Card className="lg:col-span-3">
             <CardHeader>

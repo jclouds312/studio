@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -111,6 +112,7 @@ const ChartTooltipContent = React.forwardRef<
       indicator?: "line" | "dot" | "dashed"
       nameKey?: string
       labelKey?: string
+      percent?: boolean
     }
 >(
   (
@@ -128,6 +130,7 @@ const ChartTooltipContent = React.forwardRef<
       color,
       nameKey,
       labelKey,
+      percent = false
     },
     ref
   ) => {
@@ -189,6 +192,10 @@ const ChartTooltipContent = React.forwardRef<
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
             const indicatorColor = color || item.payload.fill || item.color
+            
+            const total = payload.reduce((acc, curr) => acc + (curr.value as number), 0)
+            const percentage = total > 0 ? ((item.value as number) / total) * 100 : 0
+
 
             return (
               <div
@@ -240,7 +247,7 @@ const ChartTooltipContent = React.forwardRef<
                       </div>
                       {item.value && (
                         <span className="font-mono font-medium tabular-nums text-foreground">
-                          {item.value.toLocaleString()}
+                          {percent ? `${percentage.toFixed(0)}%` : item.value.toLocaleString()}
                         </span>
                       )}
                     </div>
