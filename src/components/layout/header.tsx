@@ -10,11 +10,13 @@ import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useToast } from '../ui/use-toast';
+import { ChatPanel } from '../chat/chat-panel';
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const { toast } = useToast();
   
   const pathname = usePathname();
@@ -28,7 +30,7 @@ export function Header() {
     
     setIsLoggedIn(loggedInStatus);
     
-    if (loggedInStatus && userEmail === 'john474nvallejo@gmail.com') {
+    if (loggedInStatus && userEmail === 'johnatanvallejomarulanda@gmail.com') {
         setIsAdmin(true);
     } else {
         setIsAdmin(false);
@@ -62,6 +64,8 @@ export function Header() {
   }
 
   return (
+    <>
+    <ChatPanel isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
     <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-40">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
@@ -84,11 +88,9 @@ export function Header() {
                     </Link>
                   </Button>
                 )}
-                 <Button variant="ghost" size="icon" asChild>
-                   <Link href="/profile">
+                 <Button variant="ghost" size="icon" onClick={() => setIsChatOpen(true)}>
                     <MessageSquare />
                     <span className="sr-only">Abrir Chat</span>
-                   </Link>
                   </Button>
                 <Link href="/profile">
                   <Avatar className='h-9 w-9 border-2 border-primary/50'>
@@ -140,10 +142,10 @@ export function Header() {
                                 Mi Perfil
                             </Link>
                         </Button>
-                         <Button variant="outline" asChild size="lg" className="justify-start gap-2">
-                            <Link href="/profile">
+                         <Button variant="outline" asChild size="lg" className="justify-start gap-2" onClick={() => setIsChatOpen(true)}>
+                            <div className='flex items-center'>
                                 <MessageSquare className="mr-2 h-5 w-5"/>Mensajes
-                            </Link>
+                            </div>
                           </Button>
                        {isAdmin && (
                           <Button variant="outline" asChild size="lg" className="justify-start gap-2">
@@ -172,5 +174,6 @@ export function Header() {
         </div>
       </div>
     </header>
+    </>
   );
 }

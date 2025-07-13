@@ -41,6 +41,7 @@ export type User = {
     experience?: string;
     skills?: string[];
     applications?: UserApplication[];
+    savedJobs?: Job[];
     stats?: UserStats;
 };
 
@@ -55,5 +56,3 @@ export type CompanyProfile = {
     logoUrl?: string;
     status?: 'Activa' | 'Inactiva' | 'Pendiente';
 };
-
-    

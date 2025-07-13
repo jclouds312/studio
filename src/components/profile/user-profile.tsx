@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare, Trash2, Link as LinkIcon } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from '../ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,10 +15,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
 import { ChatPanel } from '../chat/chat-panel';
+import type { Job } from '@/lib/types';
+import Link from 'next/link';
 
 const user = {
     name: 'Johnatan Vallejo',
-    email: 'john474nvallejo@gmail.com',
+    email: 'johnatanvallejomarulanda@gmail.com',
     role: 'admin' as const,
     avatarUrl: 'https://placehold.co/128x128.png',
     phone: '+54 9 11 1234-5678',
@@ -30,10 +32,32 @@ const user = {
         { id: '2', title: 'Diseñador/a UX/UI', company: 'Creative Minds', status: 'Rechazado' },
         { id: '3', title: 'Pintor de Interiores', company: 'Servicios Varios', status: 'Contactado' },
     ],
+    savedJobs: [
+        {
+            id: '5',
+            title: 'Representante de Ventas',
+            company: 'Lead Gen',
+            location: 'Buenos Aires',
+            type: 'Full-time' as const,
+            category: 'sales' as const,
+            companyLogo: '',
+            description: ''
+        },
+        {
+            id: '3',
+            title: 'Ingeniero/a Backend (Node.js)',
+            company: 'Server Systems',
+            location: 'Remoto',
+            type: 'Full-time' as const,
+            category: 'tech' as const,
+            companyLogo: '',
+            description: ''
+        },
+    ],
     stats: {
         profileViews: 128,
         interviews: 3,
-        savedJobs: 12,
+        savedJobs: 2,
     }
 };
 
@@ -204,6 +228,50 @@ function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
     )
 }
 
+function SavedJobsTab() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Ofertas Guardadas</CardTitle>
+        <CardDescription>Tus ofertas de interés para postularte más tarde.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Puesto</TableHead>
+              <TableHead>Empresa</TableHead>
+              <TableHead>Ubicación</TableHead>
+              <TableHead>Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {user.savedJobs.map((job: Job) => (
+              <TableRow key={job.id}>
+                <TableCell className="font-medium">{job.title}</TableCell>
+                <TableCell>{job.company}</TableCell>
+                <TableCell>{job.location}</TableCell>
+                <TableCell className="flex gap-2">
+                    <Button variant="secondary" size="sm" asChild>
+                        <Link href={`/jobs/${job.id}`}>
+                            <LinkIcon className="mr-2 h-4 w-4"/>
+                            Ver
+                        </Link>
+                    </Button>
+                    <Button variant="destructive" size="sm">
+                        <Trash2 className="mr-2 h-4 w-4"/>
+                        Quitar
+                    </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+}
+
 function StatsTab() {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -272,14 +340,18 @@ export function UserProfile() {
       </div>
       
       <Tabs defaultValue="edit-profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="edit-profile">
             <Edit className="mr-2 h-4 w-4" />
             Editar Perfil
           </TabsTrigger>
           <TabsTrigger value="applications">
             <Briefcase className="mr-2 h-4 w-4" />
-            Mis Postulaciones
+            Postulaciones
+            </TabsTrigger>
+             <TabsTrigger value="saved-jobs">
+            <Bookmark className="mr-2 h-4 w-4" />
+            Guardados
             </TabsTrigger>
           <TabsTrigger value="stats">
             <Eye className="mr-2 h-4 w-4" />
@@ -291,6 +363,9 @@ export function UserProfile() {
         </TabsContent>
         <TabsContent value="applications" className="mt-6">
             <ApplicationsTab onChatOpen={() => setIsChatOpen(true)} />
+        </TabsContent>
+        <TabsContent value="saved-jobs" className="mt-6">
+            <SavedJobsTab />
         </TabsContent>
         <TabsContent value="stats" className="mt-6">
             <StatsTab />

@@ -40,7 +40,7 @@ const usersData: User[] = [
     {
         id: '3',
         name: 'Johnatan Vallejo',
-        email: 'john474nvallejo@gmail.com',
+        email: 'johnatanvallejomarulanda@gmail.com',
         avatar: 'https://placehold.co/40x40.png',
         role: 'admin',
         status: 'Verificado',

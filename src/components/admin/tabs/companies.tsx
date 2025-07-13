@@ -24,7 +24,7 @@ const companiesData: CompanyProfile[] = [
         id: '1',
         name: 'Tech Solutions Inc.',
         cuit: '30-12345678-9',
-        address: 'Av. Corrientes 1234',
+        address: 'Av. Corrientes 1234, Piso 5',
         city: 'CABA',
         province: 'Buenos Aires',
         phone: '11-4321-9876',
