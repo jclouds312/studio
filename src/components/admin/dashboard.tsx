@@ -1,12 +1,27 @@
+
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, DollarSign, Star } from "lucide-react";
+import { Users, Briefcase, DollarSign, Star, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { allJobs } from "@/components/job-listings";
 
 export function AdminDashboard() {
+
+  const handleDownloadBackup = () => {
+    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(allJobs, null, 2)
+    )}`;
+    const link = document.createElement("a");
+    link.href = jsonString;
+    link.download = "jobs-backup.json";
+    link.click();
+  };
+
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -45,6 +60,20 @@ export function AdminDashboard() {
             <p className="text-xs text-muted-foreground">
               +19% from last month
             </p>
+          </CardContent>
+        </Card>
+        <Card>
+           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Database Backup</CardTitle>
+            <Download className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+             <p className="text-xs text-muted-foreground mb-4">
+              Download a JSON backup of the job listings.
+            </p>
+            <Button className="w-full" onClick={handleDownloadBackup}>
+                Download Backup
+            </Button>
           </CardContent>
         </Card>
       </div>
