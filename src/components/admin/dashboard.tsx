@@ -8,6 +8,7 @@ import { UsersTab } from "./tabs/users";
 import { CompaniesTab } from "./tabs/companies";
 import { CategoriesTab } from "./tabs/categories";
 import { PaymentsTab } from "./tabs/payments";
+import { MarketingTab } from "./tabs/marketing";
 import React from "react";
 
 export function AdminDashboard({ activeTab }: { activeTab: string }) {
@@ -35,6 +36,9 @@ export function AdminDashboard({ activeTab }: { activeTab: string }) {
         </TabsContent>
          <TabsContent value="payments" className="space-y-4">
             <PaymentsTab />
+        </TabsContent>
+         <TabsContent value="marketing" className="space-y-4">
+            <MarketingTab />
         </TabsContent>
       </Tabs>
     </div>
