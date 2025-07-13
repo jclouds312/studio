@@ -145,14 +145,49 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
     }
   };
 
-  const handleDownloadBackup = () => {
-    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
-      JSON.stringify(allJobs, null, 2)
-    )}`;
-    const link = document.createElement("a");
-    link.href = jsonString;
-    link.download = "jobs-backup.json";
-    link.click();
+   const handleDownloadBackup = (format: 'json' | 'csv' | 'word') => {
+    const backupData = allJobs.map(job => ({
+      ID: job.id,
+      Titulo: job.title,
+      Empresa: job.company,
+      Ubicacion: job.location,
+      Tipo: job.type,
+      Categoria: job.category,
+      Destacado: job.isFeatured ? 'Sí' : 'No',
+      WhatsApp: job.whatsapp || 'N/A',
+      Descripcion: job.description,
+    }));
+
+    if (format === 'json') {
+      const jsonString = JSON.stringify(allJobs, null, 2);
+      const blob = new Blob([jsonString], {type: "application/json;charset=utf-8"});
+      saveAs(blob, "backup-publicaciones.json");
+    } else if (format === 'csv') {
+      const csv = Papa.unparse(backupData);
+      const blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
+      saveAs(blob, "backup-publicaciones.csv");
+    } else if (format === 'word') {
+      let htmlContent = `
+        <html>
+          <head><title>Backup de Publicaciones</title></head>
+          <body>
+            <h1>Backup de Publicaciones</h1>
+            <table border="1" style="border-collapse: collapse; width: 100%;">
+              <tr>
+                ${Object.keys(backupData[0]).map(key => `<th>${key}</th>`).join('')}
+              </tr>
+              ${backupData.map(row => `
+                <tr>
+                  ${Object.values(row).map(val => `<td>${val}</td>`).join('')}
+                </tr>
+              `).join('')}
+            </table>
+          </body>
+        </html>
+      `;
+      const blob = new Blob([htmlContent], {type: "application/msword;charset=utf-8"});
+      saveAs(blob, "backup-publicaciones.doc");
+    }
   };
   
   const handleDownloadReport = (format: 'json' | 'csv' | 'word') => {
@@ -274,11 +309,29 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
           </CardHeader>
           <CardContent>
              <p className="text-xs text-muted-foreground mb-4">
-              Descarga un backup JSON de las publicaciones.
+              Exporta las publicaciones de trabajo.
             </p>
-            <Button className="w-full" onClick={handleDownloadBackup}>
-                Descargar Backup
-            </Button>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button className="w-full" variant="outline">
+                        Exportar Backup
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => handleDownloadBackup('csv')}>
+                        <FileSpreadsheet className="mr-2 h-4 w-4" />
+                        Excel (CSV)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDownloadBackup('word')}>
+                        <FileText className="mr-2 h-4 w-4" />
+                        Word (HTML)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDownloadBackup('json')}>
+                         <Code className="mr-2 h-4 w-4" />
+                        JSON
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
           </CardContent>
         </Card>
          <Card>
