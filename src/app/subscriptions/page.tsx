@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle } from 'lucide-react';
+import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle, Building } from 'lucide-react';
 import React from 'react';
 import {
   AlertDialog,
@@ -22,11 +22,10 @@ import Image from "next/image";
 import { Loader2, Sparkles, CreditCard } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { useSession } from '@/hooks/use-session';
 
-
-const initialPlans = [
+const allPlans = [
     {
         name: 'Básico',
         price: 'Gratis',
@@ -38,8 +37,9 @@ const initialPlans = [
         ],
         isPopular: false,
         userType: 'worker',
-        description: 'Para empezar a buscar',
+        description: 'Ideal para empezar tu búsqueda laboral.',
         priceAmount: 0,
+        icon: Briefcase,
     },
     {
         name: 'Profesional',
@@ -53,23 +53,41 @@ const initialPlans = [
         ],
         isPopular: true,
         userType: 'worker',
-        description: 'Para profesionales serios',
+        description: 'Potencia tu perfil y destaca sobre los demás.',
         priceAmount: 2000,
+        icon: Star,
     },
     {
         name: 'Empresa',
         price: '$10.000',
         priceDetail: 'por mes',
         features: [
-            'Publica hasta 10 ofertas de trabajo',
+            'Publica hasta 5 ofertas de trabajo',
             'Acceso a base de datos de candidatos',
             'Dashboard de seguimiento de postulantes',
-            'Soporte dedicado 24/7',
+            'Soporte por email',
         ],
         isPopular: false,
         userType: 'company',
-        description: 'Para empresas que contratan',
+        description: 'Perfecto para pequeñas y medianas empresas.',
         priceAmount: 10000,
+        icon: Building,
+    },
+    {
+        name: 'Empresa Plus',
+        price: '$25.000',
+        priceDetail: 'por mes',
+        features: [
+            'Publicaciones ilimitadas',
+            'Destaca hasta 5 ofertas de trabajo',
+            'Herramientas avanzadas de filtrado',
+            'Soporte dedicado 24/7',
+        ],
+        isPopular: true,
+        userType: 'company',
+        description: 'La solución completa para grandes reclutadores.',
+        priceAmount: 25000,
+        icon: Zap,
     },
 ];
 
@@ -157,7 +175,7 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { plan
               ) : (
                   <>
                       <AlertDialogCancel disabled={isPaying}>Cancelar</AlertDialogCancel>
-                      <Button onClick={handlePayment} disabled={isPaying || planPriceAmount <= 0}>
+                      <Button onClick={handlePayment} disabled={planPriceAmount < 0}>
                         {isPaying ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -166,7 +184,7 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { plan
                         ) : (
                           <>
                             <CreditCard className="mr-2 h-4 w-4" />
-                             Pagar {planPriceAmount > 0 ? 'con Mercado Pago' : 'Confirmar'}
+                             {planPriceAmount > 0 ? 'Pagar con Mercado Pago' : 'Confirmar'}
                           </>
                         )}
                       </Button>
@@ -180,7 +198,7 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { plan
 
 function AdminPlanView() {
     const { toast } = useToast();
-    const [plans, setPlans] = React.useState(initialPlans);
+    const [plans, setPlans] = React.useState(allPlans);
 
     const handleDelete = (planName: string) => {
         toast({
@@ -205,7 +223,7 @@ function AdminPlanView() {
             </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {plans.map((plan) => (
                 <Card key={plan.name} className={cn(
                     "flex flex-col",
@@ -219,7 +237,10 @@ function AdminPlanView() {
                             </Badge>
                         </div>
                     )}
-                    <CardHeader className="text-center pt-8">
+                    <CardHeader className="text-center pt-10">
+                        <div className="mx-auto bg-secondary p-3 rounded-full w-fit mb-2">
+                            <plan.icon className="h-6 w-6 text-primary" />
+                        </div>
                         <CardTitle className="text-2xl">{plan.name}</CardTitle>
                         <CardDescription>{plan.description}</CardDescription>
                     </CardHeader>
@@ -230,8 +251,8 @@ function AdminPlanView() {
                         </div>
                         <ul className="space-y-3 text-sm">
                             {plan.features.map((feature, index) => (
-                                <li key={index} className="flex items-center gap-2">
-                                    <CheckCircle className="h-5 w-5 text-green-500" />
+                                <li key={index} className="flex items-start gap-3">
+                                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
                                     <span>{feature}</span>
                                 </li>
                             ))}
@@ -255,17 +276,33 @@ function AdminPlanView() {
 }
 
 function CustomerPlanView() {
+    const { session } = useSession();
+    
+    const userRole = session.user?.role;
+
+    const visiblePlans = allPlans.filter(plan => {
+        if (userRole === 'user') return plan.userType === 'worker';
+        if (userRole === 'company') return plan.userType === 'company';
+        return true; // Si no hay sesión, mostrar todos
+    });
+
+    const title = userRole === 'company' ? 'Planes para Empresas' : 'Planes para Candidatos';
+    const description = userRole === 'company' 
+        ? 'Elige el plan ideal para encontrar el mejor talento para tu equipo.'
+        : 'Elige el plan que mejor se adapte a tus necesidades para encontrar trabajo.';
+
+
     return (
       <main className="flex-1 container mx-auto py-12 px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight">Planes y Precios</h1>
-          <p className="text-lg text-muted-foreground mt-2">
-            Elige el plan que mejor se adapte a tus necesidades para encontrar trabajo o talento.
+          <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
+          <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">
+            {description}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {initialPlans.map((plan) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {visiblePlans.map((plan) => (
                 <Card key={plan.name} className={cn(
                     "flex flex-col",
                     plan.isPopular && "border-primary shadow-2xl relative"
@@ -278,7 +315,10 @@ function CustomerPlanView() {
                             </Badge>
                         </div>
                     )}
-                    <CardHeader className="text-center pt-8">
+                    <CardHeader className="text-center pt-10">
+                         <div className="mx-auto bg-secondary p-3 rounded-full w-fit mb-2">
+                            <plan.icon className="h-6 w-6 text-primary" />
+                        </div>
                         <CardTitle className="text-2xl">{plan.name}</CardTitle>
                         <CardDescription>{plan.description}</CardDescription>
                     </CardHeader>
@@ -289,8 +329,8 @@ function CustomerPlanView() {
                         </div>
                         <ul className="space-y-3 text-sm">
                             {plan.features.map((feature, index) => (
-                                <li key={index} className="flex items-center gap-2">
-                                    <CheckCircle className="h-5 w-5 text-green-500" />
+                                <li key={index} className="flex items-start gap-3">
+                                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
                                     <span>{feature}</span>
                                 </li>
                             ))}
@@ -332,5 +372,3 @@ export default function SubscriptionsPage() {
     </div>
   );
 }
-
-    
