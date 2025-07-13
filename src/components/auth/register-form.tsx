@@ -7,10 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useSession } from '@/hooks/use-session';
-
-interface RegisterFormProps {
-    role: 'user' | 'company';
-}
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -32,8 +29,9 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
     )
 }
 
-export function RegisterForm({ role }: RegisterFormProps) {
+export function RegisterForm() {
     const { register, loginWithSocial } = useSession();
+    const [role, setRole] = React.useState<'user' | 'company'>('user');
 
     const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -46,14 +44,14 @@ export function RegisterForm({ role }: RegisterFormProps) {
     };
 
     const handleSocialLogin = () => {
-        const email = role === 'user' ? 'usuario.google@example.com' : 'empresa.google@example.com';
+        const email = role === 'user' ? 'juan.perez@example.com' : 'empresa.facebook@example.com';
         loginWithSocial(email);
     };
 
     const isWorker = role === 'user';
 
     return (
-        <div className="mt-6 space-y-4">
+        <div className="mt-2 space-y-4">
              <div className="grid grid-cols-2 gap-2">
                 <Button variant="outline" className="w-full" size="lg" onClick={handleSocialLogin}>
                   <GoogleIcon className="mr-2 h-5 w-5" />
@@ -75,6 +73,24 @@ export function RegisterForm({ role }: RegisterFormProps) {
               </div>
             </div>
             <form className="space-y-4" onSubmit={handleRegister}>
+                 <div className="space-y-2">
+                    <Label>¿Qué estás buscando?</Label>
+                    <RadioGroup defaultValue="user" onValueChange={(value) => setRole(value as 'user' | 'company')} className="grid grid-cols-2 gap-4">
+                        <div>
+                            <RadioGroupItem value="user" id="r1" className="peer sr-only" />
+                            <Label htmlFor="r1" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                                Busco Trabajo
+                            </Label>
+                        </div>
+                        <div>
+                             <RadioGroupItem value="company" id="r2" className="peer sr-only" />
+                             <Label htmlFor="r2" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                                Quiero Contratar
+                            </Label>
+                        </div>
+                    </RadioGroup>
+                </div>
+
                 <div className="space-y-1">
                     <Label htmlFor="name">{isWorker ? 'Nombre completo' : 'Nombre de la empresa'}</Label>
                     <Input name="name" id="name" type="text" placeholder={isWorker ? 'Ej: Juan Pérez' : 'Ej: Tech Solutions Inc.'} required />

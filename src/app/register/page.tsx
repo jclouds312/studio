@@ -4,7 +4,6 @@
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RegisterForm } from '@/components/auth/register-form';
 
 export default function RegisterPage() {
@@ -17,22 +16,11 @@ export default function RegisterPage() {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Únete a Conexión Laboral</CardTitle>
             <CardDescription>
-              Elige tu tipo de cuenta para empezar.
+              Crea tu cuenta para empezar. Es rápido y fácil.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="worker" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="worker">Busco Trabajo</TabsTrigger>
-                <TabsTrigger value="company">Quiero Contratar</TabsTrigger>
-              </TabsList>
-              <TabsContent value="worker">
-                  <RegisterForm role="user" />
-              </TabsContent>
-              <TabsContent value="company">
-                  <RegisterForm role="company" />
-              </TabsContent>
-            </Tabs>
+             <RegisterForm />
           </CardContent>
         </Card>
       </main>
