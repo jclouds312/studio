@@ -23,6 +23,7 @@ import packageJson from '@/../package.json';
 import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
 
 const chartData = [
@@ -205,7 +206,7 @@ export function OverviewTab() {
          <Card className="lg:col-span-3">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <Image src="https://www.mercadopago.com/v2/images/navigation-logo-small.svg" alt="Mercado Pago" width={28} height={28} data-ai-hint="company logo"/>
+                    <Image src="https://www.mercadopago.com.ar/static/logo-lila.svg" alt="Mercado Pago" width={28} height={28} data-ai-hint="company logo"/>
                     Conectar Mercado Pago
                 </CardTitle>
                  <CardDescription>Conecta tu cuenta para recibir pagos por suscripciones y servicios.</CardDescription>
@@ -232,23 +233,23 @@ export function OverviewTab() {
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle className="flex items-center gap-2">
-                        <Image src="https://www.mercadopago.com/v2/images/navigation-logo-small-with-text.png" alt="Mercado Pago" width={120} height={28} data-ai-hint="company logo"/>
-                        Confirmar Pago
-                        </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {paymentSuccess ? (
+                       {paymentSuccess ? (
                           <div className="text-center py-4">
                             <Sparkles className="h-12 w-12 text-green-500 mx-auto mb-2"/>
-                            <h3 className="text-lg font-bold text-foreground">¡Pago exitoso!</h3>
-                            <p className="text-muted-foreground">La publicación de empleo ha sido destacada.</p>
+                            <AlertDialogTitle>¡Pago exitoso!</AlertDialogTitle>
+                            <AlertDialogDescription>La publicación de empleo ha sido destacada.</AlertDialogDescription>
                           </div>
                         ) : (
                           <>
-                           Estás a punto de pagar <span className="font-bold text-foreground">ARS $500.00</span> para destacar una publicación por 30 días.
+                            <AlertDialogTitle className="flex items-center gap-2">
+                                <Image src="https://www.mercadopago.com.ar/static/logo-lila.svg" alt="Mercado Pago" width={120} height={28} data-ai-hint="company logo"/>
+                                Confirmar Pago
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Estás a punto de pagar <span className="font-bold text-foreground">ARS $500.00</span> para destacar una publicación por 30 días.
+                            </AlertDialogDescription>
                           </>
                         )}
-                      </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         {paymentSuccess ? (
