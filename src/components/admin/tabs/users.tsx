@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,7 @@ import Image from "next/image";
 import React from "react";
 import { UserFormModal } from "../modals/user-form-modal";
 import type { User } from "@/lib/types";
+import Link from "next/link";
 
 const usersData: User[] = [
     {
@@ -46,6 +48,15 @@ const usersData: User[] = [
         status: 'Verificado',
         createdAt: '2023-10-25'
     },
+     {
+        id: '4',
+        name: 'Admin LaburoYA',
+        email: 'admin@laburoya.com',
+        avatar: 'https://placehold.co/40x40.png',
+        role: 'admin',
+        status: 'Verificado',
+        createdAt: '2024-01-01'
+    },
 ];
 
 
@@ -68,12 +79,22 @@ export function UsersTab() {
                         <CardTitle>Usuarios</CardTitle>
                         <CardDescription>Gestiona todos los usuarios registrados en la plataforma.</CardDescription>
                     </div>
-                    <Button size="sm" className="gap-1" onClick={() => handleOpenModal()}>
-                        <PlusCircle className="h-3.5 w-3.5" />
-                        <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                            Añadir Usuario
-                        </span>
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button size="sm" className="gap-1" asChild>
+                             <Link href="/admin/register">
+                                <PlusCircle className="h-3.5 w-3.5" />
+                                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                    Añadir Admin
+                                </span>
+                             </Link>
+                        </Button>
+                        <Button size="sm" className="gap-1" onClick={() => handleOpenModal()}>
+                            <PlusCircle className="h-3.5 w-3.5" />
+                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                Añadir Usuario
+                            </span>
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <Table>

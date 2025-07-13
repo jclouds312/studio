@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -11,6 +12,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useToast } from '../ui/use-toast';
 import { ChatPanel } from '../chat/chat-panel';
+
+const adminEmails = ['johnatanvallejomarulanda@gmail.com', 'admin@laburoya.com'];
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
@@ -30,12 +33,12 @@ export function Header() {
     
     setIsLoggedIn(loggedInStatus);
     
-    if (loggedInStatus && userEmail === 'johnatanvallejomarulanda@gmail.com') {
+    if (loggedInStatus && userEmail && adminEmails.includes(userEmail.toLowerCase())) {
         setIsAdmin(true);
     } else {
         setIsAdmin(false);
     }
-  }, [pathname, isMounted]);
+  }, [pathname]);
 
   const handleLogout = () => {
       localStorage.removeItem('isLoggedIn');

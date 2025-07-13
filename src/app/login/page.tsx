@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Header } from '@/components/layout/header';
@@ -9,6 +10,9 @@ import Link from 'next/link';
 import { Footer } from '@/components/layout/footer';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/ui/use-toast';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -21,16 +25,39 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+const adminEmails = ['johnatanvallejomarulanda@gmail.com', 'admin@laburoya.com'];
+
 export default function LoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const handleLogin = (userEmail: string) => {
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('userEmail', userEmail);
+    router.push('/');
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adminEmails.includes(email.toLowerCase()) && password === 'julio2025') {
+       handleLogin(email);
+    } else if (email) {
+       // For any other email, simulate a normal user login
+       handleLogin(email);
+    } else {
+        toast({
+            title: "Error de autenticación",
+            description: "El email o la contraseña son incorrectos.",
+            variant: "destructive",
+        })
+    }
+  }
 
   const handleGoogleLogin = () => {
-    // Simulate login by setting a value in localStorage
-    localStorage.setItem('isLoggedIn', 'true');
-    // For admin panel demo, we can simulate a specific user
-    localStorage.setItem('userEmail', 'johnatanvallejomarulanda@gmail.com');
-    // Redirect to home page
-    router.push('/');
+    // In this simulation, Google login always uses the primary admin email
+    handleLogin('johnatanvallejomarulanda@gmail.com');
   };
 
   return (
@@ -41,15 +68,24 @@ export default function LoginPage() {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Bienvenido a Conexión Laboral</CardTitle>
             <CardDescription>
-              Inicia sesión o regístrate para continuar
+              Inicia sesión para continuar
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full" size="lg" onClick={handleGoogleLogin}>
-              <GoogleIcon className="mr-2 h-5 w-5" />
-              Continuar con Google
-            </Button>
-            <div className="relative my-2">
+            <form className="space-y-4" onSubmit={handleFormSubmit}>
+              <div className="space-y-1">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" placeholder="tu@email.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="password">Contraseña</Label>
+                <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)}/>
+              </div>
+              <Button type="submit" className="w-full">
+                Iniciar Sesión
+              </Button>
+            </form>
+             <div className="relative my-2">
               <div className="absolute inset-0 flex items-center">
                 <Separator />
               </div>
@@ -59,22 +95,15 @@ export default function LoginPage() {
                 </span>
               </div>
             </div>
-             <p className="px-8 text-center text-sm text-muted-foreground">
-              Al hacer clic en Continuar, aceptas nuestros{' '}
-              <Link
-                href="/terms"
-                className="underline underline-offset-4 hover:text-primary"
-              >
-                Términos de Servicio
-              </Link>{' '}
-              y{' '}
-              <Link
-                href="/privacy"
-                className="underline underline-offset-4 hover:text-primary"
-              >
-                Política de Privacidad
+            <Button variant="outline" className="w-full" size="lg" onClick={handleGoogleLogin}>
+              <GoogleIcon className="mr-2 h-5 w-5" />
+              Continuar con Google
+            </Button>
+            <p className="text-center text-sm text-muted-foreground">
+              ¿No tienes una cuenta?{' '}
+              <Link href="/register" className="underline hover:text-primary">
+                Regístrate
               </Link>
-              .
             </p>
           </CardContent>
         </Card>
