@@ -2,7 +2,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, Code } from "lucide-react";
+import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, Code, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allJobs } from "@/components/job-listings";
 import {
@@ -20,6 +20,10 @@ import Image from "next/image";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Bar, CartesianGrid, XAxis, BarChart as RechartsBarChart } from "recharts";
 import packageJson from '@/../package.json';
+import { useToast } from "@/components/ui/use-toast";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+
 
 const chartData = [
   { month: "Enero", users: 186 },
@@ -39,16 +43,45 @@ const chartConfig = {
 
 
 export function OverviewTab() {
-
+  const { toast } = useToast();
   const [isPaying, setIsPaying] = React.useState(false);
   const [paymentSuccess, setPaymentSuccess] = React.useState(false);
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     setIsPaying(true);
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/mercadopago/create-preference', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: 'Publicación Destacada',
+          unit_price: 500,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to create payment preference');
+      
+      const preference = await response.json();
+      console.log('Preferencia de pago creada:', preference.id);
+      toast({
+        title: "Redirigiendo a Mercado Pago...",
+        description: `ID de Preferencia: ${preference.id}. En una app real, serías redirigido.`,
+      });
+
+      setTimeout(() => {
+        setIsPaying(false);
+        setPaymentSuccess(true);
+      }, 2000);
+
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error al procesar el pago",
+        description: "No se pudo crear la preferencia de pago. Intenta de nuevo.",
+        variant: "destructive"
+      })
       setIsPaying(false);
-      setPaymentSuccess(true);
-    }, 2000);
+    }
   };
 
   const handleDownloadBackup = () => {
@@ -172,21 +205,29 @@ export function OverviewTab() {
          <Card className="lg:col-span-3">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <Star className="text-primary"/>
-                    Simular Pago de Servicio
+                    <Image src="https://www.mercadopago.com/v2/images/navigation-logo-small.svg" alt="Mercado Pago" width={28} height={28} data-ai-hint="company logo"/>
+                    Conectar Mercado Pago
                 </CardTitle>
-                 <CardDescription>Simula el pago que una empresa haría para destacar su publicación.</CardDescription>
+                 <CardDescription>Conecta tu cuenta para recibir pagos por suscripciones y servicios.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
-                <div className="p-4 border rounded-lg bg-secondary/30">
-                    <h4 className="font-semibold">Destacar Publicación de Empleo</h4>
-                    <p className="text-sm text-muted-foreground">Esta acción simula cómo un cliente pagaría para destacar su oferta de trabajo.</p>
+                <div className="space-y-2">
+                  <Label htmlFor="mp-token">Access Token</Label>
+                  <div className="relative">
+                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
+                    <Input id="mp-token" type="password" placeholder="APP_USR-..." className="pl-10"/>
+                  </div>
                 </div>
+                <Button>
+                    <Star className="mr-2 h-4 w-4"/>
+                    Guardar y Conectar
+                </Button>
+                 <Separator/>
                  <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
                   <AlertDialogTrigger asChild>
-                    <Button>
+                    <Button variant="outline">
                         <DollarSign className="mr-2 h-4 w-4"/>
-                        Pagar con Mercado Pago
+                        Simular Pago de Cliente
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>

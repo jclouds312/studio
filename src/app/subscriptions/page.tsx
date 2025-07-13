@@ -22,6 +22,8 @@ import Image from "next/image";
 import { Loader2, Sparkles, CreditCard } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/components/ui/use-toast';
+
 
 const plans = [
     {
@@ -35,7 +37,8 @@ const plans = [
         ],
         isPopular: false,
         userType: 'worker',
-        description: 'Para empezar a buscar'
+        description: 'Para empezar a buscar',
+        priceAmount: 0,
     },
     {
         name: 'Profesional',
@@ -49,7 +52,8 @@ const plans = [
         ],
         isPopular: true,
         userType: 'worker',
-        description: 'Para profesionales serios'
+        description: 'Para profesionales serios',
+        priceAmount: 2000,
     },
     {
         name: 'Empresa',
@@ -63,20 +67,68 @@ const plans = [
         ],
         isPopular: false,
         userType: 'company',
-        description: 'Para empresas que contratan'
+        description: 'Para empresas que contratan',
+        priceAmount: 10000,
     },
 ]
 
-function PaymentModal({ planName, planPrice, userType }: { planName: string, planPrice: string, userType: string }) {
+function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { planName: string, planPrice: string, planPriceAmount: number, userType: string }) {
     const [isPaying, setIsPaying] = React.useState(false);
     const [paymentSuccess, setPaymentSuccess] = React.useState(false);
+    const { toast } = useToast();
   
-    const handlePayment = () => {
-      setIsPaying(true);
-      setTimeout(() => {
-        setIsPaying(false);
+    const handlePayment = async () => {
+      if(planPriceAmount <= 0) {
         setPaymentSuccess(true);
-      }, 2000);
+        return;
+      }
+
+      setIsPaying(true);
+      try {
+        // 1. Llamar a la API de backend para crear la preferencia de pago
+        const response = await fetch('/api/mercadopago/create-preference', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: `Suscripción Plan ${planName}`,
+                unit_price: planPriceAmount,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to create payment preference');
+        }
+
+        const preference = await response.json();
+
+        // 2. Aquí es donde se redirigiría al checkout de Mercado Pago
+        // En un escenario real, usarías el SDK de Frontend de Mercado Pago con el preference.id
+        // Ejemplo:
+        // const mp = new MercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY);
+        // mp.checkout({ preference: { id: preference.id }, render: { container: '.checkout-container' } });
+        // O simplemente redirigir: window.location.href = preference.init_point;
+        
+        console.log('Preferencia de pago creada:', preference.id);
+        toast({
+          title: "Redirigiendo a Mercado Pago...",
+          description: `ID de Preferencia: ${preference.id}. En una app real, serías redirigido.`,
+        });
+
+        // Simulación de éxito para el prototipo
+        setTimeout(() => {
+          setIsPaying(false);
+          setPaymentSuccess(true);
+        }, 2000);
+
+      } catch (error) {
+        console.error(error);
+        toast({
+          title: "Error al procesar el pago",
+          description: "No se pudo crear la preferencia de pago. Intenta de nuevo.",
+          variant: "destructive"
+        })
+        setIsPaying(false);
+      }
     };
   
     return (
@@ -84,7 +136,7 @@ function PaymentModal({ planName, planPrice, userType }: { planName: string, pla
         <AlertDialogTrigger asChild>
           <Button className="w-full">
             <Zap className="mr-2 h-4 w-4" />
-            {planName === 'Básico' ? 'Comenzar Ahora' : 'Contratar Plan'}
+            {planPriceAmount === 0 ? 'Comenzar Ahora' : 'Contratar Plan'}
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -97,8 +149,8 @@ function PaymentModal({ planName, planPrice, userType }: { planName: string, pla
               {paymentSuccess ? (
                 <div className="text-center py-4">
                   <Sparkles className="h-12 w-12 text-green-500 mx-auto mb-2"/>
-                  <h3 className="text-lg font-bold text-foreground">¡Pago exitoso!</h3>
-                  <p className="text-muted-foreground">Tu suscripción al plan {planName} ha sido activada.</p>
+                  <h3 className="text-lg font-bold text-foreground">¡Suscripción Activada!</h3>
+                  <p className="text-muted-foreground">Tu plan {planName} ha sido activado.</p>
                 </div>
               ) : (
                 <>
@@ -113,7 +165,7 @@ function PaymentModal({ planName, planPrice, userType }: { planName: string, pla
               ) : (
                   <>
                       <AlertDialogCancel disabled={isPaying}>Cancelar</AlertDialogCancel>
-                      <Button onClick={handlePayment} disabled={isPaying}>
+                      <Button onClick={handlePayment} disabled={isPaying || planPriceAmount <= 0}>
                         {isPaying ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -122,7 +174,7 @@ function PaymentModal({ planName, planPrice, userType }: { planName: string, pla
                         ) : (
                           <>
                             <CreditCard className="mr-2 h-4 w-4" />
-                            Pagar ahora
+                             Pagar {planPriceAmount > 0 ? 'con Mercado Pago' : 'Confirmar'}
                           </>
                         )}
                       </Button>
@@ -179,7 +231,7 @@ export default function SubscriptionsPage() {
                         </ul>
                     </CardContent>
                     <CardFooter>
-                        <PaymentModal planName={plan.name} planPrice={plan.price} userType={plan.userType} />
+                        <PaymentModal planName={plan.name} planPrice={plan.price} planPriceAmount={plan.priceAmount} userType={plan.userType} />
                     </CardFooter>
                 </Card>
             ))}

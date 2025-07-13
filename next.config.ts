@@ -23,6 +23,24 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+       {
+        protocol: 'https',
+        hostname: 'www.mercadopago.com.ar',
+        port: '',
+        pathname: '/**',
+      },
+       {
+        protocol: 'https',
+        hostname: 'mercadopago.com.ar',
+        port: '',
+        pathname: '/**',
+      },
+       {
+        protocol: 'https',
+        hostname: 'www.mercadopago.com.co',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
