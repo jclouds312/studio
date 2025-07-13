@@ -29,9 +29,11 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full" size="lg">
-              <GoogleIcon className="mr-2 h-5 w-5" />
-              Continuar con Google
+            <Button className="w-full" size="lg" asChild>
+                <Link href="/">
+                    <GoogleIcon className="mr-2 h-5 w-5" />
+                    Continuar con Google
+                </Link>
             </Button>
             <div className="relative my-2">
               <div className="absolute inset-0 flex items-center">

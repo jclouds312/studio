@@ -12,12 +12,16 @@ import { ChatPanel } from '../chat/chat-panel';
 import React from 'react';
 
 export function Header() {
-  const isLoggedIn = true; 
-  const isAdmin = true;
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false); 
+  const isAdmin = isLoggedIn; // Simulate admin if logged in for demo
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith('/admin');
+
+  // A simple way to simulate login for the prototype
+  const handleLogin = () => setIsLoggedIn(true);
+  const handleLogout = () => setIsLoggedIn(false);
 
   return (
     <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-40">
@@ -52,11 +56,14 @@ export function Header() {
                     <AvatarFallback>JV</AvatarFallback>
                   </Avatar>
                 </Link>
+                 <Button variant="ghost" onClick={handleLogout} asChild>
+                    <Link href="/"><LogOut/>Cerrar Sesión</Link>
+                </Button>
                </div>
             ) : (
               <div className="hidden md:flex items-center gap-2">
                   <Button variant="ghost" asChild>
-                    <Link href="/login" className="flex items-center gap-2"> <LogIn /> Iniciar Sesión</Link>
+                    <Link href="/login" onClick={handleLogin} className="flex items-center gap-2"> <LogIn /> Iniciar Sesión</Link>
                   </Button>
                   <Button asChild>
                     <Link href="/register" className="flex items-center gap-2"><UserPlus/>Registrarse</Link>
@@ -101,14 +108,14 @@ export function Header() {
                             <Link href="/admin"><Shield className="mr-2 h-5 w-5"/>Panel de Admin</Link>
                           </Button>
                         )}
-                        <Button variant="destructive" asChild size="lg" className="justify-start gap-2">
+                        <Button variant="destructive" asChild size="lg" className="justify-start gap-2" onClick={handleLogout}>
                           <Link href="/"><LogOut className="mr-2 h-5 w-5"/>Cerrar Sesión</Link>
                         </Button>
                       </>
                     ) : (
                       <>
                         <Button variant="outline" asChild size="lg" className="justify-start gap-2">
-                          <Link href="/login"><LogIn className="mr-2 h-5 w-5"/>Iniciar Sesión</Link>
+                          <Link href="/login" onClick={handleLogin}><LogIn className="mr-2 h-5 w-5"/>Iniciar Sesión</Link>
                         </Button>
                         <Button asChild size="lg" className="justify-start gap-2">
                           <Link href="/register"><UserPlus className="mr-2 h-5 w-5"/>Registrarse</Link>
