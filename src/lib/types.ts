@@ -70,3 +70,13 @@ export type Transaction = {
     amount: number;
     date: string;
 };
+
+export type PaymentMetrics = {
+    totalRevenue: number;
+    monthlyRecurringRevenue: number;
+    activeSubscriptions: number;
+    churnRate: number;
+    revenueByMonth: { month: string; revenue: number }[];
+    planDistribution: { name: string; value: number; fill: string }[];
+};
+
