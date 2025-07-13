@@ -7,12 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, ClipboardList } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from '../ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from '../ui/badge';
+import { Textarea } from '../ui/textarea';
 
 const user = {
     name: 'Johnatan Vallejo',
@@ -21,6 +22,8 @@ const user = {
     avatarUrl: 'https://placehold.co/128x128.png',
     phone: '+54 9 11 1234-5678',
     location: 'Buenos Aires, CABA',
+    professionalSummary: 'Desarrollador Full-Stack con más de 5 años de experiencia en la creación de aplicaciones web escalables. Apasionado por las tecnologías modernas y el diseño centrado en el usuario.',
+    experience: '- Frontend Developer en Tech Solutions Inc. (2020-Actualidad)\n- Junior Developer en Creative Minds (2018-2020)',
     applications: [
         { id: '1', title: 'Frontend Developer', company: 'Tech Solutions Inc.', status: 'En revisión' },
         { id: '2', title: 'Diseñador/a UX/UI', company: 'Creative Minds', status: 'Rechazado' },
@@ -70,79 +73,87 @@ function EditProfileTab() {
   return (
       <Card>
         <CardHeader>
-            <CardTitle>Información Personal</CardTitle>
-            <CardDescription>Actualiza tus datos de contacto y sube tu CV.</CardDescription>
+            <CardTitle>Información Personal y Profesional</CardTitle>
+            <CardDescription>Actualiza tus datos, sube tu CV y detalla tu experiencia.</CardDescription>
         </CardHeader>
         <CardContent>
             <form className="space-y-6" onSubmit={handleSubmit}>
+                <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                        <Label htmlFor="name">Nombre completo</Label>
+                        <div className="relative">
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                            <Input id="name" type="text" className="pl-10" defaultValue={user.name} placeholder="Tu nombre completo"/>
+                        </div>
+                    </div>
+                     <div className="space-y-4">
+                        <Label htmlFor="phone">Número de WhatsApp</Label>
+                        <div className="relative">
+                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                            <Input id="phone" type="tel" className="pl-10" defaultValue={user.phone} placeholder="+54 9 11 ...."/>
+                        </div>
+                    </div>
+                     <div className="space-y-4">
+                        <Label htmlFor="location">Localidad</Label>
+                        <div className="relative">
+                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                            <Input id="location" type="text" className="pl-10" defaultValue={user.location} placeholder="Ej: Buenos Aires, CABA"/>
+                        </div>
+                    </div>
+                     <div className="space-y-4">
+                        <Label htmlFor="cv">Curriculum Vitae (PDF)</Label>
+                        <div className="relative">
+                            <Input
+                                id="cv-upload"
+                                type="file"
+                                className="hidden"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                accept=".pdf"
+                            />
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full justify-start text-left font-normal"
+                                onClick={() => fileInputRef.current?.click()}
+                            >
+                                <FileText className="mr-2 h-4 w-4" />
+                                {fileName || 'Subir archivo PDF'}
+                            </Button>
+                        </div>
+                        {fileName && (
+                            <p className="text-xs text-muted-foreground mt-1">Archivo seleccionado: {fileName}</p>
+                        )}
+                    </div>
+                </div>
+
+                <Separator />
+                
                 <div className="space-y-4">
                     <div>
-                    <Label htmlFor="name">Nombre completo</Label>
-                    <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                        <Input id="name" type="text" className="pl-10" defaultValue={user.name} placeholder="Tu nombre completo"/>
+                        <Label htmlFor="summary">Resumen Profesional</Label>
+                        <Textarea id="summary" rows={4} defaultValue={user.professionalSummary} placeholder="Un breve resumen sobre tu perfil profesional..."/>
                     </div>
-                    </div>
-                    
-                    <div>
-                    <Label htmlFor="phone">Número de WhatsApp</Label>
-                    <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                        <Input id="phone" type="tel" className="pl-10" defaultValue={user.phone} placeholder="+54 9 11 ...."/>
-                    </div>
-                    </div>
-
-                    <div>
-                    <Label htmlFor="location">Localidad</Label>
-                    <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                        <Input id="location" type="text" className="pl-10" defaultValue={user.location} placeholder="Ej: Buenos Aires, CABA"/>
-                    </div>
-                    </div>
-
-                    <div>
-                    <Label htmlFor="cv">Curriculum Vitae (PDF)</Label>
-                    <div className="relative">
-                        <Input
-                            id="cv-upload"
-                            type="file"
-                            className="hidden"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            accept=".pdf"
-                        />
-                        <Button
-                            type="button"
-                            variant="outline"
-                            className="w-full justify-start text-left font-normal"
-                            onClick={() => fileInputRef.current?.click()}
-                        >
-                            <FileText className="mr-2 h-4 w-4" />
-                            {fileName || 'Subir archivo PDF'}
-                        </Button>
-                    </div>
-                    {fileName && (
-                        <p className="text-xs text-muted-foreground mt-1">Archivo seleccionado: {fileName}</p>
-                    )}
+                     <div>
+                        <Label htmlFor="experience">Experiencia Laboral</Label>
+                        <Textarea id="experience" rows={6} defaultValue={user.experience} placeholder="Detalla tus trabajos anteriores, roles y responsabilidades..."/>
                     </div>
                 </div>
                 
-                <Separator />
-
                 <div className="flex justify-end pt-2">
-                <Button type="submit" size="lg" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                    <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Guardando...
-                    </>
-                    ) : (
-                    <>
-                        <Edit className="mr-2 h-4 w-4" />
-                        Guardar Cambios
-                    </>
-                    )}
-                </Button>
+                    <Button type="submit" size="lg" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Guardando...
+                        </>
+                        ) : (
+                        <>
+                            <Edit className="mr-2 h-4 w-4" />
+                            Guardar Cambios
+                        </>
+                        )}
+                    </Button>
                 </div>
             </form>
         </CardContent>
@@ -225,7 +236,7 @@ function StatsTab() {
 
 export function UserProfile() {
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex flex-col items-center text-center space-y-4">
         <div className="relative w-32 h-32">
             <Avatar className="w-32 h-32 border-4 border-primary shadow-lg">
@@ -276,3 +287,5 @@ export function UserProfile() {
     </div>
   );
 }
+
+    

@@ -38,6 +38,7 @@ export type User = {
     createdAt?: string;
     // Expanded profile fields
     professionalSummary?: string;
+    experience?: string;
     skills?: string[];
     applications?: UserApplication[];
     stats?: UserStats;
@@ -54,3 +55,5 @@ export type CompanyProfile = {
     logoUrl?: string;
     status?: 'Activa' | 'Inactiva' | 'Pendiente';
 };
+
+    
