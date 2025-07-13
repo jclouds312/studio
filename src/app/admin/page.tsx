@@ -1,6 +1,6 @@
 import { Header } from '@/components/layout/header';
 import { AdminDashboard } from '@/components/admin/dashboard';
-import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/admin/sidebar';
 
 export default function AdminLayout() {

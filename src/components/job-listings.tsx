@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase, Sparkles, Star, Phone } from "lucide-react";
+import { MapPin, Search, Briefcase, Sparkles, Star } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
 import React, { useState, useMemo } from "react";
@@ -23,6 +23,7 @@ export const allJobs: Job[] = [
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'tech',
     isFeatured: true,
+    whatsapp: '+5491123456789'
   },
   {
     id: '2',
@@ -64,6 +65,7 @@ export const allJobs: Job[] = [
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'sales',
     isFeatured: true,
+    whatsapp: '+5491123456789'
   },
    {
     id: '6',
@@ -74,6 +76,7 @@ export const allJobs: Job[] = [
     description: 'Se necesita pintor con experiencia para pintar un departamento de 2 ambientes. Se proveen materiales. Trabajo por día, pago al finalizar la jornada. Enviar fotos de trabajos previos por WhatsApp.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'domestic',
+    whatsapp: '+5491123456789'
   }
 ];
 

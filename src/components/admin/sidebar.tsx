@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarTrigger } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 import { Home, Briefcase, Users, Building, Settings, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -17,33 +17,43 @@ export function AdminSidebar() {
             <SidebarContent>
                  <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton href="/admin" isActive={isActive('/admin')} tooltip="Dashboard">
-                             <LayoutGrid />
-                             <span>Dashboard</span>
+                        <SidebarMenuButton href="/admin" asChild isActive={isActive('/admin')} tooltip="Dashboard">
+                             <Link href="/admin">
+                                <LayoutGrid />
+                                <span>Dashboard</span>
+                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                        <SidebarMenuButton href="/admin/jobs" isActive={isActive('/admin/jobs')} tooltip="Jobs">
-                             <Briefcase />
-                             <span>Publicaciones</span>
+                        <SidebarMenuButton href="#" asChild tooltip="Publicaciones">
+                             <Link href="#">
+                                <Briefcase />
+                                <span>Publicaciones</span>
+                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                        <SidebarMenuButton href="/admin/users" isActive={isActive('/admin/users')} tooltip="Users">
-                             <Users />
-                             <span>Usuarios</span>
+                        <SidebarMenuButton href="#" asChild tooltip="Usuarios">
+                             <Link href="#">
+                                <Users />
+                                <span>Usuarios</span>
+                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                        <SidebarMenuButton href="/admin/companies" isActive={isActive('/admin/companies')} tooltip="Companies">
+                        <SidebarMenuButton href="#" asChild tooltip="Empresas">
+                            <Link href="#">
                              <Building />
                              <span>Empresas</span>
+                            </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                      <SidebarMenuItem>
-                        <SidebarMenuButton href="/admin/settings" isActive={isActive('/admin/settings')} tooltip="Settings">
-                             <Settings />
-                             <span>Ajustes</span>
+                        <SidebarMenuButton href="#" asChild tooltip="Ajustes">
+                             <Link href="#">
+                                <Settings />
+                                <span>Ajustes</span>
+                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                  </SidebarMenu>
