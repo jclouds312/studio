@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
+import { Footer } from '@/components/layout/footer';
 
 export default function JobDetailPage({ params }: { params: { id: string } }) {
   const job = allJobs.find((j) => j.id === params.id);
@@ -85,6 +86,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

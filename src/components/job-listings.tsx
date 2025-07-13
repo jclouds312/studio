@@ -145,7 +145,7 @@ export function JobListings() {
 
     return (
         <div className="space-y-6">
-            <Card className="shadow-lg sticky top-[65px] z-30">
+            <Card className="shadow-lg sticky top-[80px] z-30 backdrop-blur-sm bg-card/80 border-border/50">
                 <CardHeader>
                     <CardTitle>Encuentra tu próximo trabajo</CardTitle>
                 </CardHeader>

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
+import { Footer } from '@/components/layout/footer';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -62,6 +63,7 @@ export default function RegisterPage() {
           </CardContent>
         </Card>
       </main>
+      <Footer />
     </div>
   );
 }

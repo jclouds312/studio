@@ -2,6 +2,7 @@ import { Header } from '@/components/layout/header';
 import { AdminDashboard } from '@/components/admin/dashboard';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/admin/sidebar';
+import { Footer } from '@/components/layout/footer';
 
 export default function AdminLayout() {
   return (
@@ -16,6 +17,7 @@ export default function AdminLayout() {
                     </main>
                 </SidebarInset>
             </div>
+            <Footer />
         </div>
     </SidebarProvider>
   );
