@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Briefcase, Shield } from 'lucide-react';
+import { Menu, Briefcase, Shield, User } from 'lucide-react';
 
 export function Header() {
   const navLinks = [
@@ -32,10 +32,12 @@ export function Header() {
           </nav>
           <div className="flex items-center gap-4">
             <div className="hidden md:block">
-              <Avatar>
-                <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
+              <Link href="/profile">
+                <Avatar>
+                  <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+              </Link>
             </div>
             <div className="md:hidden">
               <Sheet>
@@ -63,11 +65,14 @@ export function Header() {
                         <Shield className="h-5 w-5" />
                         Admin
                       </Link>
-                    <div className="border-t pt-6">
-                       <Avatar>
-                        <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
-                        <AvatarFallback>U</AvatarFallback>
-                       </Avatar>
+                    <div className="border-t pt-6 flex flex-col gap-4">
+                       <Link href="/profile" className="flex items-center gap-3">
+                         <Avatar>
+                          <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
+                          <AvatarFallback>U</AvatarFallback>
+                         </Avatar>
+                         <div className="text-lg font-medium">Mi Perfil</div>
+                       </Link>
                     </div>
                   </div>
                 </SheetContent>
