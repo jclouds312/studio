@@ -141,23 +141,23 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { plan
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <Image src="https://www.mercadopago.com/v2/images/navigation-logo-small-with-text.png" alt="Mercado Pago" width={120} height={28} data-ai-hint="company logo"/>
-              Confirmar Pago
-            </AlertDialogTitle>
-            <AlertDialogDescription>
               {paymentSuccess ? (
                 <div className="text-center py-4">
                   <Sparkles className="h-12 w-12 text-green-500 mx-auto mb-2"/>
-                  <h3 className="text-lg font-bold text-foreground">¡Suscripción Activada!</h3>
-                  <p className="text-muted-foreground">Tu plan {planName} ha sido activado.</p>
+                  <AlertDialogTitle>¡Suscripción Activada!</AlertDialogTitle>
+                  <AlertDialogDescription>Tu plan {planName} ha sido activado.</AlertDialogDescription>
                 </div>
               ) : (
                 <>
-                 Estás a punto de suscribirte al <strong>Plan {planName}</strong> por <span className="font-bold text-foreground">{planPrice}/mes</span>.
+                    <AlertDialogTitle className="flex items-center gap-2">
+                        <Image src="https://www.mercadopago.com.ar/static/logo-lila.svg" alt="Mercado Pago" width={120} height={28} data-ai-hint="company logo"/>
+                        Confirmar Pago
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                        Estás a punto de suscribirte al <strong>Plan {planName}</strong> por <span className="font-bold text-foreground">{planPrice}/mes</span>.
+                    </AlertDialogDescription>
                 </>
               )}
-            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
               {paymentSuccess ? (
