@@ -21,6 +21,8 @@ export function Header() {
 
   const isAdmin = session.isLoggedIn && session.user?.role === 'admin';
   const isCompany = session.isLoggedIn && session.user?.role === 'company';
+  const isUser = session.isLoggedIn && session.user?.role === 'user';
+
 
   if (!session.isMounted) {
     return (

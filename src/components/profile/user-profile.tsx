@@ -17,11 +17,11 @@ import { Textarea } from '../ui/textarea';
 import { ChatPanel } from '../chat/chat-panel';
 import type { Job } from '@/lib/types';
 import Link from 'next/link';
+import { useSession } from '@/hooks/use-session';
 
-const user = {
+const staticUser = {
     name: 'Johnatan Vallejo',
     email: 'johnatanvallejomarulanda@gmail.com',
-    role: 'admin' as const,
     avatarUrl: 'https://placehold.co/128x128.png',
     phone: '+54 9 11 1234-5678',
     location: 'Buenos Aires, CABA',
@@ -61,12 +61,15 @@ const user = {
     }
 };
 
-const roleDisplay: Record<typeof user.role, string> = {
+const roleDisplayMap = {
+    user: 'Trabajador',
+    company: 'Empresa',
     admin: 'Administrador',
 };
 
 function EditProfileTab() {
   const { toast } = useToast();
+  const { session } = useSession();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = React.useState<string | null>(null);
@@ -108,21 +111,21 @@ function EditProfileTab() {
                         <Label htmlFor="name">Nombre completo</Label>
                         <div className="relative">
                             <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                            <Input id="name" type="text" className="pl-10" defaultValue={user.name} placeholder="Tu nombre completo"/>
+                            <Input id="name" type="text" className="pl-10" defaultValue={session.user?.name} placeholder="Tu nombre completo"/>
                         </div>
                     </div>
                      <div className="space-y-4">
                         <Label htmlFor="phone">Número de WhatsApp</Label>
                         <div className="relative">
                             <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                            <Input id="phone" type="tel" className="pl-10" defaultValue={user.phone} placeholder="+54 9 11 ...."/>
+                            <Input id="phone" type="tel" className="pl-10" defaultValue={staticUser.phone} placeholder="+54 9 11 ...."/>
                         </div>
                     </div>
                      <div className="space-y-4">
                         <Label htmlFor="location">Localidad</Label>
                         <div className="relative">
                             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                            <Input id="location" type="text" className="pl-10" defaultValue={user.location} placeholder="Ej: Buenos Aires, CABA"/>
+                            <Input id="location" type="text" className="pl-10" defaultValue={staticUser.location} placeholder="Ej: Buenos Aires, CABA"/>
                         </div>
                     </div>
                      <div className="space-y-4">
@@ -157,11 +160,11 @@ function EditProfileTab() {
                 <div className="space-y-4">
                     <div>
                         <Label htmlFor="summary">Resumen Profesional</Label>
-                        <Textarea id="summary" rows={4} defaultValue={user.professionalSummary} placeholder="Un breve resumen sobre tu perfil profesional..."/>
+                        <Textarea id="summary" rows={4} defaultValue={staticUser.professionalSummary} placeholder="Un breve resumen sobre tu perfil profesional..."/>
                     </div>
                      <div>
                         <Label htmlFor="experience">Experiencia Laboral</Label>
-                        <Textarea id="experience" rows={6} defaultValue={user.experience} placeholder="Detalla tus trabajos anteriores, roles y responsabilidades..."/>
+                        <Textarea id="experience" rows={6} defaultValue={staticUser.experience} placeholder="Detalla tus trabajos anteriores, roles y responsabilidades..."/>
                     </div>
                 </div>
                 
@@ -204,7 +207,7 @@ function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {user.applications.map(app => (
+                        {staticUser.applications.map(app => (
                             <TableRow key={app.id}>
                                 <TableCell className="font-medium">{app.title}</TableCell>
                                 <TableCell>{app.company}</TableCell>
@@ -246,7 +249,7 @@ function SavedJobsTab() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {user.savedJobs.map((job: Job) => (
+            {staticUser.savedJobs.map((job: Job) => (
               <TableRow key={job.id}>
                 <TableCell className="font-medium">{job.title}</TableCell>
                 <TableCell>{job.company}</TableCell>
@@ -281,7 +284,7 @@ function StatsTab() {
                     <Eye className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{user.stats.profileViews}</div>
+                    <div className="text-2xl font-bold">{staticUser.stats.profileViews}</div>
                     <p className="text-xs text-muted-foreground">En los últimos 30 días</p>
                 </CardContent>
             </Card>
@@ -291,7 +294,7 @@ function StatsTab() {
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{user.stats.interviews}</div>
+                    <div className="text-2xl font-bold">{staticUser.stats.interviews}</div>
                     <p className="text-xs text-muted-foreground">Total de entrevistas</p>
                 </CardContent>
             </Card>
@@ -301,7 +304,7 @@ function StatsTab() {
                     <Bookmark className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{user.stats.savedJobs}</div>
+                    <div className="text-2xl font-bold">{staticUser.stats.savedJobs}</div>
                     <p className="text-xs text-muted-foreground">Tus ofertas de interés</p>
                 </CardContent>
             </Card>
@@ -311,8 +314,16 @@ function StatsTab() {
 
 
 export function UserProfile() {
+  const { session } = useSession();
   const [isChatOpen, setIsChatOpen] = React.useState(false);
+
+  if (!session.isMounted) return <div>Cargando...</div>;
+  if (!session.user) return <div>Usuario no encontrado.</div>;
+  
+  const { user } = session;
   const isAdmin = user.role === 'admin';
+  const roleDisplay = roleDisplayMap[user.role] || user.role;
+
 
   return (
     <>
@@ -321,7 +332,7 @@ export function UserProfile() {
       <div className="flex flex-col items-center text-center space-y-4">
         <div className="relative w-32 h-32">
             <Avatar className="w-32 h-32 border-4 border-primary shadow-lg">
-                <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person user"/>
+                <AvatarImage src={user.avatar || staticUser.avatarUrl} alt={user.name} data-ai-hint="person user"/>
                 <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <Button size="icon" className="absolute bottom-1 right-1 rounded-full hover:scale-110 transition-transform" aria-label="Cambiar foto de perfil">
@@ -334,7 +345,7 @@ export function UserProfile() {
             {user.role && (
                 <Badge variant="secondary" className="mt-2 capitalize flex items-center gap-1.5">
                     <Shield className="h-3 w-3"/>
-                    {roleDisplay[user.role] || user.role}
+                    {roleDisplay}
                 </Badge>
             )}
         </div>
@@ -350,7 +361,7 @@ export function UserProfile() {
             </CardHeader>
             <CardContent className="p-0">
                 <Button asChild variant="outline" className="bg-transparent hover:bg-secondary-foreground/10">
-                    <Link href="/admin?tab=payments">
+                    <Link href="/subscriptions">
                         <Settings className="mr-2 h-4 w-4" />
                         Administrar Planes
                     </Link>
