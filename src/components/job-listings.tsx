@@ -5,12 +5,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase, Sparkles, Star } from "lucide-react";
+import { MapPin, Search, Briefcase, Sparkles, Star, Send } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
 import React, { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
 
 export const allJobs: Job[] = [
   {
@@ -81,42 +82,57 @@ export const allJobs: Job[] = [
 ];
 
 function JobListingCard({ job }: { job: Job }) {
+    const { toast } = useToast();
+
+    const handleApply = () => {
+        toast({
+            title: "¡Postulación Enviada!",
+            description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
+        });
+    };
+
     return (
-        <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden">
-            <Link href={`/jobs/${job.id}`} className="block">
-                {job.isFeatured && (
-                    <div className="absolute top-2 right-2">
-                        <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
-                            <Sparkles className="h-4 w-4" />
-                            DESTACADO
-                        </Badge>
-                    </div>
-                )}
-                <CardHeader>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-secondary p-1" data-ai-hint="company logo" />
-                        <div className="flex-grow">
-                            <CardTitle className="text-lg md:text-xl">{job.title}</CardTitle>
-                            <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 pt-1 text-sm">
-                                <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
-                                <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
-                            </CardDescription>
+        <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col">
+            <div className="flex-grow">
+                 <Link href={`/jobs/${job.id}`} className="block">
+                    {job.isFeatured && (
+                        <div className="absolute top-2 right-2">
+                            <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
+                                <Sparkles className="h-4 w-4" />
+                                DESTACADO
+                            </Badge>
                         </div>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
-                </CardContent>
-            </Link>
-            <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-3">
+                    )}
+                    <CardHeader>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-secondary p-1" data-ai-hint="company logo" />
+                            <div className="flex-grow">
+                                <CardTitle className="text-lg md:text-xl">{job.title}</CardTitle>
+                                <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 pt-1 text-sm">
+                                    <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
+                                    <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
+                                </CardDescription>
+                            </div>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
+                    </CardContent>
+                </Link>
+            </div>
+            <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4">
                  <Badge variant="secondary" className="text-xs capitalize">{job.type}</Badge>
                  <div className="flex gap-2 w-full sm:w-auto">
                     <Button variant="outline" size="sm" className="w-full sm:w-auto">
                         <Star className="mr-2 h-4 w-4" />
                         Guardar
                     </Button>
-                    <Button className="w-full sm:w-auto" size="sm" asChild>
+                    <Button variant="secondary" className="w-full sm:w-auto" size="sm" asChild>
                         <Link href={`/jobs/${job.id}`}>Ver Oferta</Link>
+                    </Button>
+                     <Button size="sm" className="w-full sm:w-auto" onClick={handleApply}>
+                        <Send className="mr-2 h-4 w-4" />
+                        Aplicar
                     </Button>
                  </div>
             </CardFooter>

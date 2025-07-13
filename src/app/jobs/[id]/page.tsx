@@ -1,21 +1,33 @@
+
+'use client';
+
 import { Header } from '@/components/layout/header';
 import { allJobs } from '@/components/job-listings';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock } from 'lucide-react';
+import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Footer } from '@/components/layout/footer';
+import { useToast } from "@/hooks/use-toast";
 
 export default function JobDetailPage({ params }: { params: { id: string } }) {
   const job = allJobs.find((j) => j.id === params.id);
+  const { toast } = useToast();
 
   if (!job) {
     notFound();
   }
+  
+  const handleApply = () => {
+    toast({
+        title: "¡Postulación Enviada!",
+        description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
+    });
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
@@ -68,7 +80,8 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                     <CardTitle>Acciones</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                    <Button size="lg" className="w-full">
+                    <Button size="lg" className="w-full" onClick={handleApply}>
+                        <Send className="mr-2 h-4 w-4" />
                         Postularse ahora
                     </Button>
                     {job.whatsapp && (
