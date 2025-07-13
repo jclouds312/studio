@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building } from 'lucide-react';
+import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building, Sparkles } from 'lucide-react';
 import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
@@ -32,7 +32,7 @@ export function Header() {
                     <div className='flex items-center gap-2'>
                         <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                             <Briefcase className="h-6 w-6" />
-                            <span className="font-bold text-xl" style={{ color: '#FFD700' }}>LaburoYA</span>
+                            <span className="font-bold text-xl text-amber-400">LaburoYA</span>
                         </Link>
                     </div>
                 </div>
@@ -51,7 +51,7 @@ export function Header() {
                 {isAdminPage && session.isLoggedIn && <SidebarTrigger className="md:hidden"/>}
                 <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                     <Briefcase className="h-6 w-6" />
-                    <span className="font-bold text-xl" style={{ color: '#FFD700' }}>LaburoYA</span>
+                     <span className="font-bold text-xl text-amber-400">LaburoYA</span>
                 </Link>
             </div>
           
@@ -112,7 +112,7 @@ export function Header() {
                      <SheetTitle>
                        <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                           <Briefcase className="h-6 w-6" />
-                          <span className="font-bold text-lg" style={{ color: '#FFD700' }}>LaburoYA</span>
+                          <span className="font-bold text-lg text-amber-400">LaburoYA</span>
                         </Link>
                       </SheetTitle>
                   </SheetHeader>
