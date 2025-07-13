@@ -5,8 +5,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Menu, Briefcase, UserPlus, Shield } from 'lucide-react';
 
 export function Header() {
-  const isLoggedIn = true; // Mock state for admin
-  const isAdmin = true;
+  const isLoggedIn = false; // Set to false to show Login/Register
+  const isAdmin = false; // Set to true for logged in admin to see the panel
 
   return (
     <header className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-50">
