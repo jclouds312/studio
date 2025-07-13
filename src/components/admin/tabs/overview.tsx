@@ -2,7 +2,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, Code, KeyRound } from "lucide-react";
+import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, Code, KeyRound, FileText, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allJobs } from "@/components/job-listings";
 import {
@@ -15,6 +15,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import React from "react";
 import Image from "next/image";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -24,6 +30,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import type { Transaction, PaymentMetrics } from '@/lib/types';
+import Papa from 'papaparse';
+import { saveAs } from 'file-saver';
 
 
 // Datos simulados para el informe de pagos
@@ -147,19 +155,74 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
     link.click();
   };
   
-  const handleDownloadReport = () => {
+  const handleDownloadReport = (format: 'json' | 'csv' | 'word') => {
     const reportData = {
         metrics: paymentMetrics,
-        recentTransactions: transactionsData,
+        recentTransactions: transactionsData.map(t => ({
+            ID: t.id,
+            Usuario: t.user.name,
+            Email: t.user.email,
+            Plan: t.plan,
+            Estado: t.status,
+            Monto: t.amount,
+            Fecha: t.date,
+        })),
     };
-    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
-      JSON.stringify(reportData, null, 2)
-    )}`;
-    const link = document.createElement("a");
-    link.href = jsonString;
-    link.download = "informe-pagos-suscripciones.json";
-    link.click();
+
+    if (format === 'json') {
+      const jsonString = JSON.stringify(reportData, null, 2);
+      const blob = new Blob([jsonString], {type: "application/json;charset=utf-8"});
+      saveAs(blob, "informe-pagos-suscripciones.json");
+    } else if (format === 'csv') {
+      const csv = Papa.unparse(reportData.recentTransactions);
+      const blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
+      saveAs(blob, "informe-transacciones.csv");
+    } else if (format === 'word') {
+      let htmlContent = `
+        <html>
+          <head>
+            <title>Informe de Pagos y Suscripciones</title>
+            <style>
+              body { font-family: Arial, sans-serif; }
+              table { border-collapse: collapse; width: 100%; }
+              th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; }
+              th { background-color: #f2f2f2; }
+            </style>
+          </head>
+          <body>
+            <h1>Informe de Pagos y Suscripciones</h1>
+            <h2>Métricas Clave</h2>
+            <ul>
+              <li>Ingresos Totales: $${paymentMetrics.totalRevenue.toLocaleString('es-AR')}</li>
+              <li>Ingresos Recurrentes Mensuales: $${paymentMetrics.monthlyRecurringRevenue.toLocaleString('es-AR')}</li>
+              <li>Suscripciones Activas: ${paymentMetrics.activeSubscriptions}</li>
+              <li>Tasa de Abandono: ${paymentMetrics.churnRate}%</li>
+            </ul>
+            <h2>Transacciones Recientes</h2>
+            <table>
+              <tr>
+                <th>ID</th><th>Usuario</th><th>Email</th><th>Plan</th><th>Estado</th><th>Monto</th><th>Fecha</th>
+              </tr>
+              ${reportData.recentTransactions.map(t => `
+                <tr>
+                  <td>${t.ID}</td>
+                  <td>${t.Usuario}</td>
+                  <td>${t.Email}</td>
+                  <td>${t.Plan}</td>
+                  <td>${t.Estado}</td>
+                  <td>$${t.Monto.toLocaleString('es-AR')}</td>
+                  <td>${t.Fecha}</td>
+                </tr>
+              `).join('')}
+            </table>
+          </body>
+        </html>
+      `;
+      const blob = new Blob([htmlContent], {type: "application/msword;charset=utf-8"});
+      saveAs(blob, "informe-pagos.doc");
+    }
   };
+
 
   return (
     <div className="space-y-8">
@@ -225,11 +288,29 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
           </CardHeader>
           <CardContent>
              <p className="text-xs text-muted-foreground mb-4">
-              Informe de pagos y suscripciones en formato JSON.
+              Exporta informes de pagos y suscripciones.
             </p>
-            <Button className="w-full" variant="outline" onClick={handleDownloadReport}>
-                Descargar Informe
-            </Button>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button className="w-full" variant="outline">
+                        Exportar Informe
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => handleDownloadReport('csv')}>
+                        <FileSpreadsheet className="mr-2 h-4 w-4" />
+                        Excel (CSV)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDownloadReport('word')}>
+                        <FileText className="mr-2 h-4 w-4" />
+                        Word (HTML)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDownloadReport('json')}>
+                         <Code className="mr-2 h-4 w-4" />
+                        JSON
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
           </CardContent>
         </Card>
       </div>
