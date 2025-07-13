@@ -65,7 +65,7 @@ export type Transaction = {
         email: string;
         avatar?: string;
     };
-    plan: 'Básico' | 'Profesional' | 'Premium';
+    plan: 'Básico' | 'Profesional' | 'Empresa';
     status: 'Pagado' | 'Pendiente' | 'Fallido';
     amount: number;
     date: string;

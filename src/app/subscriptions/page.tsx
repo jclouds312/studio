@@ -33,6 +33,8 @@ const plans = [
             'Acceso a todas las ofertas',
         ],
         isPopular: false,
+        userType: 'worker',
+        description: 'Para empezar a buscar'
     },
     {
         name: 'Profesional',
@@ -45,6 +47,8 @@ const plans = [
             'Soporte prioritario por email',
         ],
         isPopular: true,
+        userType: 'worker',
+        description: 'Para profesionales serios'
     },
     {
         name: 'Empresa',
@@ -57,10 +61,12 @@ const plans = [
             'Soporte dedicado 24/7',
         ],
         isPopular: false,
+        userType: 'company',
+        description: 'Para empresas que contratan'
     },
 ]
 
-function PaymentModal({ planName, planPrice }: { planName: string, planPrice: string }) {
+function PaymentModal({ planName, planPrice, userType }: { planName: string, planPrice: string, userType: string }) {
     const [isPaying, setIsPaying] = React.useState(false);
     const [paymentSuccess, setPaymentSuccess] = React.useState(false);
   
@@ -155,10 +161,7 @@ export default function SubscriptionsPage() {
                     )}
                     <CardHeader className="text-center pt-8">
                         <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                        <CardDescription>{
-                            plan.name === 'Básico' ? 'Para empezar a buscar' : 
-                            plan.name === 'Profesional' ? 'Para profesionales serios' : 'Para empresas que contratan'
-                        }</CardDescription>
+                        <CardDescription>{plan.description}</CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow space-y-6">
                         <div className="text-center">
@@ -175,7 +178,7 @@ export default function SubscriptionsPage() {
                         </ul>
                     </CardContent>
                     <CardFooter>
-                        <PaymentModal planName={plan.name} planPrice={plan.price} />
+                        <PaymentModal planName={plan.name} planPrice={plan.price} userType={plan.userType} />
                     </CardFooter>
                 </Card>
             ))}

@@ -2,12 +2,11 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, TrendingUp, BarChart, Code } from "lucide-react";
+import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allJobs } from "@/components/job-listings";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -23,17 +22,17 @@ import { Bar, CartesianGrid, XAxis, BarChart as RechartsBarChart } from "rechart
 import packageJson from '@/../package.json';
 
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+  { month: "Enero", users: 186 },
+  { month: "Febrero", users: 305 },
+  { month: "Marzo", users: 237 },
+  { month: "Abril", users: 273 },
+  { month: "Mayo", users: 209 },
+  { month: "Junio", users: 214 },
 ]
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  users: {
+    label: "Usuarios",
     color: "hsl(var(--chart-1))",
   },
 } satisfies import("@/components/ui/chart").ChartConfig
@@ -105,7 +104,7 @@ export function OverviewTab() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ingresos</CardTitle>
+            <CardTitle className="text-sm font-medium">Ingresos (Mes)</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -148,7 +147,7 @@ export function OverviewTab() {
         <Card className="lg:col-span-4">
             <CardHeader>
                 <CardTitle>Crecimiento de Usuarios</CardTitle>
-                 <CardDescription>Nuevos usuarios en los últimos 6 meses.</CardDescription>
+                 <CardDescription>Nuevos usuarios registrados en los últimos 6 meses.</CardDescription>
             </CardHeader>
             <CardContent className="pl-2">
                 <ChartContainer config={chartConfig} className="h-[300px] w-full">
@@ -165,7 +164,7 @@ export function OverviewTab() {
                         cursor={false}
                         content={<ChartTooltipContent indicator="dot" />}
                         />
-                        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                        <Bar dataKey="users" fill="var(--color-users)" radius={4} />
                     </RechartsBarChart>
                 </ChartContainer>
             </CardContent>
@@ -174,14 +173,14 @@ export function OverviewTab() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Star className="text-primary"/>
-                    Servicios Premium
+                    Simular Pago de Servicio
                 </CardTitle>
-                 <CardDescription>Destaca tus publicaciones para encontrar talento más rápido.</CardDescription>
+                 <CardDescription>Simula el pago que una empresa haría para destacar su publicación.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
                 <div className="p-4 border rounded-lg bg-secondary/30">
-                    <h4 className="font-semibold">Destacar tu Publicación</h4>
-                    <p className="text-sm text-muted-foreground">Haz que tu oferta de trabajo se destaque del resto para atraer más candidatos.</p>
+                    <h4 className="font-semibold">Destacar Publicación de Empleo</h4>
+                    <p className="text-sm text-muted-foreground">Esta acción simula cómo un cliente pagaría para destacar su oferta de trabajo.</p>
                 </div>
                  <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
                   <AlertDialogTrigger asChild>
@@ -201,11 +200,11 @@ export function OverviewTab() {
                           <div className="text-center py-4">
                             <Sparkles className="h-12 w-12 text-green-500 mx-auto mb-2"/>
                             <h3 className="text-lg font-bold text-foreground">¡Pago exitoso!</h3>
-                            <p className="text-muted-foreground">Tu publicación de empleo ha sido destacada.</p>
+                            <p className="text-muted-foreground">La publicación de empleo ha sido destacada.</p>
                           </div>
                         ) : (
                           <>
-                           Estás a punto de pagar <span className="font-bold text-foreground">ARS $500.00</span> para destacar tu publicación de empleo por 30 días.
+                           Estás a punto de pagar <span className="font-bold text-foreground">ARS $500.00</span> para destacar una publicación por 30 días.
                           </>
                         )}
                       </AlertDialogDescription>
