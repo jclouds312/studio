@@ -2,11 +2,35 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, DollarSign, Star, Download } from "lucide-react";
+import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allJobs } from "@/components/job-listings";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import React from "react";
+import Image from "next/image";
 
 export function AdminDashboard() {
+
+  const [isPaying, setIsPaying] = React.useState(false);
+  const [paymentSuccess, setPaymentSuccess] = React.useState(false);
+
+  const handlePayment = () => {
+    setIsPaying(true);
+    setTimeout(() => {
+      setIsPaying(false);
+      setPaymentSuccess(true);
+    }, 2000);
+  };
 
   const handleDownloadBackup = () => {
     const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
@@ -100,10 +124,57 @@ export function AdminDashboard() {
                     <h4 className="font-semibold">Highlight your Job Post</h4>
                     <p className="text-sm text-muted-foreground">Make your job listing stand out from the rest to attract more candidates.</p>
                 </div>
-                <Button>
-                    <DollarSign className="mr-2 h-4 w-4"/>
-                    Upgrade with Mercado Pago
-                </Button>
+                 <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
+                  <AlertDialogTrigger asChild>
+                    <Button>
+                        <DollarSign className="mr-2 h-4 w-4"/>
+                        Upgrade with Mercado Pago
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="flex items-center gap-2">
+                        <Image src="https://www.mercadopago.com/v2/images/navigation-logo-small-with-text.png" alt="Mercado Pago" width={120} height={28} data-ai-hint="company logo"/>
+                        Confirmar Pago
+                        </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        {paymentSuccess ? (
+                          <div className="text-center py-4">
+                            <Sparkles className="h-12 w-12 text-green-500 mx-auto mb-2"/>
+                            <h3 className="text-lg font-bold text-foreground">¡Pago exitoso!</h3>
+                            <p className="text-muted-foreground">Tu publicación de empleo ha sido destacada.</p>
+                          </div>
+                        ) : (
+                          <>
+                           Estás a punto de pagar <span className="font-bold text-foreground">ARS $500.00</span> para destacar tu publicación de empleo por 30 días.
+                          </>
+                        )}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        {paymentSuccess ? (
+                            <AlertDialogCancel>Cerrar</AlertDialogCancel>
+                        ) : (
+                            <>
+                                <AlertDialogCancel disabled={isPaying}>Cancelar</AlertDialogCancel>
+                                <Button onClick={handlePayment} disabled={isPaying}>
+                                  {isPaying ? (
+                                    <>
+                                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                      Procesando...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <CreditCard className="mr-2 h-4 w-4" />
+                                      Pagar ahora
+                                    </>
+                                  )}
+                                </Button>
+                            </>
+                        )}
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
             </CardContent>
         </Card>
       </div>

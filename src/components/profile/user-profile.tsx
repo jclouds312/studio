@@ -1,14 +1,19 @@
 'use client';
 
+import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, Edit, FileText, Phone } from "lucide-react";
+import { Upload, Edit, FileText, Phone, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export function UserProfile() {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   // Mock data for user profile
   const user = {
     name: 'Juan Pérez',
@@ -17,6 +22,20 @@ export function UserProfile() {
     bio: 'Desarrollador Full Stack con 5 años de experiencia en tecnologías JavaScript. Apasionado por crear productos intuitivos y escalables. Buscando nuevos desafíos en el sector tecnológico.',
     phone: '+54 9 11 1234-5678',
     cvFileName: 'CV_Juan_Perez.pdf',
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      setIsSubmitting(false);
+      toast({
+        title: "Perfil Actualizado",
+        description: "Tus cambios se han guardado correctamente.",
+      });
+    }, 1500);
   };
 
   return (
@@ -28,7 +47,7 @@ export function UserProfile() {
                     <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person user"/>
                     <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <Button size="icon" className="absolute bottom-1 right-1 rounded-full" aria-label="Cambiar foto de perfil">
+                <Button size="icon" className="absolute bottom-1 right-1 rounded-full hover:scale-110 transition-transform" aria-label="Cambiar foto de perfil">
                     <Upload className="w-4 h-4" />
                 </Button>
             </div>
@@ -36,7 +55,7 @@ export function UserProfile() {
             <CardDescription>{user.email}</CardDescription>
         </CardHeader>
         <CardContent className="p-6 sm:p-8">
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <Label htmlFor="bio">Sobre mí</Label>
               <Textarea id="bio" rows={5} defaultValue={user.bio} placeholder="Cuéntanos un poco sobre ti..." />
@@ -57,7 +76,7 @@ export function UserProfile() {
                   <FileText className="h-5 w-5 text-primary"/>
                   <span className="text-sm font-medium text-foreground truncate">{user.cvFileName}</span>
                 </div>
-                <Button variant="outline">
+                <Button variant="outline" type="button">
                   <Upload className="mr-2 h-4 w-4"/>
                   Subir nuevo
                 </Button>
@@ -66,9 +85,18 @@ export function UserProfile() {
             </div>
             
             <div className="flex justify-end pt-4">
-              <Button type="submit" size="lg">
-                <Edit className="mr-2 h-4 w-4" />
-                Guardar Cambios
+              <Button type="submit" size="lg" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Guardando...
+                  </>
+                ) : (
+                  <>
+                    <Edit className="mr-2 h-4 w-4" />
+                    Guardar Cambios
+                  </>
+                )}
               </Button>
             </div>
           </form>

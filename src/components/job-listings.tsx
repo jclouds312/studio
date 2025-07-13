@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase, MessageCircle } from "lucide-react";
+import { MapPin, Search, Briefcase, MessageCircle, Star } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
 import React, { useState, useMemo } from "react";
@@ -76,7 +76,7 @@ function JobListingCard({ job }: { job: Job }) {
     };
 
     return (
-        <Card className="hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+        <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary">
             <CardHeader>
                 <div className="flex flex-col sm:flex-row gap-4">
                     <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-white" data-ai-hint="company logo" />
@@ -87,13 +87,6 @@ function JobListingCard({ job }: { job: Job }) {
                             <span className="flex items-center gap-1"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
                         </CardDescription>
                     </div>
-                    <div className="hidden sm:flex sm:items-start gap-2">
-                        <Button onClick={handleWhatsAppClick} variant="outline">
-                            <MessageCircle className="h-4 w-4 mr-2"/>
-                            WhatsApp
-                        </Button>
-                        <Button>Apply Now</Button>
-                    </div>
                 </div>
             </CardHeader>
             <CardContent>
@@ -102,9 +95,15 @@ function JobListingCard({ job }: { job: Job }) {
             <CardFooter className="flex justify-between items-center">
                  <div className="text-sm font-medium text-accent-foreground bg-accent/30 px-2 py-1 rounded-md">{job.type}</div>
                  <div className="flex gap-2">
-                    <Button variant="ghost">Save</Button>
-                    <Button variant="outline" className="hidden sm:block">View Details</Button>
-                    <Button className="sm:hidden">Apply</Button>
+                    <Button variant="ghost" className="hover:text-primary">
+                        <Star className="mr-2 h-4 w-4"/>
+                        Guardar
+                    </Button>
+                    <Button onClick={handleWhatsAppClick} variant="outline" className="hover:bg-green-500 hover:text-white">
+                        <MessageCircle className="h-4 w-4 mr-2"/>
+                        WhatsApp
+                    </Button>
+                    <Button>Postularse</Button>
                  </div>
             </CardFooter>
         </Card>
