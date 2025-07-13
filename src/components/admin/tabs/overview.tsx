@@ -2,7 +2,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, Code, KeyRound, Separator } from "lucide-react";
+import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, Code, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allJobs } from "@/components/job-listings";
 import {
@@ -23,6 +23,7 @@ import packageJson from '@/../package.json';
 import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
 
 const chartData = [
