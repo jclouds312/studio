@@ -1,4 +1,5 @@
 
+
 export type Job = {
     id: string;
     title: string;
@@ -12,6 +13,19 @@ export type Job = {
     whatsapp?: string;
 };
 
+export type UserApplication = {
+    id: string;
+    title: string;
+    company: string;
+    status: 'En revisión' | 'Contactado' | 'Rechazado';
+};
+
+export type UserStats = {
+    profileViews: number;
+    interviews: number;
+    savedJobs: number;
+};
+
 export type User = {
     id: string;
     name: string;
@@ -21,6 +35,11 @@ export type User = {
     role?: 'admin' | 'user' | 'company';
     status?: 'Verificado' | 'Pendiente' | 'Suspendido';
     createdAt?: string;
+    // Expanded profile fields
+    professionalSummary?: string;
+    skills?: string[];
+    applications?: UserApplication[];
+    stats?: UserStats;
 };
 
 export type CompanyProfile = {
