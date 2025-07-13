@@ -2,60 +2,38 @@
 'use client';
 
 import { Sidebar, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
-import { Home, Briefcase, Users, Building, Settings, LayoutGrid } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Briefcase, Users, Building, LayoutGrid, Tag } from "lucide-react";
 
+interface AdminSidebarProps {
+    activeTab: string;
+    setActiveTab: (tab: string) => void;
+}
 
-export function AdminSidebar() {
-    const pathname = usePathname();
-
-    const isActive = (path: string) => pathname === path;
+export function AdminSidebar({ activeTab, setActiveTab }: AdminSidebarProps) {
+    const menuItems = [
+        { id: 'overview', label: 'Resumen', icon: LayoutGrid },
+        { id: 'jobs', label: 'Publicaciones', icon: Briefcase },
+        { id: 'users', label: 'Usuarios', icon: Users },
+        { id: 'companies', label: 'Empresas', icon: Building },
+        { id: 'categories', label: 'Categorías', icon: Tag },
+    ];
 
     return (
         <Sidebar>
             <SidebarContent>
                  <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton href="/admin" asChild isActive={isActive('/admin')} tooltip="Dashboard">
-                             <Link href="/admin">
-                                <LayoutGrid />
-                                <span>Dashboard</span>
-                             </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton href="/admin" asChild tooltip="Publicaciones">
-                             <Link href="/admin">
-                                <Briefcase />
-                                <span>Publicaciones</span>
-                             </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton href="/admin" asChild tooltip="Usuarios">
-                             <Link href="/admin">
-                                <Users />
-                                <span>Usuarios</span>
-                             </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton href="/admin" asChild tooltip="Empresas">
-                            <Link href="/admin">
-                             <Building />
-                             <span>Empresas</span>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                     <SidebarMenuItem>
-                        <SidebarMenuButton href="/admin" asChild tooltip="Ajustes">
-                             <Link href="/admin">
-                                <Settings />
-                                <span>Ajustes</span>
-                             </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
+                    {menuItems.map(item => (
+                        <SidebarMenuItem key={item.id}>
+                            <SidebarMenuButton
+                                onClick={() => setActiveTab(item.id)}
+                                isActive={activeTab === item.id}
+                                tooltip={item.label}
+                            >
+                                <item.icon />
+                                <span>{item.label}</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    ))}
                  </SidebarMenu>
             </SidebarContent>
         </Sidebar>

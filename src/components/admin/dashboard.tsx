@@ -7,15 +7,16 @@ import { JobsTab } from "./tabs/jobs";
 import { UsersTab } from "./tabs/users";
 import { CompaniesTab } from "./tabs/companies";
 import { CategoriesTab } from "./tabs/categories";
+import React from "react";
 
-export function AdminDashboard() {
+export function AdminDashboard({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (value: string) => void }) {
 
   return (
     <div className="space-y-8">
         <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
         </div>
-      <Tabs defaultValue="overview" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Resumen</TabsTrigger>
           <TabsTrigger value="jobs">Publicaciones</TabsTrigger>
