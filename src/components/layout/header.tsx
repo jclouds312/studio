@@ -10,12 +10,14 @@ import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname, useRouter } from 'next/navigation';
 import { ChatPanel } from '../chat/chat-panel';
 import React, { useEffect, useState } from 'react';
+import { useToast } from '../ui/use-toast';
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [isAdmin, setIsAdmin] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const { toast } = useToast();
   
   const pathname = usePathname();
   const router = useRouter();
@@ -23,24 +25,25 @@ export function Header() {
 
   useEffect(() => {
     setIsMounted(true);
-    // Check localStorage on mount to see if user is logged in
     const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
     const userEmail = localStorage.getItem('userEmail');
+    
     setIsLoggedIn(loggedInStatus);
+    
     if (loggedInStatus && userEmail === 'john474nvallejo@gmail.com') {
         setIsAdmin(true);
     } else {
         setIsAdmin(false);
     }
-  }, [pathname]);
+  }, [pathname, isMounted]);
 
   const handleLogout = () => {
       localStorage.removeItem('isLoggedIn');
       localStorage.removeItem('userEmail');
       setIsLoggedIn(false);
       setIsAdmin(false);
+      toast({ title: 'Has cerrado sesión exitosamente.' });
       router.push('/');
-      router.refresh();
   };
 
   if (!isMounted) {
@@ -65,7 +68,7 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
             <div className='flex items-center gap-2'>
-                {isAdminPage && <SidebarTrigger className="md:hidden"/>}
+                {isAdminPage && isLoggedIn && <SidebarTrigger className="md:hidden"/>}
                 <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                     <Briefcase className="h-6 w-6" />
                     <span className="font-bold text-xl" style={{ color: '#FFD700' }}>LaburoYA</span>

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from '../ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,6 +17,7 @@ import { Badge } from '../ui/badge';
 const user = {
     name: 'Johnatan Vallejo',
     email: 'john474nvallejo@gmail.com',
+    role: 'admin' as const,
     avatarUrl: 'https://placehold.co/128x128.png',
     phone: '+54 9 11 1234-5678',
     applications: [
@@ -29,6 +30,10 @@ const user = {
         interviews: 3,
         savedJobs: 12,
     }
+};
+
+const roleDisplay: Record<typeof user.role, string> = {
+    admin: 'Administrador',
 };
 
 function EditProfileTab() {
@@ -225,6 +230,12 @@ export function UserProfile() {
         <div>
             <h1 className="text-3xl font-bold">{user.name}</h1>
             <p className="text-muted-foreground">{user.email}</p>
+            {user.role && (
+                <Badge variant="secondary" className="mt-2 capitalize flex items-center gap-1.5">
+                    <Shield className="h-3 w-3"/>
+                    {roleDisplay[user.role] || user.role}
+                </Badge>
+            )}
         </div>
       </div>
       
