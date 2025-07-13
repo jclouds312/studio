@@ -19,11 +19,60 @@ import React from "react";
 import Image from "next/image";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Bar, CartesianGrid, XAxis, BarChart as RechartsBarChart } from "recharts";
-import packageJson from '@/../package.json';
 import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import type { Transaction, PaymentMetrics } from '@/lib/types';
+
+
+// Datos simulados para el informe de pagos
+const transactionsData: Transaction[] = [
+    {
+        id: 'txn_1',
+        user: { name: 'Juan Pérez', email: 'juan.perez@example.com', avatar: 'https://placehold.co/40x40.png' },
+        plan: 'Profesional',
+        status: 'Pagado',
+        amount: 2000,
+        date: '2024-07-20',
+    },
+    {
+        id: 'txn_2',
+        user: { name: 'Tech Solutions Inc.', email: 'empresa.facebook@example.com', avatar: 'https://placehold.co/40x40.png' },
+        plan: 'Empresa',
+        status: 'Pagado',
+        amount: 10000,
+        date: '2024-07-19',
+    },
+    {
+        id: 'txn_3',
+        user: { name: 'Ana García', email: 'ana.garcia@example.com', avatar: 'https://placehold.co/40x40.png' },
+        plan: 'Profesional',
+        status: 'Pendiente',
+        amount: 2000,
+        date: '2024-07-18',
+    },
+];
+
+const paymentMetrics: PaymentMetrics = {
+    totalRevenue: 542300.50,
+    monthlyRecurringRevenue: 45231.89,
+    activeSubscriptions: 342,
+    churnRate: 2.1,
+    revenueByMonth: [
+        { month: "Enero", revenue: 25000 },
+        { month: "Febrero", revenue: 32000 },
+        { month: "Marzo", revenue: 38000 },
+        { month: "Abril", revenue: 41000 },
+        { month: "Mayo", revenue: 48000 },
+        { month: "Junio", revenue: 45231.89 },
+    ],
+    planDistribution: [
+        { name: 'Básico', value: 150, fill: "hsl(var(--chart-1))" },
+        { name: 'Profesional', value: 122, fill: "hsl(var(--chart-2))" },
+        { name: 'Empresa', value: 70, fill: "hsl(var(--chart-3))" },
+    ]
+};
 
 
 const chartData = [
@@ -98,13 +147,17 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
     link.click();
   };
   
-  const handleDownloadPackageJson = () => {
+  const handleDownloadReport = () => {
+    const reportData = {
+        metrics: paymentMetrics,
+        recentTransactions: transactionsData,
+    };
     const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
-      JSON.stringify(packageJson, null, 2)
+      JSON.stringify(reportData, null, 2)
     )}`;
     const link = document.createElement("a");
     link.href = jsonString;
-    link.download = "package.json";
+    link.download = "informe-pagos-suscripciones.json";
     link.click();
   };
 
@@ -167,15 +220,15 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
         </Card>
          <Card>
            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Código Fuente</CardTitle>
-            <Code className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Descargar Informes</CardTitle>
+            <Download className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
              <p className="text-xs text-muted-foreground mb-4">
-              Descarga el package.json para reinstalar dependencias.
+              Informe de pagos y suscripciones en formato JSON.
             </p>
-            <Button className="w-full" variant="outline" onClick={handleDownloadPackageJson}>
-                Descargar package.json
+            <Button className="w-full" variant="outline" onClick={handleDownloadReport}>
+                Descargar Informe
             </Button>
           </CardContent>
         </Card>
