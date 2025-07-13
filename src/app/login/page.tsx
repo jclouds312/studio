@@ -1,9 +1,14 @@
+
+'use client';
+
 import { Header } from '@/components/layout/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { Footer } from '@/components/layout/footer';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -17,6 +22,19 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export default function LoginPage() {
+  const router = useRouter();
+
+  const handleGoogleLogin = () => {
+    // In a real app, this would trigger the Firebase/OAuth flow.
+    // For this prototype, we'll just simulate a login and redirect.
+    // The state change will be reflected in the header.
+    // We can't directly set the state of the Header here, but the user interaction
+    // implies a reload/navigation which will re-render the header in a "logged in" state.
+    // A more robust solution would use a global state (Context, Zustand, etc.).
+    // For now, we just redirect and the header will simulate the login.
+    router.push('/');
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
       <Header />
@@ -29,11 +47,9 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full" size="lg" asChild>
-                <Link href="/">
-                    <GoogleIcon className="mr-2 h-5 w-5" />
-                    Continuar con Google
-                </Link>
+            <Button className="w-full" size="lg" onClick={handleGoogleLogin}>
+              <GoogleIcon className="mr-2 h-5 w-5" />
+              Continuar con Google
             </Button>
             <div className="relative my-2">
               <div className="absolute inset-0 flex items-center">

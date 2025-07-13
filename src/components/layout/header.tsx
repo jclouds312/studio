@@ -63,7 +63,7 @@ export function Header() {
             ) : (
               <div className="hidden md:flex items-center gap-2">
                   <Button variant="ghost" asChild>
-                    <Link href="/login" onClick={handleLogin} className="flex items-center gap-2"> <LogIn /> Iniciar Sesión</Link>
+                    <Link href="/login" className="flex items-center gap-2"> <LogIn /> Iniciar Sesión</Link>
                   </Button>
                   <Button asChild>
                     <Link href="/register" className="flex items-center gap-2"><UserPlus/>Registrarse</Link>
@@ -115,7 +115,7 @@ export function Header() {
                     ) : (
                       <>
                         <Button variant="outline" asChild size="lg" className="justify-start gap-2">
-                          <Link href="/login" onClick={handleLogin}><LogIn className="mr-2 h-5 w-5"/>Iniciar Sesión</Link>
+                          <Link href="/login"><LogIn className="mr-2 h-5 w-5"/>Iniciar Sesión</Link>
                         </Button>
                         <Button asChild size="lg" className="justify-start gap-2">
                           <Link href="/register"><UserPlus className="mr-2 h-5 w-5"/>Registrarse</Link>

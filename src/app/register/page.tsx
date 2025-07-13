@@ -1,9 +1,14 @@
+
+'use client';
+
 import { Header } from '@/components/layout/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { Footer } from '@/components/layout/footer';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -17,6 +22,13 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export default function RegisterPage() {
+    const router = useRouter();
+
+    const handleGoogleLogin = () => {
+      router.push('/');
+    };
+
+
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
       <Header />
@@ -29,7 +41,7 @@ export default function RegisterPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full" size="lg">
+            <Button className="w-full" size="lg" onClick={handleGoogleLogin}>
               <GoogleIcon className="mr-2 h-5 w-5" />
               Continuar con Google
             </Button>
