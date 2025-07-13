@@ -20,8 +20,8 @@ export function Header() {
             <span className="font-bold text-xl">LaburoYa</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            {navLinks.map((link, index) => (
+              <Link key={`${link.label}-${index}`} href={link.href} className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
                 {link.label}
               </Link>
             ))}
@@ -51,8 +51,8 @@ export function Header() {
                        <Briefcase className="h-6 w-6 text-primary" />
                        <span className="font-bold text-lg">LaburoYa</span>
                     </Link>
-                    {navLinks.map((link) => (
-                      <Link key={link.href} href={link.href} className="text-lg font-medium hover:text-primary transition-colors">
+                    {navLinks.map((link, index) => (
+                      <Link key={`${link.label}-${index}-mobile`} href={link.href} className="text-lg font-medium hover:text-primary transition-colors">
                         {link.label}
                       </Link>
                     ))}
