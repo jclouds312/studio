@@ -25,6 +25,11 @@ export default function RegisterPage() {
     const router = useRouter();
 
     const handleGoogleLogin = () => {
+      // Simulate login by setting a value in localStorage
+      localStorage.setItem('isLoggedIn', 'true');
+      // For admin panel demo, we can simulate a specific user
+      localStorage.setItem('userEmail', 'john474nvallejo@gmail.com');
+      // Redirect to home page
       router.push('/');
     };
 

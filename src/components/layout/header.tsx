@@ -9,19 +9,39 @@ import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare }
 import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname } from 'next/navigation';
 import { ChatPanel } from '../chat/chat-panel';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false); 
-  const isAdmin = isLoggedIn; // Simulate admin if logged in for demo
+  const [isAdmin, setIsAdmin] = React.useState(false);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith('/admin');
 
-  // A simple way to simulate login for the prototype
-  const handleLogin = () => setIsLoggedIn(true);
-  const handleLogout = () => setIsLoggedIn(false);
+  useEffect(() => {
+    // Check localStorage on mount to see if user is logged in
+    const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
+    const userEmail = localStorage.getItem('userEmail');
+    setIsLoggedIn(loggedInStatus);
+    if (loggedInStatus && userEmail === 'john474nvallejo@gmail.com') {
+        setIsAdmin(true);
+    }
+  }, []);
+
+  const handleLogin = () => {
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userEmail', 'john474nvallejo@gmail.com'); // Simulate specific admin user
+      setIsLoggedIn(true);
+      setIsAdmin(true);
+  };
+  
+  const handleLogout = () => {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('userEmail');
+      setIsLoggedIn(false);
+      setIsAdmin(false);
+  };
 
   return (
     <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-40">
@@ -57,7 +77,7 @@ export function Header() {
                   </Avatar>
                 </Link>
                  <Button variant="ghost" onClick={handleLogout} asChild>
-                    <Link href="/"><LogOut/>Cerrar Sesión</Link>
+                    <Link href="/"><LogOut className="mr-2"/>Cerrar Sesión</Link>
                 </Button>
                </div>
             ) : (

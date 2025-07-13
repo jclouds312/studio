@@ -25,13 +25,11 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleGoogleLogin = () => {
-    // In a real app, this would trigger the Firebase/OAuth flow.
-    // For this prototype, we'll just simulate a login and redirect.
-    // The state change will be reflected in the header.
-    // We can't directly set the state of the Header here, but the user interaction
-    // implies a reload/navigation which will re-render the header in a "logged in" state.
-    // A more robust solution would use a global state (Context, Zustand, etc.).
-    // For now, we just redirect and the header will simulate the login.
+    // Simulate login by setting a value in localStorage
+    localStorage.setItem('isLoggedIn', 'true');
+    // For admin panel demo, we can simulate a specific user
+    localStorage.setItem('userEmail', 'john474nvallejo@gmail.com');
+    // Redirect to home page
     router.push('/');
   };
 
