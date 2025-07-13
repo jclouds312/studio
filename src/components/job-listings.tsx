@@ -5,10 +5,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase, MessageCircle, Star } from "lucide-react";
+import { MapPin, Search, Briefcase, Star, Sparkles } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
 import React, { useState, useMemo } from "react";
+import { Badge } from "@/components/ui/badge";
 
 export const allJobs: Job[] = [
   {
@@ -20,7 +21,7 @@ export const allJobs: Job[] = [
     description: 'We are looking for a skilled Frontend Developer to join our team. You will be responsible for building the ‘client-side’ of our web applications. You should be able to translate our company and customer needs into functional and appealing interactive applications.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'tech',
-    contactPhone: '+5491112345678'
+    isFeatured: true,
   },
   {
     id: '2',
@@ -30,8 +31,7 @@ export const allJobs: Job[] = [
     type: 'Contract',
     description: 'Creative Minds is seeking a talented UX/UI Designer to create amazing user experiences. The ideal candidate should have an eye for clean and artful design, possess superior UI skills and be able to translate high-level requirements into interaction flows and artifacts.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'design',
-    contactPhone: '+5493511234567'
+    category: 'design'
   },
   {
     id: '3',
@@ -41,8 +41,7 @@ export const allJobs: Job[] = [
     type: 'Full-time',
     description: 'Join our backend team to design and implement scalable and robust server-side applications. You will work with a team of developers to build and maintain our core services, ensuring high performance and responsiveness to requests from the front-end.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'tech',
-    contactPhone: '+5491123456789'
+    category: 'tech'
   },
    {
     id: '4',
@@ -52,8 +51,7 @@ export const allJobs: Job[] = [
     type: 'Part-time',
     description: 'We are hiring a Digital Marketing Manager to develop, implement, track and optimize our digital marketing campaigns across all digital channels. You should have a strong grasp of current marketing tools and strategies.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'marketing',
-    contactPhone: '+5493411234567'
+    category: 'marketing'
   },
   {
     id: '5',
@@ -64,27 +62,29 @@ export const allJobs: Job[] = [
     description: 'We are looking for a competitive and trustworthy Sales Executive to help us build up our business activities. Sales Executive responsibilities include discovering and pursuing new sales prospects, negotiating deals and maintaining customer satisfaction.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'sales',
-    contactPhone: '+5491134567890'
+    isFeatured: true,
   }
 ];
 
 function JobListingCard({ job }: { job: Job }) {
-    const handleWhatsAppClick = () => {
-        if (job.contactPhone) {
-            window.open(`https://wa.me/${job.contactPhone.replace(/\D/g, '')}`, '_blank');
-        }
-    };
-
     return (
-        <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary">
+        <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden">
+            {job.isFeatured && (
+                <div className="absolute top-2 right-2">
+                    <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
+                        <Sparkles className="h-4 w-4" />
+                        DESTACADO
+                    </Badge>
+                </div>
+            )}
             <CardHeader>
                 <div className="flex flex-col sm:flex-row gap-4">
-                    <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-white" data-ai-hint="company logo" />
+                    <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-secondary p-1" data-ai-hint="company logo" />
                     <div className="flex-grow">
-                        <CardTitle>{job.title}</CardTitle>
-                        <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 pt-1">
-                            <span className="flex items-center gap-1"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
-                            <span className="flex items-center gap-1"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
+                        <CardTitle className="text-lg md:text-xl">{job.title}</CardTitle>
+                        <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 pt-1 text-sm">
+                            <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
+                            <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
                         </CardDescription>
                     </div>
                 </div>
@@ -92,18 +92,10 @@ function JobListingCard({ job }: { job: Job }) {
             <CardContent>
                 <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
             </CardContent>
-            <CardFooter className="flex justify-between items-center">
-                 <div className="text-sm font-medium text-accent-foreground bg-accent/30 px-2 py-1 rounded-md">{job.type}</div>
-                 <div className="flex gap-2">
-                    <Button variant="ghost" className="hover:text-primary">
-                        <Star className="mr-2 h-4 w-4"/>
-                        Guardar
-                    </Button>
-                    <Button onClick={handleWhatsAppClick} variant="outline" className="hover:bg-green-500 hover:text-white">
-                        <MessageCircle className="h-4 w-4 mr-2"/>
-                        WhatsApp
-                    </Button>
-                    <Button>Postularse</Button>
+            <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-3">
+                 <Badge variant="secondary" className="text-xs">{job.type}</Badge>
+                 <div className="flex gap-2 w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto">Postularse</Button>
                  </div>
             </CardFooter>
         </Card>
@@ -116,17 +108,23 @@ export function JobListings() {
     const [category, setCategory] = useState('all');
 
     const filteredJobs = useMemo(() => {
-        return allJobs.filter(job => {
-            const keywordMatch = keyword.toLowerCase() ? job.title.toLowerCase().includes(keyword.toLowerCase()) || job.description.toLowerCase().includes(keyword.toLowerCase()) : true;
-            const locationMatch = location.toLowerCase() ? job.location.toLowerCase().includes(location.toLowerCase()) : true;
-            const categoryMatch = category && category !== 'all' ? job.category === category : true;
-            return keywordMatch && locationMatch && categoryMatch;
-        });
+        let jobs = allJobs
+            .filter(job => {
+                const keywordMatch = keyword.toLowerCase() ? job.title.toLowerCase().includes(keyword.toLowerCase()) || job.description.toLowerCase().includes(keyword.toLowerCase()) : true;
+                const locationMatch = location.toLowerCase() ? job.location.toLowerCase().includes(location.toLowerCase()) : true;
+                const categoryMatch = category && category !== 'all' ? job.category === category : true;
+                return keywordMatch && locationMatch && categoryMatch;
+            });
+        
+        // Sort featured jobs to the top
+        jobs.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
+
+        return jobs;
     }, [keyword, location, category]);
 
     return (
         <div className="space-y-6">
-            <Card className="shadow-lg">
+            <Card className="shadow-lg sticky top-[65px] z-30">
                 <CardHeader>
                     <CardTitle>Encuentra tu próximo trabajo</CardTitle>
                 </CardHeader>
@@ -164,7 +162,7 @@ export function JobListings() {
                 </CardContent>
             </Card>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4">
                 {filteredJobs.length > 0 ? (
                     filteredJobs.map(job => <JobListingCard key={job.id} job={job} />)
                 ) : (

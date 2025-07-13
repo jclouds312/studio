@@ -6,17 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Edit, Loader2, User, Phone, Mail } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Separator } from '../ui/separator';
 
 export function UserProfile() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  // Mock data for user profile
   const user = {
-    name: 'Juan Pérez',
-    email: 'juan.perez@example.com',
+    name: 'Johnatan Vallejo',
+    email: 'john474nvallejo@gmail.com',
     avatarUrl: 'https://placehold.co/128x128.png',
     phone: '+54 9 11 1234-5678',
   };
@@ -25,7 +25,6 @@ export function UserProfile() {
     event.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
     setTimeout(() => {
       setIsSubmitting(false);
       toast({
@@ -44,7 +43,7 @@ export function UserProfile() {
                     <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person user"/>
                     <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <Button size="icon" className="absolute bottom-1 right-1 rounded-full hover:scale-110 transition-transform" aria-label="Cambiar foto de perfil">
+                 <Button size="icon" className="absolute bottom-1 right-1 rounded-full hover:scale-110 transition-transform" aria-label="Cambiar foto de perfil">
                     <Upload className="w-4 h-4" />
                 </Button>
             </div>
@@ -53,23 +52,27 @@ export function UserProfile() {
         </CardHeader>
         <CardContent className="p-6 sm:p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <Label htmlFor="name">Nombre completo</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <Input id="name" type="text" className="pl-10" defaultValue={user.name} placeholder="Tu nombre completo"/>
-              </div>
+            <div className="space-y-4">
+                <div>
+                  <Label htmlFor="name">Nombre completo</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                    <Input id="name" type="text" className="pl-10" defaultValue={user.name} placeholder="Tu nombre completo"/>
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="phone">Número de WhatsApp</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                    <Input id="phone" type="tel" className="pl-10" defaultValue={user.phone} placeholder="+54 9 11 ...."/>
+                  </div>
+                </div>
             </div>
             
-            <div>
-              <Label htmlFor="phone">Número de WhatsApp</Label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <Input id="phone" type="tel" className="pl-10" defaultValue={user.phone} placeholder="+54 9 11 ...."/>
-              </div>
-            </div>
-            
-            <div className="flex justify-end pt-4">
+            <Separator />
+
+            <div className="flex justify-end pt-2">
               <Button type="submit" size="lg" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
