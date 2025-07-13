@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle, Building, Award } from 'lucide-react';
+import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle, Building, Award, LucideIcon, icons } from 'lucide-react';
 import React from 'react';
 import {
   AlertDialog,
@@ -26,139 +26,11 @@ import { useSession } from '@/hooks/use-session';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useToast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { allPlans } from '@/lib/data';
+import type { SubscriptionPlan, PricingOption } from '@/lib/types';
 
 
-const allPlans = [
-    {
-        name: 'Básico',
-        userType: 'worker',
-        isPopular: false,
-        description: 'Ideal para empezar tu búsqueda laboral.',
-        icon: Briefcase,
-        pricing: [{
-            duration: 'monthly',
-            price: 'Gratis',
-            priceDetail: 'para siempre',
-            priceAmount: 0,
-            features: [
-                'Hasta 5 postulaciones por mes',
-                'Perfil público básico',
-                'Acceso a todas las ofertas',
-            ],
-        }]
-    },
-    {
-        name: 'Profesional',
-        userType: 'worker',
-        isPopular: true,
-        description: 'Potencia tu perfil y destaca sobre los demás.',
-        icon: Star,
-        pricing: [
-            {
-                duration: 'monthly',
-                price: '$2.000',
-                priceDetail: 'por mes',
-                priceAmount: 2000,
-                features: [
-                    'Postulaciones ilimitadas',
-                    'Perfil destacado en búsquedas',
-                    'Acceso a estadísticas de perfil',
-                    'Soporte prioritario por email',
-                ],
-            },
-            {
-                duration: 'quarterly',
-                price: '$1.700',
-                priceDetail: 'por mes',
-                priceAmount: 1700 * 3,
-                discount: 'AHORRA 15%',
-                features: [
-                    'Todo lo del plan mensual',
-                    'Acceso a webinars de carrera exclusivos',
-                    'Revisión de CV por IA',
-                ],
-            },
-            {
-                duration: 'semi-annually',
-                price: '$1.500',
-                priceDetail: 'por mes',
-                priceAmount: 1500 * 6,
-                discount: 'AHORRA 25%',
-                features: [
-                    'Todo lo del plan trimestral',
-                    'Soporte VIP 24/7',
-                    'Consulta de 30 min con un coach laboral',
-                ],
-            },
-        ]
-    },
-    {
-        name: 'Empresa',
-        userType: 'company',
-        isPopular: false,
-        description: 'Perfecto para pequeñas y medianas empresas.',
-        icon: Building,
-        pricing: [{
-            duration: 'monthly',
-            price: '$10.000',
-            priceDetail: 'por mes',
-            priceAmount: 10000,
-            features: [
-                'Publica hasta 5 ofertas de trabajo',
-                'Acceso a base de datos de candidatos',
-                'Dashboard de seguimiento de postulantes',
-                'Soporte por email',
-            ],
-        }]
-    },
-    {
-        name: 'Empresa Plus',
-        userType: 'company',
-        isPopular: true,
-        description: 'La solución completa para grandes reclutadores.',
-        icon: Zap,
-        pricing: [
-            {
-                duration: 'monthly',
-                price: '$25.000',
-                priceDetail: 'por mes',
-                priceAmount: 25000,
-                features: [
-                    'Publicaciones ilimitadas',
-                    'Destaca hasta 5 ofertas de trabajo',
-                    'Herramientas avanzadas de filtrado',
-                    'Soporte dedicado 24/7',
-                ],
-            },
-            {
-                duration: 'quarterly',
-                price: '$22.000',
-                priceDetail: 'por mes',
-                priceAmount: 22000 * 3,
-                discount: 'AHORRA 12%',
-                features: [
-                    'Todo lo del plan mensual',
-                    'Publicaciones de la empresa en redes sociales',
-                    'Acceso a analíticas avanzadas de candidatos',
-                ],
-            },
-            {
-                duration: 'semi-annually',
-                price: '$20.000',
-                priceDetail: 'por mes',
-                priceAmount: 20000 * 6,
-                discount: 'AHORRA 20%',
-                features: [
-                    'Todo lo del plan trimestral',
-                    'Gestor de cuenta personal dedicado',
-                    'Candidatos pre-seleccionados por IA',
-                ],
-            }
-        ]
-    },
-];
-
-function PaymentModal({ planName, pricingOption, isPopular }: { planName: string, pricingOption: any, isPopular: boolean }) {
+function PaymentModal({ planName, pricingOption, isPopular }: { planName: string, pricingOption: PricingOption, isPopular: boolean }) {
     const [isPaying, setIsPaying] = React.useState(false);
     const [paymentSuccess, setPaymentSuccess] = React.useState(false);
     const { toast } = useToast();
@@ -272,9 +144,10 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
 
 function AdminPlanView() {
     const { toast } = useToast();
-    const [plans, setPlans] = React.useState(allPlans);
+    const [plans, setPlans] = React.useState<SubscriptionPlan[]>(allPlans);
 
     const handleDelete = (planName: string) => {
+        setPlans(plans.filter(p => p.name !== planName));
         toast({
             title: "Plan Eliminado",
             description: `El plan "${planName}" ha sido eliminado.`,
@@ -298,52 +171,55 @@ function AdminPlanView() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {plans.map((plan) => (
-                <Card key={plan.name} className={cn(
-                    "flex flex-col",
-                    plan.isPopular && "border-primary shadow-2xl relative"
-                )}>
-                    {plan.isPopular && (
-                        <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
-                            <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold flex items-center gap-1">
-                                <Star className="h-4 w-4"/>
-                                MÁS POPULAR
-                            </Badge>
-                        </div>
-                    )}
-                    <CardHeader className="text-center pt-10">
-                        <div className="mx-auto bg-secondary p-3 rounded-full w-fit mb-2">
-                            <plan.icon className="h-6 w-6 text-primary" />
-                        </div>
-                        <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                        <CardDescription>{plan.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-grow space-y-6">
-                        <div className="text-center">
-                            <span className="text-4xl font-bold">{plan.pricing[0].price}</span>
-                            <span className="text-muted-foreground"> {plan.pricing[0].priceDetail}</span>
-                        </div>
-                        <ul className="space-y-3 text-sm">
-                            {plan.pricing[0].features.map((feature, index) => (
-                                <li key={index} className="flex items-start gap-3">
-                                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
-                                    <span>{feature}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </CardContent>
-                    <CardFooter className='flex gap-2'>
-                       <Button variant="outline" className='w-full'>
-                            <Edit className='mr-2 h-4 w-4' />
-                            Editar
-                       </Button>
-                       <Button variant="destructive" className='w-full' onClick={() => handleDelete(plan.name)}>
-                            <Trash2 className='mr-2 h-4 w-4'/>
-                            Eliminar
-                       </Button>
-                    </CardFooter>
-                </Card>
-            ))}
+            {plans.map((plan) => {
+                const Icon = icons[plan.iconName] as LucideIcon;
+                return (
+                    <Card key={plan.name} className={cn(
+                        "flex flex-col",
+                        plan.isPopular && "border-primary shadow-2xl relative"
+                    )}>
+                        {plan.isPopular && (
+                            <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
+                                <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold flex items-center gap-1">
+                                    <Star className="h-4 w-4"/>
+                                    MÁS POPULAR
+                                </Badge>
+                            </div>
+                        )}
+                        <CardHeader className="text-center pt-10">
+                            <div className="mx-auto bg-secondary p-3 rounded-full w-fit mb-2">
+                                <Icon className="h-6 w-6 text-primary" />
+                            </div>
+                            <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                            <CardDescription>{plan.description}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex-grow space-y-6">
+                            <div className="text-center">
+                                <span className="text-4xl font-bold">{plan.pricing[0].price}</span>
+                                <span className="text-muted-foreground"> {plan.pricing[0].priceDetail}</span>
+                            </div>
+                            <ul className="space-y-3 text-sm">
+                                {plan.pricing[0].features.map((feature, index) => (
+                                    <li key={index} className="flex items-start gap-3">
+                                        <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
+                                        <span>{feature}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </CardContent>
+                        <CardFooter className='flex gap-2'>
+                           <Button variant="outline" className='w-full'>
+                                <Edit className='mr-2 h-4 w-4' />
+                                Editar
+                           </Button>
+                           <Button variant="destructive" className='w-full' onClick={() => handleDelete(plan.name)}>
+                                <Trash2 className='mr-2 h-4 w-4'/>
+                                Eliminar
+                           </Button>
+                        </CardFooter>
+                    </Card>
+                );
+            })}
         </div>
       </main>
     )
@@ -381,78 +257,81 @@ function CustomerPlanView() {
             }}
         >
             <CarouselContent className="-ml-4">
-                {visiblePlans.map((plan, index) => (
-                    <CarouselItem key={index} className="pl-4 md:basis-1/2">
-                        <div className="p-1 h-full">
-                            <Card className={cn(
-                                "flex flex-col h-full transition-all duration-300",
-                                plan.isPopular && "border-2 border-primary shadow-2xl"
-                            )}>
-                                {plan.isPopular && (
-                                    <div className="w-full flex justify-center">
-                                        <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold -mt-3.5 flex items-center gap-1 z-10">
-                                            <Star className="h-4 w-4"/>
-                                            MÁS POPULAR
-                                        </Badge>
-                                    </div>
-                                )}
-                                <CardHeader className="text-center pt-8">
-                                    <div className="mx-auto bg-secondary p-4 rounded-full w-fit mb-4">
-                                        <plan.icon className="h-8 w-8 text-primary" />
-                                    </div>
-                                    <CardTitle className="text-3xl">{plan.name}</CardTitle>
-                                    <CardDescription className="text-base">{plan.description}</CardDescription>
-                                </CardHeader>
+                {visiblePlans.map((plan, index) => {
+                    const Icon = icons[plan.iconName] as LucideIcon;
+                    return (
+                        <CarouselItem key={index} className="pl-4 md:basis-1/2">
+                            <div className="p-1 h-full">
+                                <Card className={cn(
+                                    "flex flex-col h-full transition-all duration-300",
+                                    plan.isPopular && "border-2 border-primary shadow-2xl"
+                                )}>
+                                    {plan.isPopular && (
+                                        <div className="w-full flex justify-center">
+                                            <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold -mt-3.5 flex items-center gap-1 z-10">
+                                                <Star className="h-4 w-4"/>
+                                                MÁS POPULAR
+                                            </Badge>
+                                        </div>
+                                    )}
+                                    <CardHeader className="text-center pt-8">
+                                        <div className="mx-auto bg-secondary p-4 rounded-full w-fit mb-4">
+                                            <Icon className="h-8 w-8 text-primary" />
+                                        </div>
+                                        <CardTitle className="text-3xl">{plan.name}</CardTitle>
+                                        <CardDescription className="text-base">{plan.description}</CardDescription>
+                                    </CardHeader>
 
-                                <Tabs defaultValue={plan.pricing[0].duration} className="w-full flex-grow flex flex-col">
-                                    <CardContent className="flex-grow space-y-6">
-                                        {plan.pricing.length > 1 && (
-                                            <TabsList className="grid w-full grid-cols-3">
-                                                <TabsTrigger value="monthly">Mensual</TabsTrigger>
-                                                <TabsTrigger value="quarterly">3 Meses</TabsTrigger>
-                                                <TabsTrigger value="semi-annually">6 Meses</TabsTrigger>
-                                            </TabsList>
-                                        )}
+                                    <Tabs defaultValue={plan.pricing[0].duration} className="w-full flex-grow flex flex-col">
+                                        <CardContent className="flex-grow space-y-6">
+                                            {plan.pricing.length > 1 && (
+                                                <TabsList className="grid w-full grid-cols-3">
+                                                    <TabsTrigger value="monthly">Mensual</TabsTrigger>
+                                                    <TabsTrigger value="quarterly">3 Meses</TabsTrigger>
+                                                    <TabsTrigger value="semi-annually">6 Meses</TabsTrigger>
+                                                </TabsList>
+                                            )}
 
-                                        {plan.pricing.map((option) => (
-                                            <TabsContent key={option.duration} value={option.duration} className="m-0 flex-grow flex flex-col justify-between">
-                                                <div>
-                                                    <div className="text-center relative">
-                                                        {option.discount && (
-                                                            <Badge variant="destructive" className="absolute -top-2 right-0 rotate-12">
-                                                                {option.discount}
-                                                            </Badge>
-                                                        )}
-                                                        <span className="text-5xl font-bold">{option.price}</span>
-                                                        <span className="text-muted-foreground text-lg"> {option.priceDetail}</span>
+                                            {plan.pricing.map((option) => (
+                                                <TabsContent key={option.duration} value={option.duration} className="m-0 flex-grow flex flex-col justify-between">
+                                                    <div>
+                                                        <div className="text-center relative">
+                                                            {option.discount && (
+                                                                <Badge variant="destructive" className="absolute -top-2 right-0 rotate-12">
+                                                                    {option.discount}
+                                                                </Badge>
+                                                            )}
+                                                            <span className="text-5xl font-bold">{option.price}</span>
+                                                            <span className="text-muted-foreground text-lg"> {option.priceDetail}</span>
+                                                        </div>
+                                                        <ul className="space-y-4 text-base mt-6">
+                                                            {option.features.map((feature, idx) => (
+                                                                <li key={idx} className="flex items-start gap-3">
+                                                                    {feature.toLowerCase().startsWith('todo lo del') ? 
+                                                                        <Award className="h-6 w-6 text-amber-400 mt-0.5 shrink-0" /> :
+                                                                        <CheckCircle className="h-6 w-6 text-green-500 mt-0.5 shrink-0" />
+                                                                    }
+                                                                    <span>{feature}</span>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
                                                     </div>
-                                                    <ul className="space-y-4 text-base mt-6">
-                                                        {option.features.map((feature, idx) => (
-                                                            <li key={idx} className="flex items-start gap-3">
-                                                                {feature.toLowerCase().startsWith('todo lo del') ? 
-                                                                    <Award className="h-6 w-6 text-amber-400 mt-0.5 shrink-0" /> :
-                                                                    <CheckCircle className="h-6 w-6 text-green-500 mt-0.5 shrink-0" />
-                                                                }
-                                                                <span>{feature}</span>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                                <div className="pt-6">
-                                                    <PaymentModal 
-                                                        planName={plan.name} 
-                                                        pricingOption={option}
-                                                        isPopular={plan.isPopular || false}
-                                                    />
-                                                </div>
-                                            </TabsContent>
-                                        ))}
-                                    </CardContent>
-                                </Tabs>
-                            </Card>
-                        </div>
-                    </CarouselItem>
-                ))}
+                                                    <div className="pt-6">
+                                                        <PaymentModal 
+                                                            planName={plan.name} 
+                                                            pricingOption={option}
+                                                            isPopular={plan.isPopular || false}
+                                                        />
+                                                    </div>
+                                                </TabsContent>
+                                            ))}
+                                        </CardContent>
+                                    </Tabs>
+                                </Card>
+                            </div>
+                        </CarouselItem>
+                    );
+                })}
             </CarouselContent>
             <CarouselPrevious className="hidden lg:flex"/>
             <CarouselNext className="hidden lg:flex"/>
@@ -487,5 +366,3 @@ export default function SubscriptionsPage() {
     </div>
   );
 }
-
-    

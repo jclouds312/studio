@@ -1,5 +1,7 @@
 
 
+import type { LucideIcon } from "lucide-react";
+
 export type Job = {
     id: string;
     title: string;
@@ -65,7 +67,7 @@ export type Transaction = {
         email: string;
         avatar?: string;
     };
-    plan: 'Básico' | 'Profesional' | 'Empresa';
+    plan: string;
     status: 'Pagado' | 'Pendiente' | 'Fallido';
     amount: number;
     date: string;
@@ -80,3 +82,20 @@ export type PaymentMetrics = {
     planDistribution: { name: string; value: number; fill: string }[];
 };
 
+export type PricingOption = {
+  duration: 'monthly' | 'quarterly' | 'semi-annually';
+  price: string;
+  priceDetail: string;
+  priceAmount: number;
+  discount?: string;
+  features: string[];
+};
+
+export type SubscriptionPlan = {
+  name: string;
+  userType: 'worker' | 'company';
+  isPopular: boolean;
+  description: string;
+  iconName: keyof typeof import('lucide-react').icons;
+  pricing: PricingOption[];
+};

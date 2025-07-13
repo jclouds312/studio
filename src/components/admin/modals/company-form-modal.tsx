@@ -16,9 +16,10 @@ interface CompanyFormModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   company: CompanyProfile | null;
+  onSave: (company: CompanyProfile) => void;
 }
 
-export function CompanyFormModal({ isOpen, setIsOpen, company }: CompanyFormModalProps) {
+export function CompanyFormModal({ isOpen, setIsOpen, company, onSave }: CompanyFormModalProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState<Partial<CompanyProfile>>({});
   const title = company ? 'Editar Empresa' : 'Añadir Nueva Empresa';
@@ -48,12 +49,12 @@ export function CompanyFormModal({ isOpen, setIsOpen, company }: CompanyFormModa
   };
   
   const handleSelectChange = (id: string, value: string) => {
-    setFormData(prev => ({...prev, [id]: value}));
+    setFormData(prev => ({...prev, [id]: value as any}));
   };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // En una app real, aquí enviarías los datos a la API.
+    onSave(formData as CompanyProfile);
     toast({
         title: "¡Éxito!",
         description: `La empresa "${formData.name}" ha sido guardada correctamente.`,
@@ -91,13 +92,13 @@ export function CompanyFormModal({ isOpen, setIsOpen, company }: CompanyFormModa
               <Label htmlFor="name" className="text-right">
                 Nombre
               </Label>
-              <Input id="name" value={formData.name || ''} onChange={handleInputChange} className="col-span-3" />
+              <Input id="name" value={formData.name || ''} onChange={handleInputChange} className="col-span-3" required/>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="cuit" className="text-right">
                 CUIT
               </Label>
-              <Input id="cuit" value={formData.cuit || ''} onChange={handleInputChange} className="col-span-3" />
+              <Input id="cuit" value={formData.cuit || ''} onChange={handleInputChange} className="col-span-3" required/>
             </div>
              <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="address" className="text-right">
@@ -109,7 +110,7 @@ export function CompanyFormModal({ isOpen, setIsOpen, company }: CompanyFormModa
               <Label htmlFor="city" className="text-right">
                 Ciudad
               </Label>
-              <Input id="city" value={formData.city || ''} onChange={handleInputChange} className="col-span-3" />
+              <Input id="city" value={formData.city || ''} onChange={handleInputChange} className="col-span-3" required/>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="province" className="text-right">

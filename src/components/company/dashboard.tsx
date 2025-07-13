@@ -9,12 +9,11 @@ import { PlusCircle, Edit, Trash2, Eye, MessageSquare } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
-import { allJobs } from '../job-listings';
-import { allUsers } from '@/lib/users';
+import { allJobs, allUsers } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
 
-const companyApplicants = allUsers.filter(u => ['juan.perez@example.com', 'ana.garcia@example.com'].includes(u.email));
+const companyApplicants = allUsers.filter(u => u.role === 'user' && ['juan.perez@example.com', 'ana.garcia@example.com'].includes(u.email));
 
 export function CompanyDashboard() {
   const { session } = useSession();
@@ -102,7 +101,7 @@ export function CompanyDashboard() {
                         <Badge variant="default" className="bg-green-500/80">Activo</Badge>
                     </div>
                      <p className="text-sm text-muted-foreground">
-                        Tu plan te permite publicar hasta 10 ofertas, acceder a la base de datos de candidatos y obtener soporte dedicado.
+                        Tu plan te permite publicar hasta 5 ofertas, acceder a la base de datos de candidatos y obtener soporte dedicado.
                     </p>
                 </CardContent>
                 <CardFooter>

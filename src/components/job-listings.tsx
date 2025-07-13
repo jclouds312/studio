@@ -12,74 +12,7 @@ import React, { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-
-export const allJobs: Job[] = [
-  {
-    id: '1',
-    title: 'Frontend Developer',
-    company: 'Tech Solutions Inc.',
-    location: 'Buenos Aires',
-    type: 'Full-time',
-    description: 'Buscamos un desarrollador Frontend para unirse a nuestro equipo. Serás responsable de construir el lado del cliente de nuestras aplicaciones web. Debes ser capaz de traducir las necesidades de nuestra empresa y clientes en aplicaciones interactivas funcionales y atractivas.',
-    companyLogo: 'https://placehold.co/56x56.png',
-    category: 'tech',
-    isFeatured: true,
-    whatsapp: '+5491123456789'
-  },
-  {
-    id: '2',
-    title: 'Diseñador/a UX/UI',
-    company: 'Creative Minds',
-    location: 'Córdoba',
-    type: 'Contract',
-    description: 'Creative Minds busca un talentoso Diseñador UX/UI para crear experiencias de usuario increíbles. El candidato ideal debe tener un ojo para el diseño limpio y artístico, poseer habilidades superiores de UI y ser capaz de traducir requisitos de alto nivel en flujos de interacción y artefactos.',
-    companyLogo: 'https://placehold.co/56x56.png',
-    category: 'design'
-  },
-  {
-    id: '3',
-    title: 'Ingeniero/a Backend (Node.js)',
-    company: 'Server Systems',
-    location: 'Remoto',
-    type: 'Full-time',
-    description: 'Únete a nuestro equipo de backend para diseñar e implementar aplicaciones del lado del servidor escalables y robustas. Trabajarás con un equipo de desarrolladores para construir y mantener nuestros servicios principales, asegurando un alto rendimiento y capacidad de respuesta a las solicitudes del front-end.',
-    companyLogo: 'https://placehold.co/56x56.png',
-    category: 'tech'
-  },
-   {
-    id: '4',
-    title: 'Manager de Marketing Digital',
-    company: 'Growth Hackers',
-    location: 'Rosario',
-    type: 'Part-time',
-    description: 'Estamos contratando un Manager de Marketing Digital para desarrollar, implementar, rastrear y optimizar nuestras campañas de marketing digital en todos los canales digitales. Debes tener un fuerte conocimiento de las herramientas y estrategias de marketing actuales.',
-    companyLogo: 'https://placehold.co/56x56.png',
-    category: 'marketing'
-  },
-  {
-    id: '5',
-    title: 'Representante de Ventas',
-    company: 'Lead Gen',
-    location: 'Buenos Aires',
-    type: 'Full-time',
-    description: 'Buscamos un Ejecutivo de Ventas competitivo y confiable para ayudarnos a desarrollar nuestras actividades comerciales. Las responsabilidades del Ejecutivo de Ventas incluyen descubrir y buscar nuevos prospectos de ventas, negociar acuerdos y mantener la satisfacción del cliente.',
-    companyLogo: 'https://placehold.co/56x56.png',
-    category: 'sales',
-    isFeatured: true,
-    whatsapp: '+5491123456789'
-  },
-   {
-    id: '6',
-    title: 'Pintor de Interiores',
-    company: 'Servicios Varios',
-    location: 'La Plata',
-    type: 'Changa',
-    description: 'Se necesita pintor con experiencia para pintar un departamento de 2 ambientes. Se proveen materiales. Trabajo por día, pago al finalizar la jornada. Enviar fotos de trabajos previos por WhatsApp.',
-    companyLogo: 'https://placehold.co/56x56.png',
-    category: 'domestic',
-    whatsapp: '+5492212345678'
-  }
-];
+import { allJobs } from "@/lib/data";
 
 function JobListingCard({ job }: { job: Job }) {
     const { toast } = useToast();

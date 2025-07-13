@@ -2,7 +2,7 @@
 'use client';
 
 import { Header } from '@/components/layout/header';
-import { allJobs } from '@/components/job-listings';
+import { allJobs } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

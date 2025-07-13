@@ -1,7 +1,7 @@
 
 'use client';
 
-import { allJobs } from "@/components/job-listings";
+import { allJobs } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +19,7 @@ import React from "react";
 import type { Job } from "@/lib/types";
 
 export function JobsTab() {
+    const [jobs, setJobs] = React.useState(allJobs);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [selectedJob, setSelectedJob] = React.useState<Job | null>(null);
 
@@ -27,9 +28,23 @@ export function JobsTab() {
         setIsModalOpen(true);
     };
 
+    const handleSave = (jobData: Job) => {
+        if (selectedJob) {
+            // Edit
+            setJobs(jobs.map(j => j.id === jobData.id ? jobData : j));
+        } else {
+            // Create
+            setJobs([...jobs, { ...jobData, id: String(Date.now()) }]);
+        }
+    };
+    
+    const handleDelete = (jobId: string) => {
+        setJobs(jobs.filter(j => j.id !== jobId));
+    };
+
     return (
         <>
-        <JobFormModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} job={selectedJob}/>
+        <JobFormModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} job={selectedJob} onSave={handleSave}/>
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
@@ -58,7 +73,7 @@ export function JobsTab() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {allJobs.map(job => (
+                        {jobs.map(job => (
                             <TableRow key={job.id}>
                                 <TableCell className="font-medium">{job.title}</TableCell>
                                 <TableCell>{job.company}</TableCell>
@@ -85,7 +100,7 @@ export function JobsTab() {
                                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                                         <DropdownMenuItem onClick={() => handleOpenModal(job)}>Editar</DropdownMenuItem>
                                         <DropdownMenuItem>Desactivar</DropdownMenuItem>
-                                        <DropdownMenuItem className="text-destructive">Eliminar</DropdownMenuItem>
+                                        <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(job.id)}>Eliminar</DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </TableCell>

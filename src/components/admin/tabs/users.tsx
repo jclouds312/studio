@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { Badge } from "@/components/ui/badge";
@@ -18,10 +17,11 @@ import Image from "next/image";
 import React from "react";
 import { UserFormModal } from "../modals/user-form-modal";
 import type { User } from "@/lib/types";
-import { allUsers } from '@/lib/users';
+import { allUsers } from '@/lib/data';
 import Link from "next/link";
 
 export function UsersTab() {
+    const [users, setUsers] = React.useState(allUsers);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
 
@@ -30,10 +30,28 @@ export function UsersTab() {
         setIsModalOpen(true);
     };
 
+    const handleSaveUser = (userData: User) => {
+        if (selectedUser) {
+            setUsers(users.map(u => u.id === userData.id ? userData : u));
+        } else {
+            const newUser = {
+                ...userData,
+                id: String(Date.now()),
+                createdAt: new Date().toISOString().split('T')[0],
+                avatar: 'https://placehold.co/40x40.png'
+            };
+            setUsers([...users, newUser]);
+        }
+    };
+    
+    const handleDeleteUser = (userId: string) => {
+        setUsers(users.filter(u => u.id !== userId));
+    };
+
 
     return (
         <>
-            <UserFormModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} user={selectedUser}/>
+            <UserFormModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} user={selectedUser} onSave={handleSaveUser}/>
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
@@ -71,7 +89,7 @@ export function UsersTab() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {allUsers.map(user => (
+                            {users.map(user => (
                                 <TableRow key={user.id}>
                                     <TableCell className="font-medium">
                                         <div className="flex items-center gap-3">
@@ -105,7 +123,7 @@ export function UsersTab() {
                                             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                                             <DropdownMenuItem>Ver Perfil</DropdownMenuItem>
                                             <DropdownMenuItem onClick={() => handleOpenModal(user)}>Editar</DropdownMenuItem>
-                                            <DropdownMenuItem className="text-destructive">Suspender</DropdownMenuItem>
+                                            <DropdownMenuItem className="text-destructive" onClick={() => handleDeleteUser(user.id)}>Suspender</DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>

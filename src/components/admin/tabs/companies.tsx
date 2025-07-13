@@ -17,46 +17,10 @@ import Image from "next/image";
 import React from "react";
 import { CompanyFormModal } from "../modals/company-form-modal";
 import type { CompanyProfile } from "@/lib/types";
-
-
-const companiesData: CompanyProfile[] = [
-    {
-        id: '1',
-        name: 'Tech Solutions Inc.',
-        cuit: '30-12345678-9',
-        address: 'Av. Corrientes 1234, Piso 5',
-        city: 'CABA',
-        province: 'Buenos Aires',
-        phone: '11-4321-9876',
-        logoUrl: 'https://placehold.co/40x40.png',
-        status: 'Activa',
-    },
-    {
-        id: '2',
-        name: 'Creative Minds',
-        cuit: '30-98765432-1',
-        address: 'Bv. San Juan 567',
-        city: 'Córdoba',
-        province: 'Córdoba',
-        phone: '351-123-4567',
-        logoUrl: 'https://placehold.co/40x40.png',
-        status: 'Activa',
-    },
-     {
-        id: '3',
-        name: 'Server Systems',
-        cuit: '30-55555555-5',
-        address: 'N/A',
-        city: 'Remoto',
-        province: 'N/A',
-        phone: 'N/A',
-        logoUrl: 'https://placehold.co/40x40.png',
-        status: 'Inactiva',
-    },
-];
-
+import { allCompanies } from "@/lib/data";
 
 export function CompaniesTab() {
+    const [companies, setCompanies] = React.useState(allCompanies);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [selectedCompany, setSelectedCompany] = React.useState<CompanyProfile | null>(null);
 
@@ -65,9 +29,21 @@ export function CompaniesTab() {
         setIsModalOpen(true);
     };
 
+    const handleSave = (companyData: CompanyProfile) => {
+        if (selectedCompany) {
+            setCompanies(companies.map(c => c.id === companyData.id ? companyData : c));
+        } else {
+            setCompanies([...companies, { ...companyData, id: String(Date.now()) }]);
+        }
+    };
+    
+    const handleDelete = (companyId: string) => {
+        setCompanies(companies.filter(c => c.id !== companyId));
+    };
+
     return (
         <>
-            <CompanyFormModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} company={selectedCompany} />
+            <CompanyFormModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} company={selectedCompany} onSave={handleSave} />
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
@@ -95,7 +71,7 @@ export function CompaniesTab() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {companiesData.map(company => (
+                            {companies.map(company => (
                                 <TableRow key={company.id}>
                                     <TableCell className="font-medium">
                                         <div className="flex items-center gap-3">
@@ -126,7 +102,7 @@ export function CompaniesTab() {
                                             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                                             <DropdownMenuItem>Ver Perfil</DropdownMenuItem>
                                             <DropdownMenuItem onClick={() => handleOpenModal(company)}>Editar</DropdownMenuItem>
-                                            <DropdownMenuItem className="text-destructive">Suspender</DropdownMenuItem>
+                                            <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(company.id)}>Suspender</DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>

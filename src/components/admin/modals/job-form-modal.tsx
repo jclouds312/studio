@@ -16,9 +16,10 @@ interface JobFormModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   job: Job | null;
+  onSave: (job: Job) => void;
 }
 
-export function JobFormModal({ isOpen, setIsOpen, job }: JobFormModalProps) {
+export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState<Partial<Job>>({});
   const title = job ? 'Editar Publicación' : 'Crear Nueva Publicación';
@@ -31,6 +32,7 @@ export function JobFormModal({ isOpen, setIsOpen, job }: JobFormModalProps) {
       setFormData({
         title: '',
         company: '',
+        companyLogo: 'https://placehold.co/56x56.png',
         location: '',
         type: 'Full-time',
         category: 'tech',
@@ -47,7 +49,7 @@ export function JobFormModal({ isOpen, setIsOpen, job }: JobFormModalProps) {
   };
 
   const handleSelectChange = (id: string, value: string) => {
-    setFormData(prev => ({...prev, [id]: value}));
+    setFormData(prev => ({...prev, [id]: value as any}));
   };
 
   const handleSwitchChange = (id: string, checked: boolean) => {
@@ -56,6 +58,7 @@ export function JobFormModal({ isOpen, setIsOpen, job }: JobFormModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    onSave(formData as Job);
     toast({
         title: "¡Éxito!",
         description: `La publicación "${formData.title}" ha sido guardada correctamente.`,
@@ -77,19 +80,19 @@ export function JobFormModal({ isOpen, setIsOpen, job }: JobFormModalProps) {
                 <Label htmlFor="title" className="text-right">
                 Título
                 </Label>
-                <Input id="title" value={formData.title || ''} onChange={handleInputChange} className="col-span-3" />
+                <Input id="title" value={formData.title || ''} onChange={handleInputChange} className="col-span-3" required/>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="company" className="text-right">
                 Empresa
                 </Label>
-                <Input id="company" value={formData.company || ''} onChange={handleInputChange} className="col-span-3" />
+                <Input id="company" value={formData.company || ''} onChange={handleInputChange} className="col-span-3" required/>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="location" className="text-right">
                 Ubicación
                 </Label>
-                <Input id="location" value={formData.location || ''} onChange={handleInputChange} className="col-span-3" />
+                <Input id="location" value={formData.location || ''} onChange={handleInputChange} className="col-span-3" required/>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="type" className="text-right">
@@ -130,7 +133,7 @@ export function JobFormModal({ isOpen, setIsOpen, job }: JobFormModalProps) {
                 <Label htmlFor="description" className="text-right pt-2">
                 Descripción
                 </Label>
-                <Textarea id="description" value={formData.description || ''} onChange={handleInputChange} className="col-span-3" rows={5} />
+                <Textarea id="description" value={formData.description || ''} onChange={handleInputChange} className="col-span-3" rows={5} required/>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="whatsapp" className="text-right">

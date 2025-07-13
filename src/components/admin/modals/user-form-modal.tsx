@@ -16,9 +16,10 @@ interface UserFormModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   user: User | null;
+  onSave: (user: User) => void;
 }
 
-export function UserFormModal({ isOpen, setIsOpen, user }: UserFormModalProps) {
+export function UserFormModal({ isOpen, setIsOpen, user, onSave }: UserFormModalProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState<Partial<User>>({});
   const title = user ? 'Editar Usuario' : 'Crear Nuevo Usuario';
@@ -44,11 +45,12 @@ export function UserFormModal({ isOpen, setIsOpen, user }: UserFormModalProps) {
   };
 
   const handleSelectChange = (id: string, value: string) => {
-    setFormData(prev => ({...prev, [id]: value}));
+    setFormData(prev => ({...prev, [id]: value as any}));
   };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    onSave(formData as User);
     toast({
         title: "¡Éxito!",
         description: `El usuario "${formData.name}" ha sido guardado correctamente.`,
@@ -83,13 +85,13 @@ export function UserFormModal({ isOpen, setIsOpen, user }: UserFormModalProps) {
               <Label htmlFor="name" className="text-right">
                 Nombre
               </Label>
-              <Input id="name" value={formData.name || ''} onChange={handleInputChange} className="col-span-3" />
+              <Input id="name" value={formData.name || ''} onChange={handleInputChange} className="col-span-3" required/>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-right">
                 Email
               </Label>
-              <Input id="email" type="email" value={formData.email || ''} onChange={handleInputChange} className="col-span-3" />
+              <Input id="email" type="email" value={formData.email || ''} onChange={handleInputChange} className="col-span-3" required/>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="role" className="text-right">
