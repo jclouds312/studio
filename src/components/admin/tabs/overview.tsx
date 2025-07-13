@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -139,36 +140,7 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
   const { toast } = useToast();
   const [isPaying, setIsPaying] = React.useState(false);
   const [paymentSuccess, setPaymentSuccess] = React.useState(false);
-  const [isMercadoPagoConnected, setIsMercadoPagoConnected] = React.useState(false);
-  const [isConnecting, setIsConnecting] = React.useState(false);
-
-
-  const handleConnectMercadoPago = () => {
-    setIsConnecting(true);
-    toast({
-      title: "Redirigiendo a Mercado Pago...",
-      description: "Por favor, autoriza la conexión en la ventana emergente.",
-    });
-    // Simular el tiempo que toma el proceso de OAuth
-    setTimeout(() => {
-        setIsMercadoPagoConnected(true);
-        setIsConnecting(false);
-        toast({
-            title: "¡Conexión Exitosa!",
-            description: "Tu cuenta de Mercado Pago ha sido vinculada.",
-        });
-    }, 2500);
-  };
-
-  const handleDisconnectMercadoPago = () => {
-    setIsMercadoPagoConnected(false);
-    toast({
-      title: "Mercado Pago Desconectado",
-      description: "La integración ha sido removida.",
-      variant: "destructive"
-    });
-  };
-
+  
   const handlePayment = async () => {
     setIsPaying(true);
     try {
@@ -511,86 +483,71 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
                     <Image src="https://www.mercadopago.com.ar/static/logo-lila.svg" alt="Mercado Pago" width={28} height={28} data-ai-hint="company logo"/>
                     Conectar Mercado Pago
                 </CardTitle>
-                <CardDescription>Conecta tu cuenta para recibir pagos por suscripciones y servicios.</CardDescription>
+                 <CardDescription>Conecta tu cuenta para recibir pagos por suscripciones y servicios.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
-                {isMercadoPagoConnected ? (
-                    <div className="flex flex-col items-center justify-center text-center p-4 rounded-lg bg-secondary/30">
-                        <Sparkles className="h-10 w-10 text-green-400 mb-2"/>
-                        <p className="font-semibold text-foreground">Cuenta de Mercado Pago Conectada</p>
-                        <p className="text-sm text-muted-foreground">Ya puedes procesar pagos de forma segura.</p>
-                        <Button variant="destructive" size="sm" className="mt-4" onClick={handleDisconnectMercadoPago}>
-                            Desconectar
-                        </Button>
-                    </div>
-                ) : (
-                    <Button 
-                        size="lg" 
-                        onClick={handleConnectMercadoPago} 
-                        disabled={isConnecting}
-                        className="bg-[#009EE3] hover:bg-[#009EE3]/90 text-white"
-                    >
-                        {isConnecting ? (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                            <Image src="https://www.mercadopago.com.ar/static/logo-lila.svg" alt="Mercado Pago Logo" width={24} height={24} className="mr-2 filter invert brightness-0" data-ai-hint="company logo"/>
-                        )}
-                        Conectar con Mercado Pago
+                <div className="space-y-2">
+                  <Label htmlFor="mp-token">Access Token</Label>
+                  <div className="relative">
+                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
+                    <Input id="mp-token" type="password" placeholder="APP_USR-..." className="pl-10"/>
+                  </div>
+                </div>
+                <Button>
+                    <Star className="mr-2 h-4 w-4"/>
+                    Guardar y Conectar
+                </Button>
+                 <Separator/>
+                 <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline">
+                        <DollarSign className="mr-2 h-4 w-4"/>
+                        Simular Pago de Cliente
                     </Button>
-                )}
-                
-                <Separator/>
-                
-                <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
-                    <AlertDialogTrigger asChild>
-                        <Button variant="outline" disabled={!isMercadoPagoConnected}>
-                            <DollarSign className="mr-2 h-4 w-4"/>
-                            Simular Pago de Cliente
-                        </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                       {paymentSuccess ? (
+                          <div className="text-center py-4">
+                            <Sparkles className="h-12 w-12 text-green-500 mx-auto mb-2"/>
+                            <AlertDialogTitle>¡Pago exitoso!</AlertDialogTitle>
+                            <AlertDialogDescription>La publicación de empleo ha sido destacada.</AlertDialogDescription>
+                          </div>
+                        ) : (
+                          <>
+                            <AlertDialogTitle className="flex items-center gap-2">
+                                <Image src="https://www.mercadopago.com.ar/static/logo-lila.svg" alt="Mercado Pago" width={120} height={28} data-ai-hint="company logo"/>
+                                Confirmar Pago
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Estás a punto de pagar <span className="font-bold text-foreground">ARS $500.00</span> para destacar una publicación por 30 días.
+                            </AlertDialogDescription>
+                          </>
+                        )}
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
                         {paymentSuccess ? (
-                            <div className="text-center py-4">
-                                <Sparkles className="h-12 w-12 text-green-500 mx-auto mb-2"/>
-                                <AlertDialogTitle>¡Pago exitoso!</AlertDialogTitle>
-                                <AlertDialogDescription>La publicación de empleo ha sido destacada.</AlertDialogDescription>
-                            </div>
-                            ) : (
+                            <AlertDialogCancel>Cerrar</AlertDialogCancel>
+                        ) : (
                             <>
-                                <AlertDialogTitle className="flex items-center gap-2">
-                                    <Image src="https://www.mercadopago.com.ar/static/logo-lila.svg" alt="Mercado Pago" width={120} height={28} data-ai-hint="company logo"/>
-                                    Confirmar Pago
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    Estás a punto de pagar <span className="font-bold text-foreground">ARS $500.00</span> para destacar una publicación por 30 días.
-                                </AlertDialogDescription>
+                                <AlertDialogCancel disabled={isPaying}>Cancelar</AlertDialogCancel>
+                                <Button onClick={handlePayment} disabled={isPaying}>
+                                  {isPaying ? (
+                                    <>
+                                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                      Procesando...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <CreditCard className="mr-2 h-4 w-4" />
+                                      Pagar ahora
+                                    </>
+                                  )}
+                                </Button>
                             </>
-                            )}
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            {paymentSuccess ? (
-                                <AlertDialogCancel>Cerrar</AlertDialogCancel>
-                            ) : (
-                                <>
-                                    <AlertDialogCancel disabled={isPaying}>Cancelar</AlertDialogCancel>
-                                    <Button onClick={handlePayment} disabled={isPaying}>
-                                    {isPaying ? (
-                                        <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Procesando...
-                                        </>
-                                    ) : (
-                                        <>
-                                        <CreditCard className="mr-2 h-4 w-4" />
-                                        Pagar ahora
-                                        </>
-                                    )}
-                                    </Button>
-                                </>
-                            )}
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
+                        )}
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
                 </AlertDialog>
             </CardContent>
         </Card>
@@ -598,5 +555,3 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
     </div>
   );
 }
-
-    
