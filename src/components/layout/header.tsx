@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Briefcase } from 'lucide-react';
+import { Menu, Briefcase, Shield } from 'lucide-react';
 
 export function Header() {
   const navLinks = [
@@ -25,6 +25,10 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+             <Link href="/admin" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                <Shield className="h-4 w-4" />
+                Admin
+              </Link>
           </nav>
           <div className="flex items-center gap-4">
             <div className="hidden md:block">
@@ -52,6 +56,10 @@ export function Header() {
                         {link.label}
                       </Link>
                     ))}
+                     <Link href="/admin" className="text-lg font-medium hover:text-primary transition-colors flex items-center gap-2">
+                        <Shield className="h-5 w-5" />
+                        Admin
+                      </Link>
                     <div className="border-t pt-6">
                        <Avatar>
                         <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person user" />
