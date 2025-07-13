@@ -73,6 +73,7 @@ function EditProfileTab() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = React.useState<string | null>(null);
+  const isAdmin = session.user?.role === 'admin';
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -101,8 +102,8 @@ function EditProfileTab() {
   return (
       <Card>
         <CardHeader>
-            <CardTitle>Información Personal y Profesional</CardTitle>
-            <CardDescription>Actualiza tus datos, sube tu CV y detalla tu experiencia.</CardDescription>
+            <CardTitle>{isAdmin ? 'Configuración de Cuenta' : 'Información Personal y Profesional'}</CardTitle>
+            <CardDescription>{isAdmin ? 'Gestiona los datos de tu cuenta de administrador.' : 'Actualiza tus datos, sube tu CV y detalla tu experiencia.'}</CardDescription>
         </CardHeader>
         <CardContent>
             <form className="space-y-6" onSubmit={handleSubmit}>
@@ -115,58 +116,73 @@ function EditProfileTab() {
                         </div>
                     </div>
                      <div className="space-y-4">
-                        <Label htmlFor="phone">Número de WhatsApp</Label>
+                        <Label htmlFor="email">Email</Label>
                         <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                            <Input id="phone" type="tel" className="pl-10" defaultValue={staticUser.phone} placeholder="+54 9 11 ...."/>
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                            <Input id="email" type="email" className="pl-10" defaultValue={session.user?.email} placeholder="Tu email" disabled/>
                         </div>
                     </div>
-                     <div className="space-y-4">
-                        <Label htmlFor="location">Localidad</Label>
-                        <div className="relative">
-                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                            <Input id="location" type="text" className="pl-10" defaultValue={staticUser.location} placeholder="Ej: Buenos Aires, CABA"/>
-                        </div>
-                    </div>
-                     <div className="space-y-4">
-                        <Label htmlFor="cv">Curriculum Vitae (PDF)</Label>
-                        <div className="relative">
-                            <Input
-                                id="cv-upload"
-                                type="file"
-                                className="hidden"
-                                ref={fileInputRef}
-                                onChange={handleFileChange}
-                                accept=".pdf"
-                            />
-                            <Button
-                                type="button"
-                                variant="outline"
-                                className="w-full justify-start text-left font-normal"
-                                onClick={() => fileInputRef.current?.click()}
-                            >
-                                <FileText className="mr-2 h-4 w-4" />
-                                {fileName || 'Subir archivo PDF'}
-                            </Button>
-                        </div>
-                        {fileName && (
-                            <p className="text-xs text-muted-foreground mt-1">Archivo seleccionado: {fileName}</p>
-                        )}
-                    </div>
+                    {!isAdmin && (
+                        <>
+                             <div className="space-y-4">
+                                <Label htmlFor="phone">Número de WhatsApp</Label>
+                                <div className="relative">
+                                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                                    <Input id="phone" type="tel" className="pl-10" defaultValue={staticUser.phone} placeholder="+54 9 11 ...."/>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <Label htmlFor="location">Localidad</Label>
+                                <div className="relative">
+                                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                                    <Input id="location" type="text" className="pl-10" defaultValue={staticUser.location} placeholder="Ej: Buenos Aires, CABA"/>
+                                </div>
+                            </div>
+                             <div className="space-y-4 md:col-span-2">
+                                <Label htmlFor="cv">Curriculum Vitae (PDF)</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="cv-upload"
+                                        type="file"
+                                        className="hidden"
+                                        ref={fileInputRef}
+                                        onChange={handleFileChange}
+                                        accept=".pdf"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="w-full justify-start text-left font-normal"
+                                        onClick={() => fileInputRef.current?.click()}
+                                    >
+                                        <FileText className="mr-2 h-4 w-4" />
+                                        {fileName || 'Subir archivo PDF'}
+                                    </Button>
+                                </div>
+                                {fileName && (
+                                    <p className="text-xs text-muted-foreground mt-1">Archivo seleccionado: {fileName}</p>
+                                )}
+                            </div>
+                        </>
+                    )}
                 </div>
 
-                <Separator />
-                
-                <div className="space-y-4">
-                    <div>
-                        <Label htmlFor="summary">Resumen Profesional</Label>
-                        <Textarea id="summary" rows={4} defaultValue={staticUser.professionalSummary} placeholder="Un breve resumen sobre tu perfil profesional..."/>
-                    </div>
-                     <div>
-                        <Label htmlFor="experience">Experiencia Laboral</Label>
-                        <Textarea id="experience" rows={6} defaultValue={staticUser.experience} placeholder="Detalla tus trabajos anteriores, roles y responsabilidades..."/>
-                    </div>
-                </div>
+                {!isAdmin && (
+                    <>
+                        <Separator />
+                        
+                        <div className="space-y-4">
+                            <div>
+                                <Label htmlFor="summary">Resumen Profesional</Label>
+                                <Textarea id="summary" rows={4} defaultValue={staticUser.professionalSummary} placeholder="Un breve resumen sobre tu perfil profesional..."/>
+                            </div>
+                            <div>
+                                <Label htmlFor="experience">Experiencia Laboral</Label>
+                                <Textarea id="experience" rows={6} defaultValue={staticUser.experience} placeholder="Detalla tus trabajos anteriores, roles y responsabilidades..."/>
+                            </div>
+                        </div>
+                    </>
+                )}
                 
                 <div className="flex justify-end pt-2">
                     <Button type="submit" size="lg" disabled={isSubmitting}>
@@ -324,7 +340,6 @@ export function UserProfile() {
   const isAdmin = user.role === 'admin';
   const roleDisplay = roleDisplayMap[user.role] || user.role;
 
-
   return (
     <>
     <ChatPanel isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
@@ -387,38 +402,52 @@ export function UserProfile() {
           </Card>
        )}
       
-      <Tabs defaultValue="edit-profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="edit-profile">
-            <Edit className="mr-2 h-4 w-4" />
-            Editar Perfil
-          </TabsTrigger>
-          <TabsTrigger value="applications">
-            <Briefcase className="mr-2 h-4 w-4" />
-            Postulaciones
+      {isAdmin ? (
+        <Tabs defaultValue="edit-profile" className="w-full">
+            <TabsList className="grid w-full grid-cols-1">
+                <TabsTrigger value="edit-profile">
+                    <Edit className="mr-2 h-4 w-4" />
+                    Configuración de Cuenta
+                </TabsTrigger>
+            </TabsList>
+            <TabsContent value="edit-profile" className="mt-6">
+                <EditProfileTab />
+            </TabsContent>
+        </Tabs>
+      ) : (
+        <Tabs defaultValue="edit-profile" className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="edit-profile">
+                <Edit className="mr-2 h-4 w-4" />
+                Editar Perfil
             </TabsTrigger>
-             <TabsTrigger value="saved-jobs">
-            <Bookmark className="mr-2 h-4 w-4" />
-            Guardados
+            <TabsTrigger value="applications">
+                <Briefcase className="mr-2 h-4 w-4" />
+                Postulaciones
+                </TabsTrigger>
+                <TabsTrigger value="saved-jobs">
+                <Bookmark className="mr-2 h-4 w-4" />
+                Guardados
+                </TabsTrigger>
+            <TabsTrigger value="stats">
+                <Eye className="mr-2 h-4 w-4" />
+                Estadísticas
             </TabsTrigger>
-          <TabsTrigger value="stats">
-            <Eye className="mr-2 h-4 w-4" />
-            Estadísticas
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="edit-profile" className="mt-6">
-            <EditProfileTab />
-        </TabsContent>
-        <TabsContent value="applications" className="mt-6">
-            <ApplicationsTab onChatOpen={() => setIsChatOpen(true)} />
-        </TabsContent>
-        <TabsContent value="saved-jobs" className="mt-6">
-            <SavedJobsTab />
-        </TabsContent>
-        <TabsContent value="stats" className="mt-6">
-            <StatsTab />
-        </TabsContent>
-      </Tabs>
+            </TabsList>
+            <TabsContent value="edit-profile" className="mt-6">
+                <EditProfileTab />
+            </TabsContent>
+            <TabsContent value="applications" className="mt-6">
+                <ApplicationsTab onChatOpen={() => setIsChatOpen(true)} />
+            </TabsContent>
+            <TabsContent value="saved-jobs" className="mt-6">
+                <SavedJobsTab />
+            </TabsContent>
+            <TabsContent value="stats" className="mt-6">
+                <StatsTab />
+            </TabsContent>
+        </Tabs>
+      )}
     </div>
     </>
   );

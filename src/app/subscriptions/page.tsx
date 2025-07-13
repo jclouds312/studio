@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Star, Briefcase, Zap } from 'lucide-react';
+import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle } from 'lucide-react';
 import React from 'react';
 import {
   AlertDialog,
@@ -23,9 +23,10 @@ import { Loader2, Sparkles, CreditCard } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
+import { useSession } from '@/hooks/use-session';
 
 
-const plans = [
+const initialPlans = [
     {
         name: 'Básico',
         price: 'Gratis',
@@ -70,7 +71,7 @@ const plans = [
         description: 'Para empresas que contratan',
         priceAmount: 10000,
     },
-]
+];
 
 function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { planName: string, planPrice: string, planPriceAmount: number, userType: string }) {
     const [isPaying, setIsPaying] = React.useState(false);
@@ -85,7 +86,6 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { plan
 
       setIsPaying(true);
       try {
-        // 1. Llamar a la API de backend para crear la preferencia de pago
         const response = await fetch('/api/mercadopago/create-preference', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -100,13 +100,6 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { plan
         }
 
         const preference = await response.json();
-
-        // 2. Aquí es donde se redirigiría al checkout de Mercado Pago
-        // En un escenario real, usarías el SDK de Frontend de Mercado Pago con el preference.id
-        // Ejemplo:
-        // const mp = new MercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY);
-        // mp.checkout({ preference: { id: preference.id }, render: { container: '.checkout-container' } });
-        // O simplemente redirigir: window.location.href = preference.init_point;
         
         console.log('Preferencia de pago creada:', preference.id);
         toast({
@@ -114,7 +107,6 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { plan
           description: `ID de Preferencia: ${preference.id}. En una app real, serías redirigido.`,
         });
 
-        // Simulación de éxito para el prototipo
         setTimeout(() => {
           setIsPaying(false);
           setPaymentSuccess(true);
@@ -186,10 +178,84 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { plan
     )
 }
 
-export default function SubscriptionsPage() {
-  return (
-    <div className="flex flex-col min-h-screen bg-transparent">
-      <Header />
+function AdminPlanView() {
+    const { toast } = useToast();
+    const [plans, setPlans] = React.useState(initialPlans);
+
+    const handleDelete = (planName: string) => {
+        toast({
+            title: "Plan Eliminado",
+            description: `El plan "${planName}" ha sido eliminado.`,
+            variant: "destructive",
+        })
+    }
+    
+    return (
+        <main className="flex-1 container mx-auto py-12 px-4">
+        <div className="flex items-center justify-between mb-12">
+            <div className='flex-1'>
+                <h1 className="text-4xl font-bold tracking-tight">Administrar Planes</h1>
+                <p className="text-lg text-muted-foreground mt-2">
+                Crea, edita o elimina los planes de suscripción de la plataforma.
+                </p>
+            </div>
+            <Button size="lg">
+                <PlusCircle className="mr-2 h-5 w-5"/>
+                Crear Nuevo Plan
+            </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {plans.map((plan) => (
+                <Card key={plan.name} className={cn(
+                    "flex flex-col",
+                    plan.isPopular && "border-primary shadow-2xl relative"
+                )}>
+                    {plan.isPopular && (
+                        <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
+                            <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold flex items-center gap-1">
+                                <Star className="h-4 w-4"/>
+                                MÁS POPULAR
+                            </Badge>
+                        </div>
+                    )}
+                    <CardHeader className="text-center pt-8">
+                        <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                        <CardDescription>{plan.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-grow space-y-6">
+                        <div className="text-center">
+                            <span className="text-4xl font-bold">{plan.price}</span>
+                            <span className="text-muted-foreground"> {plan.priceDetail}</span>
+                        </div>
+                        <ul className="space-y-3 text-sm">
+                            {plan.features.map((feature, index) => (
+                                <li key={index} className="flex items-center gap-2">
+                                    <CheckCircle className="h-5 w-5 text-green-500" />
+                                    <span>{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </CardContent>
+                    <CardFooter className='flex gap-2'>
+                       <Button variant="outline" className='w-full'>
+                            <Edit className='mr-2 h-4 w-4' />
+                            Editar
+                       </Button>
+                       <Button variant="destructive" className='w-full' onClick={() => handleDelete(plan.name)}>
+                            <Trash2 className='mr-2 h-4 w-4'/>
+                            Eliminar
+                       </Button>
+                    </CardFooter>
+                </Card>
+            ))}
+        </div>
+      </main>
+    )
+}
+
+function CustomerPlanView() {
+    return (
       <main className="flex-1 container mx-auto py-12 px-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold tracking-tight">Planes y Precios</h1>
@@ -199,7 +265,7 @@ export default function SubscriptionsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {plans.map((plan) => (
+            {initialPlans.map((plan) => (
                 <Card key={plan.name} className={cn(
                     "flex flex-col",
                     plan.isPopular && "border-primary shadow-2xl relative"
@@ -237,7 +303,34 @@ export default function SubscriptionsPage() {
             ))}
         </div>
       </main>
+    )
+}
+
+
+export default function SubscriptionsPage() {
+  const { session } = useSession();
+
+  if (!session.isMounted) {
+    return (
+        <div className="flex flex-col min-h-screen bg-transparent">
+          <Header />
+            <div className='flex-1 flex items-center justify-center'>
+                <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          <Footer />
+        </div>
+    );
+  }
+
+  const isAdmin = session.user?.role === 'admin';
+
+  return (
+    <div className="flex flex-col min-h-screen bg-transparent">
+      <Header />
+        {isAdmin ? <AdminPlanView /> : <CustomerPlanView />}
       <Footer />
     </div>
   );
 }
+
+    
