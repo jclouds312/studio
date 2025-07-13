@@ -22,8 +22,8 @@ import Image from "next/image";
 import { Loader2, Sparkles, CreditCard } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
 import { useSession } from '@/hooks/use-session';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 const allPlans = [
     {
@@ -91,7 +91,7 @@ const allPlans = [
     },
 ];
 
-function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { planName: string, planPrice: string, planPriceAmount: number, userType: string }) {
+function PaymentModal({ planName, planPrice, planPriceAmount, userType, isPopular }: { planName: string, planPrice: string, planPriceAmount: number, userType: string, isPopular: boolean }) {
     const [isPaying, setIsPaying] = React.useState(false);
     const [paymentSuccess, setPaymentSuccess] = React.useState(false);
     const { toast } = useToast();
@@ -144,8 +144,7 @@ function PaymentModal({ planName, planPrice, planPriceAmount, userType }: { plan
     return (
        <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
         <AlertDialogTrigger asChild>
-          <Button className="w-full">
-            <Zap className="mr-2 h-4 w-4" />
+          <Button className="w-full" size="lg" variant={isPopular ? 'default' : 'outline'}>
             {planPriceAmount === 0 ? 'Comenzar Ahora' : 'Contratar Plan'}
           </Button>
         </AlertDialogTrigger>
@@ -277,13 +276,12 @@ function AdminPlanView() {
 
 function CustomerPlanView() {
     const { session } = useSession();
-    
     const userRole = session.user?.role;
 
     const visiblePlans = allPlans.filter(plan => {
         if (userRole === 'user') return plan.userType === 'worker';
         if (userRole === 'company') return plan.userType === 'company';
-        return true; // Si no hay sesión, mostrar todos
+        return true; 
     });
 
     const title = userRole === 'company' ? 'Planes para Empresas' : 'Planes para Candidatos';
@@ -291,57 +289,76 @@ function CustomerPlanView() {
         ? 'Elige el plan ideal para encontrar el mejor talento para tu equipo.'
         : 'Elige el plan que mejor se adapte a tus necesidades para encontrar trabajo.';
 
-
     return (
       <main className="flex-1 container mx-auto py-12 px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
-          <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold tracking-tight md:text-5xl">{title}</h1>
+          <p className="text-lg text-muted-foreground mt-4 max-w-2xl mx-auto">
             {description}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {visiblePlans.map((plan) => (
-                <Card key={plan.name} className={cn(
-                    "flex flex-col",
-                    plan.isPopular && "border-primary shadow-2xl relative"
-                )}>
-                    {plan.isPopular && (
-                        <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
-                            <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold flex items-center gap-1">
-                                <Star className="h-4 w-4"/>
-                                MÁS POPULAR
-                            </Badge>
-                        </div>
-                    )}
-                    <CardHeader className="text-center pt-10">
-                         <div className="mx-auto bg-secondary p-3 rounded-full w-fit mb-2">
-                            <plan.icon className="h-6 w-6 text-primary" />
-                        </div>
-                        <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                        <CardDescription>{plan.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-grow space-y-6">
-                        <div className="text-center">
-                            <span className="text-4xl font-bold">{plan.price}</span>
-                            <span className="text-muted-foreground"> {plan.priceDetail}</span>
-                        </div>
-                        <ul className="space-y-3 text-sm">
-                            {plan.features.map((feature, index) => (
-                                <li key={index} className="flex items-start gap-3">
-                                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
-                                    <span>{feature}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </CardContent>
-                    <CardFooter>
-                        <PaymentModal planName={plan.name} planPrice={plan.price} planPriceAmount={plan.priceAmount} userType={plan.userType} />
-                    </CardFooter>
-                </Card>
-            ))}
-        </div>
+        <Carousel 
+            className="w-full max-w-sm md:max-w-xl lg:max-w-2xl mx-auto"
+            opts={{
+                align: "start",
+                loop: false,
+            }}
+        >
+            <CarouselContent>
+                {visiblePlans.map((plan, index) => (
+                    <CarouselItem key={index} className="md:basis-1/2">
+                         <div className="p-1">
+                            <Card className={cn(
+                                "flex flex-col h-full transition-all duration-300",
+                                plan.isPopular && "border-2 border-primary shadow-2xl"
+                            )}>
+                                {plan.isPopular && (
+                                    <div className="w-full flex justify-center">
+                                        <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold -mt-3.5 flex items-center gap-1 z-10">
+                                            <Star className="h-4 w-4"/>
+                                            MÁS POPULAR
+                                        </Badge>
+                                    </div>
+                                )}
+                                <CardHeader className="text-center pt-8">
+                                    <div className="mx-auto bg-secondary p-4 rounded-full w-fit mb-4">
+                                        <plan.icon className="h-8 w-8 text-primary" />
+                                    </div>
+                                    <CardTitle className="text-3xl">{plan.name}</CardTitle>
+                                    <CardDescription className="text-base">{plan.description}</CardDescription>
+                                </CardHeader>
+                                <CardContent className="flex-grow space-y-6">
+                                    <div className="text-center">
+                                        <span className="text-5xl font-bold">{plan.price}</span>
+                                        <span className="text-muted-foreground text-lg"> {plan.priceDetail}</span>
+                                    </div>
+                                    <ul className="space-y-4 text-base">
+                                        {plan.features.map((feature, index) => (
+                                            <li key={index} className="flex items-start gap-3">
+                                                <CheckCircle className="h-6 w-6 text-green-500 mt-0.5 shrink-0" />
+                                                <span>{feature}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </CardContent>
+                                <CardFooter>
+                                    <PaymentModal 
+                                        planName={plan.name} 
+                                        planPrice={plan.price} 
+                                        planPriceAmount={plan.priceAmount} 
+                                        userType={plan.userType}
+                                        isPopular={plan.isPopular || false}
+                                     />
+                                </CardFooter>
+                            </Card>
+                         </div>
+                    </CarouselItem>
+                ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex"/>
+            <CarouselNext className="hidden md:flex"/>
+        </Carousel>
       </main>
     )
 }
