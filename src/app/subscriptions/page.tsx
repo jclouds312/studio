@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { useSession } from '@/hooks/use-session';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { useToast } from "@/components/ui/use-toast";
 
 const allPlans = [
     {
