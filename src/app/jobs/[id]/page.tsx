@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Footer } from '@/components/layout/footer';
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function JobDetailPage({ params }: { params: { id: string } }) {
   const job = allJobs.find((j) => j.id === params.id);

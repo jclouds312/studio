@@ -18,7 +18,7 @@ export const allJobs: Job[] = [
     id: '1',
     title: 'Frontend Developer',
     company: 'Tech Solutions Inc.',
-    location: 'Buenos Aires, AR',
+    location: 'Buenos Aires',
     type: 'Full-time',
     description: 'Buscamos un desarrollador Frontend para unirse a nuestro equipo. Serás responsable de construir el lado del cliente de nuestras aplicaciones web. Debes ser capaz de traducir las necesidades de nuestra empresa y clientes en aplicaciones interactivas funcionales y atractivas.',
     companyLogo: 'https://placehold.co/56x56.png',
@@ -30,7 +30,7 @@ export const allJobs: Job[] = [
     id: '2',
     title: 'Diseñador/a UX/UI',
     company: 'Creative Minds',
-    location: 'Córdoba, AR',
+    location: 'Córdoba',
     type: 'Contract',
     description: 'Creative Minds busca un talentoso Diseñador UX/UI para crear experiencias de usuario increíbles. El candidato ideal debe tener un ojo para el diseño limpio y artístico, poseer habilidades superiores de UI y ser capaz de traducir requisitos de alto nivel en flujos de interacción y artefactos.',
     companyLogo: 'https://placehold.co/56x56.png',
@@ -50,7 +50,7 @@ export const allJobs: Job[] = [
     id: '4',
     title: 'Manager de Marketing Digital',
     company: 'Growth Hackers',
-    location: 'Rosario, AR',
+    location: 'Rosario',
     type: 'Part-time',
     description: 'Estamos contratando un Manager de Marketing Digital para desarrollar, implementar, rastrear y optimizar nuestras campañas de marketing digital en todos los canales digitales. Debes tener un fuerte conocimiento de las herramientas y estrategias de marketing actuales.',
     companyLogo: 'https://placehold.co/56x56.png',
@@ -60,7 +60,7 @@ export const allJobs: Job[] = [
     id: '5',
     title: 'Representante de Ventas',
     company: 'Lead Gen',
-    location: 'Buenos Aires, AR',
+    location: 'Buenos Aires',
     type: 'Full-time',
     description: 'Buscamos un Ejecutivo de Ventas competitivo y confiable para ayudarnos a desarrollar nuestras actividades comerciales. Las responsabilidades del Ejecutivo de Ventas incluyen descubrir y buscar nuevos prospectos de ventas, negociar acuerdos y mantener la satisfacción del cliente.',
     companyLogo: 'https://placehold.co/56x56.png',
@@ -72,12 +72,12 @@ export const allJobs: Job[] = [
     id: '6',
     title: 'Pintor de Interiores',
     company: 'Servicios Varios',
-    location: 'La Plata, AR',
+    location: 'La Plata',
     type: 'Changa',
     description: 'Se necesita pintor con experiencia para pintar un departamento de 2 ambientes. Se proveen materiales. Trabajo por día, pago al finalizar la jornada. Enviar fotos de trabajos previos por WhatsApp.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'domestic',
-    whatsapp: '+5491123456789'
+    whatsapp: '+5492212345678'
   }
 ];
 
@@ -142,14 +142,14 @@ function JobListingCard({ job }: { job: Job }) {
 
 export function JobListings() {
     const [keyword, setKeyword] = useState('');
-    const [location, setLocation] = useState('');
+    const [location, setLocation] = useState('all');
     const [category, setCategory] = useState('all');
 
     const filteredJobs = useMemo(() => {
         let jobs = allJobs
             .filter(job => {
                 const keywordMatch = keyword.toLowerCase() ? job.title.toLowerCase().includes(keyword.toLowerCase()) || job.description.toLowerCase().includes(keyword.toLowerCase()) : true;
-                const locationMatch = location.toLowerCase() ? job.location.toLowerCase().includes(location.toLowerCase()) : true;
+                const locationMatch = location && location !== 'all' ? job.location === location : true;
                 const categoryMatch = category && category !== 'all' ? job.category === category : true;
                 return keywordMatch && locationMatch && categoryMatch;
             });
@@ -177,12 +177,24 @@ export function JobListings() {
                     </div>
                     <div className="flex-grow relative w-full">
                         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                        <Input 
-                            placeholder="Ciudad o región" 
-                            className="pl-10"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                        />
+                         <Select value={location} onValueChange={setLocation}>
+                            <SelectTrigger className="w-full pl-10">
+                                <SelectValue placeholder="Ubicación" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Todas las ubicaciones</SelectItem>
+                                <SelectItem value="Remoto">Remoto</SelectItem>
+                                <SelectItem value="Buenos Aires">Buenos Aires</SelectItem>
+                                <SelectItem value="Córdoba">Córdoba</SelectItem>
+                                <SelectItem value="Rosario">Rosario</SelectItem>
+                                <SelectItem value="La Plata">La Plata</SelectItem>
+                                <SelectItem value="Mendoza">Mendoza</SelectItem>
+                                <SelectItem value="Tucumán">San Miguel de Tucumán</SelectItem>
+                                <SelectItem value="Mar del Plata">Mar del Plata</SelectItem>
+                                <SelectItem value="Salta">Salta</SelectItem>
+                                <SelectItem value="Santa Fe">Santa Fe</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <Select value={category} onValueChange={setCategory}>
                         <SelectTrigger className="w-full md:w-[200px]">
