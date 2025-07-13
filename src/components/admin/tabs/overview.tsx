@@ -2,7 +2,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, TrendingUp, BarChart } from "lucide-react";
+import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, TrendingUp, BarChart, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allJobs } from "@/components/job-listings";
 import {
@@ -20,6 +20,7 @@ import React from "react";
 import Image from "next/image";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Bar, CartesianGrid, XAxis, BarChart as RechartsBarChart } from "recharts";
+import packageJson from '@/../package.json';
 
 const chartData = [
   { month: "January", desktop: 186 },
@@ -60,10 +61,20 @@ export function OverviewTab() {
     link.download = "jobs-backup.json";
     link.click();
   };
+  
+  const handleDownloadPackageJson = () => {
+    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(packageJson, null, 2)
+    )}`;
+    const link = document.createElement("a");
+    link.href = jsonString;
+    link.download = "package.json";
+    link.click();
+  };
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -111,10 +122,24 @@ export function OverviewTab() {
           </CardHeader>
           <CardContent>
              <p className="text-xs text-muted-foreground mb-4">
-              Descarga un backup en formato JSON de las publicaciones.
+              Descarga un backup JSON de las publicaciones.
             </p>
             <Button className="w-full" onClick={handleDownloadBackup}>
-                Descargar Backup de Datos
+                Descargar Backup
+            </Button>
+          </CardContent>
+        </Card>
+         <Card>
+           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Código Fuente</CardTitle>
+            <Code className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+             <p className="text-xs text-muted-foreground mb-4">
+              Descarga el package.json para reinstalar dependencias.
+            </p>
+            <Button className="w-full" variant="outline" onClick={handleDownloadPackageJson}>
+                Descargar package.json
             </Button>
           </CardContent>
         </Card>
