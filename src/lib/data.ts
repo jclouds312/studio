@@ -64,6 +64,16 @@ export const allUsers: User[] = [
         role: 'company',
         status: 'Verificado',
         createdAt: '2024-03-01'
+    },
+    {
+        id: '7',
+        name: 'Facebook Latam',
+        email: 'empresa.facebook@example.com',
+        password: 'password123',
+        avatar: 'https://placehold.co/40x40.png',
+        role: 'company',
+        status: 'Verificado',
+        createdAt: '2024-04-10'
     }
 ];
 
