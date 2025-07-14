@@ -55,6 +55,10 @@ export type User = {
     profileData?: UserProfileData;
 };
 
+export type Candidate = User & {
+    appliedFor: string;
+};
+
 export type CompanyProfile = {
     id:string;
     name: string;
@@ -106,3 +110,4 @@ export type SubscriptionPlan = {
   iconName: keyof typeof import('lucide-react').icons;
   pricing: PricingOption[];
 };
+

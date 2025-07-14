@@ -26,8 +26,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import Image from "next/image";
+import type { Candidate } from '@/lib/types';
+import { CandidateProfileModal } from './modals/candidate-profile-modal';
 
-const companyApplicants = allUsers.filter(u => u.role === 'user' && ['juan.perez@example.com', 'ana.garcia@example.com'].includes(u.email));
+const companyApplicants: Candidate[] = allUsers
+    .filter(u => u.role === 'user' && ['juan.perez@example.com', 'ana.garcia@example.com'].includes(u.email))
+    .map((user, index) => ({
+        ...user,
+        appliedFor: index === 0 ? 'Frontend Developer (React)' : 'Diseñador/a UX/UI Sr.'
+    }));
 
 export function CompanyDashboard() {
   const { session } = useSession();
@@ -35,6 +42,13 @@ export function CompanyDashboard() {
   const [isMpConnected, setIsMpConnected] = React.useState(false);
   const [isPaying, setIsPaying] = React.useState(false);
   const [paymentSuccess, setPaymentSuccess] = React.useState(false);
+  const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
+
+  const handleViewProfile = (candidate: Candidate) => {
+    setSelectedCandidate(candidate);
+    setIsProfileModalOpen(true);
+  };
 
   const handleConnectMp = () => {
     toast({
@@ -92,6 +106,12 @@ export function CompanyDashboard() {
   const companyJobs = allJobs.filter(job => job.company === session.user?.name);
 
   return (
+    <>
+    <CandidateProfileModal 
+      isOpen={isProfileModalOpen} 
+      setIsOpen={setIsProfileModalOpen} 
+      candidate={selectedCandidate} 
+    />
     <div className="company-dashboard-theme max-w-7xl mx-auto space-y-8">
       <div className="space-y-2">
         <h1 className="text-4xl font-bold tracking-tight">Panel de Empresa</h1>
@@ -263,28 +283,30 @@ export function CompanyDashboard() {
                     <CardTitle>Candidatos Recientes</CardTitle>
                     <CardDescription>Últimos usuarios que aplicaron a tus ofertas.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent className="space-y-1">
                     {companyApplicants.map(applicant => (
                         <React.Fragment key={applicant.id}>
-                            <div className="flex items-center gap-4 py-2">
+                            <div className="flex items-center gap-4 py-2 hover:bg-secondary/50 rounded-md px-2 -mx-2">
                                 <Avatar>
                                     <AvatarImage src={applicant.avatar} data-ai-hint="person user"/>
                                     <AvatarFallback>{applicant.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div className="flex-1">
                                     <p className="font-semibold">{applicant.name}</p>
-                                    <p className="text-xs text-muted-foreground">Aplicó a: Frontend Developer</p>
+                                    <p className="text-xs text-muted-foreground">Aplicó a: {applicant.appliedFor}</p>
                                 </div>
                                 <div className="flex gap-1">
-                                    <Button variant="ghost" size="icon">
+                                    <Button variant="ghost" size="icon" onClick={() => handleViewProfile(applicant)}>
                                         <Eye className="h-4 w-4" />
+                                         <span className="sr-only">Ver Perfil</span>
                                     </Button>
                                      <Button variant="ghost" size="icon">
                                         <MessageSquare className="h-4 w-4" />
+                                         <span className="sr-only">Contactar</span>
                                     </Button>
                                 </div>
                             </div>
-                            <Separator />
+                            <Separator className="last:hidden" />
                         </React.Fragment>
                     ))}
                     <Button variant="secondary" className="w-full mt-2">Ver todos los candidatos</Button>
@@ -293,5 +315,6 @@ export function CompanyDashboard() {
         </div>
       </div>
     </div>
+    </>
   );
 }

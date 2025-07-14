@@ -2,7 +2,31 @@
 // This file acts as a centralized, in-memory database for the prototype.
 // All major data structures are defined and exported from here.
 
-import type { Job, User, CompanyProfile, SubscriptionPlan } from './types';
+import type { Job, User, CompanyProfile, SubscriptionPlan, UserProfileData } from './types';
+
+// Datos de perfil de ejemplo para usuarios
+const userProfileJuan: UserProfileData = {
+    avatarUrl: 'https://placehold.co/128x128.png',
+    phone: '+54 9 11 1234-5678',
+    location: 'Buenos Aires, CABA',
+    professionalSummary: 'Desarrollador Frontend con más de 3 años de experiencia en React y Next.js. Buscando nuevos desafíos para aplicar mis habilidades en un entorno dinámico.',
+    experience: '- Frontend Developer en Tech Solutions Inc. (2021-Actualidad)\n- Web Developer en StartUp X (2020-2021)',
+    applications: [],
+    savedJobs: [],
+    stats: { profileViews: 88, interviews: 1, savedJobs: 0 }
+};
+
+const userProfileAna: UserProfileData = {
+    avatarUrl: 'https://placehold.co/128x128.png',
+    phone: '+54 9 351 8765-4321',
+    location: 'Córdoba, Argentina',
+    professionalSummary: 'Diseñadora UX/UI con pasión por crear productos digitales intuitivos y atractivos. Experiencia en todo el proceso de diseño, desde la investigación hasta el prototipado y las pruebas de usuario.',
+    experience: '- UX/UI Designer en Creative Minds (2019-Actualidad)\n- Pasante de Diseño Gráfico en Agencia Visual (2018)',
+    applications: [],
+    savedJobs: [],
+    stats: { profileViews: 152, interviews: 4, savedJobs: 0 }
+};
+
 
 export const allUsers: User[] = [
     {
@@ -13,7 +37,8 @@ export const allUsers: User[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'user',
         status: 'Verificado',
-        createdAt: '2023-10-27'
+        createdAt: '2023-10-27',
+        profileData: userProfileJuan
     },
     {
         id: '2',
@@ -23,7 +48,8 @@ export const allUsers: User[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'user',
         status: 'Pendiente',
-        createdAt: '2023-10-26'
+        createdAt: '2023-10-26',
+        profileData: userProfileAna
     },
     {
         id: '3',
