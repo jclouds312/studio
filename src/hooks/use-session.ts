@@ -20,6 +20,40 @@ interface RegisterData {
     role: 'user' | 'company' | 'admin';
 }
 
+// SIMULATED SOCIAL PROFILES
+const socialProfiles = {
+    google: {
+        name: 'Usuario de Google',
+        email: 'g-user-12345@example.com',
+        role: 'user'
+    },
+    facebook: {
+        name: 'Usuario de Facebook',
+        email: 'fb-user-67890@example.com',
+        role: 'user'
+    },
+    microsoft: {
+        name: 'Usuario de Microsoft',
+        email: 'ms-user-13579@example.com',
+        role: 'user'
+    },
+    google_company: {
+        name: 'Empresa de Google',
+        email: 'g-company-12345@example.com',
+        role: 'company'
+    },
+    facebook_company: {
+        name: 'Empresa de Facebook',
+        email: 'fb-company-67890@example.com',
+        role: 'company'
+    },
+    microsoft_company: {
+        name: 'Empresa de Microsoft',
+        email: 'ms-company-13579@example.com',
+        role: 'company'
+    }
+}
+
 export function useSession() {
     const router = useRouter();
     const { toast } = useToast();
@@ -35,7 +69,22 @@ export function useSession() {
             const userEmail = localStorage.getItem('userEmail');
             if (loggedInStatus && userEmail) {
                 const currentUser = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase()) || null;
-                setSession({ isLoggedIn: true, user: currentUser, isMounted: true });
+                if (!currentUser) {
+                     // This could happen if our "DB" changes. Let's create the user.
+                    const tempUser = JSON.parse(localStorage.getItem('tempUser') || '{}');
+                    if(tempUser.email === userEmail) {
+                         allUsers.push(tempUser);
+                         setSession({ isLoggedIn: true, user: tempUser, isMounted: true });
+                    } else {
+                        // Can't find user, log out
+                        localStorage.removeItem('isLoggedIn');
+                        localStorage.removeItem('userEmail');
+                        localStorage.removeItem('tempUser');
+                        setSession({ isLoggedIn: false, user: null, isMounted: true });
+                    }
+                } else {
+                    setSession({ isLoggedIn: true, user: currentUser, isMounted: true });
+                }
             } else {
                 setSession({ isLoggedIn: false, user: null, isMounted: true });
             }
@@ -49,6 +98,13 @@ export function useSession() {
         try {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userEmail', user.email);
+            // Store a temporary user object in case it's a new social user not yet in our static `allUsers` array
+            if (!allUsers.find(u => u.email === user.email)) {
+                 localStorage.setItem('tempUser', JSON.stringify(user));
+            } else {
+                 localStorage.removeItem('tempUser');
+            }
+
             setSession({ isLoggedIn: true, user, isMounted: true });
             toast({ title: `¡Bienvenido, ${user.name}!` });
             
@@ -64,6 +120,57 @@ export function useSession() {
         }
     }, [router, toast]);
 
+    const register = useCallback((data: RegisterData) => {
+        const existingUser = allUsers.find(u => u.email.toLowerCase() === data.email.toLowerCase());
+        if (existingUser) {
+            toast({
+                title: "Error de Registro",
+                description: "Este correo electrónico ya está en uso.",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        const newUser: User = {
+            id: String(Date.now()),
+            ...data,
+            avatar: 'https://placehold.co/40x40.png',
+            status: 'Verificado',
+            createdAt: new Date().toISOString().split('T')[0],
+        };
+        
+        allUsers.push(newUser); // Add to our in-memory "database"
+        
+        toast({
+            title: "¡Registro Exitoso!",
+            description: "Tu cuenta ha sido creada.",
+        });
+        performLogin(newUser);
+    }, [performLogin, toast]);
+    
+    const loginWithSocial = useCallback((provider: 'google' | 'facebook' | 'microsoft', role: 'user' | 'company' = 'user') => {
+        const profileKey = role === 'company' ? `${provider}_company` : provider;
+        const simulatedProfile = socialProfiles[profileKey];
+        
+        let user = allUsers.find(u => u.email.toLowerCase() === simulatedProfile.email.toLowerCase());
+
+        if (user) {
+            // User exists, log them in
+            performLogin(user);
+        } else {
+            // User does not exist, register them
+            toast({
+                title: "Creando cuenta nueva...",
+                description: `Registrando con tu cuenta de ${provider}.`,
+            });
+            register({
+                name: simulatedProfile.name,
+                email: simulatedProfile.email,
+                role: simulatedProfile.role as 'user' | 'company',
+            });
+        }
+    }, [performLogin, register, toast]);
+
     const login = useCallback((email: string, password?: string) => {
         const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
         if (user && user.password === password) {
@@ -76,45 +183,12 @@ export function useSession() {
             });
         }
     }, [performLogin, toast]);
-    
-    const loginWithSocial = useCallback((email: string) => {
-        const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-        if (user) {
-            performLogin(user);
-        } else {
-            toast({
-                title: "Error de autenticación",
-                description: "No se pudo iniciar sesión con esta cuenta social.",
-                variant: "destructive",
-            });
-        }
-    }, [performLogin, toast]);
-
-    const register = useCallback((data: RegisterData) => {
-        // En una app real, aquí se llamaría a una API para crear el usuario.
-        // Por ahora, lo simulamos y hacemos login.
-        const newUser: User = {
-            id: String(allUsers.length + 1),
-            ...data,
-            avatar: 'https://placehold.co/40x40.png',
-            status: 'Verificado',
-            createdAt: new Date().toISOString().split('T')[0],
-        };
-        
-        // En un prototipo, no podemos realmente agregar el usuario a la lista `allUsers`
-        // porque los módulos se recargan. En su lugar, lo pasamos directamente al login.
-        
-        toast({
-            title: "¡Registro Exitoso!",
-            description: "Tu cuenta ha sido creada.",
-        });
-        performLogin(newUser);
-    }, [performLogin, toast]);
 
     const logout = useCallback(() => {
         try {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userEmail');
+            localStorage.removeItem('tempUser');
             setSession({ isLoggedIn: false, user: null, isMounted: true });
             toast({ title: 'Has cerrado sesión exitosamente.' });
             router.push('/login');

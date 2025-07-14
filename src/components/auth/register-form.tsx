@@ -43,21 +43,16 @@ export function RegisterForm() {
         register({ name, email, password, role });
     };
 
-    const handleSocialLogin = () => {
-        const email = role === 'user' ? 'juan.perez@example.com' : 'empresa.facebook@example.com';
-        loginWithSocial(email);
-    };
-
     const isWorker = role === 'user';
 
     return (
         <div className="mt-2 space-y-4">
              <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" className="w-full" size="lg" onClick={handleSocialLogin}>
+                <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('google', role)}>
                   <GoogleIcon className="mr-2 h-5 w-5" />
                   Google
                 </Button>
-                 <Button variant="outline" className="w-full" size="lg" onClick={handleSocialLogin}>
+                 <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('facebook', role)}>
                   <FacebookIcon className="mr-2 h-5 w-5" />
                   Facebook
                 </Button>

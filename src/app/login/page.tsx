@@ -70,17 +70,17 @@ export default function LoginPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('juan.perez@example.com')}>
+                <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('google')}>
                   <GoogleIcon className="mr-2 h-7 w-7" />
                   Ingresar con Google
                 </Button>
-                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('empresa.facebook@example.com')}>
+                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('facebook')}>
                   <FacebookIcon className="mr-2 h-7 w-7" />
                   Ingresar con Facebook
                 </Button>
             </div>
              <div className="grid grid-cols-1">
-                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('ana.garcia.outlook@example.com')}>
+                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('microsoft')}>
                   <MicrosoftIcon className="mr-2 h-7 w-7" />
                   Ingresar con Outlook
                 </Button>
