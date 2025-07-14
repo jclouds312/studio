@@ -11,7 +11,7 @@ import Image from "next/image";
 import React, { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { allJobs } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
@@ -42,7 +42,7 @@ function JobListingCard({ job }: { job: Job }) {
     }
 
     return (
-        <div className={cn("dark", getThemeClass())}>
+        <div className={cn(getThemeClass())}>
             <Link href={`/jobs/${job.id}`} className="block h-full">
                 <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col bg-card/80 backdrop-blur-sm h-full">
                     <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
@@ -79,10 +79,10 @@ function JobListingCard({ job }: { job: Job }) {
                         <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
                     </CardContent>
                     <CardFooter className="flex flex-row justify-between items-center bg-secondary/20 p-4 border-t mt-auto">
-                        <Badge variant="outline" className="text-xs capitalize text-amber-950 bg-amber-400 border-amber-500">{job.type}</Badge>
+                        <Badge variant="outline" className="text-xs capitalize border-amber-500 bg-amber-400 text-amber-950">{job.type}</Badge>
                         <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" className="text-amber-300 hover:text-amber-200" onClick={(e) => handleAction(e, 'save')}>
-                                <Star className="mr-2 h-4 w-4 text-amber-400" />
+                            <Button variant="ghost" size="sm" className="text-amber-500 hover:text-amber-400" onClick={(e) => handleAction(e, 'save')}>
+                                <Star className="mr-2 h-4 w-4" />
                                 Guardar
                             </Button>
                             <Button size="sm" onClick={(e) => handleAction(e, 'apply')}>
