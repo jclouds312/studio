@@ -49,9 +49,9 @@ export const allUsers: User[] = [
     },
     {
         id: '3',
-        name: 'Johnatan Vallejo',
+        name: 'Johnatan Vallejo Marulanda',
         email: 'johnatanvallejomarulanda@gmail.com',
-        password: 'julio2025',
+        password: '12345678',
         avatar: 'https://placehold.co/40x40.png',
         role: 'admin',
         status: 'Verificado',
@@ -129,5 +129,25 @@ export const allUsers: User[] = [
         status: 'Verificado',
         createdAt: '2024-05-22',
         profileData: userProfileJuan
+    },
+    {
+        id: '11',
+        name: 'JV Solutions',
+        email: 'john474nvallejo@gmail.com',
+        password: '123456',
+        avatar: 'https://placehold.co/40x40.png',
+        role: 'company',
+        status: 'Verificado',
+        createdAt: '2024-07-30'
+    },
+    {
+        id: '12',
+        name: 'Vallejo Tech',
+        email: 'johnatan-vallejo@hotmail.com',
+        password: '123456',
+        avatar: 'https://placehold.co/40x40.png',
+        role: 'company',
+        status: 'Verificado',
+        createdAt: '2024-07-30'
     }
 ];
