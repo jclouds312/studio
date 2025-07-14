@@ -94,7 +94,7 @@ function JobListingCard({ job }: { job: Job }) {
             <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col h-full">
                 <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                     {job.isFeatured && (
-                        <Badge variant="default" className="bg-primary text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
+                         <Badge variant="default" className="bg-amber-400 text-amber-900 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-amber-900/20">
                             <Sparkles className="h-4 w-4" />
                             DESTACADO
                         </Badge>

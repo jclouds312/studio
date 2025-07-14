@@ -102,20 +102,16 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             <Card className="relative overflow-hidden">
                  <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                     {job.isFeatured && (
-                        <div className={cn("dark", getThemeClass())}>
-                            <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
-                                <Sparkles className="h-4 w-4" />
-                                DESTACADO
-                            </Badge>
-                        </div>
+                         <Badge variant="default" className="bg-amber-400 text-amber-900 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-amber-900/20">
+                            <Sparkles className="h-4 w-4" />
+                            DESTACADO
+                        </Badge>
                     )}
                      {job.isNew && !job.isFeatured && (
-                        <div className={cn("dark", getThemeClass())}>
-                            <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
-                                <Info className="h-4 w-4" />
-                                NUEVO
-                            </Badge>
-                        </div>
+                        <Badge variant="secondary" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary/20">
+                            <Info className="h-4 w-4" />
+                            NUEVO
+                        </Badge>
                     )}
                 </div>
               <CardHeader>

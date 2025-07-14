@@ -43,6 +43,7 @@ function MicrosoftIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+
 export default function LoginPage() {
   const { login, loginWithSocial } = useSession();
   const [email, setEmail] = React.useState('');
@@ -59,22 +60,26 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center container mx-auto py-12 px-4">
         <Card className="w-full max-w-lg shadow-2xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-4xl font-bold">
-              Conexión Laboral
+            <CardTitle className="text-4xl font-bold text-amber-400">
+              LaburoYA
             </CardTitle>
             <CardDescription className="pt-2">
-              Inicia sesión para encontrar tu próximo trabajo.
+              Inicia sesión o regístrate para continuar.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex justify-center gap-4">
-                <Button variant="outline" className="w-full" onClick={() => loginWithSocial('johnatanvallejomarulanda@gmail.com')}>
+            <div className="grid grid-cols-2 gap-4">
+                <Button variant="outline" className="w-full" onClick={() => loginWithSocial('juan.perez@example.com')}>
                   <GoogleIcon className="mr-2 h-5 w-5" />
                   Ingresar con Google
                 </Button>
                  <Button variant="outline" className="w-full" onClick={() => loginWithSocial('empresa.facebook@example.com')}>
                   <FacebookIcon className="mr-2 h-5 w-5" />
                   Ingresar con Facebook
+                </Button>
+                 <Button variant="outline" className="w-full col-span-2" onClick={() => loginWithSocial('ana.garcia.outlook@example.com')}>
+                  <MicrosoftIcon className="mr-2 h-5 w-5" />
+                  Ingresar con Outlook
                 </Button>
             </div>
              <div className="relative">
