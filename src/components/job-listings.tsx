@@ -47,16 +47,20 @@ function JobListingCard({ job }: { job: Job }) {
                 <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col bg-card/80 backdrop-blur-sm h-full">
                     <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                         {job.isFeatured && (
-                            <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
-                                <Sparkles className="h-4 w-4" />
-                                DESTACADO
-                            </Badge>
+                            <div className={cn("dark theme-premium")}>
+                                <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
+                                    <Sparkles className="h-4 w-4" />
+                                    DESTACADO
+                                </Badge>
+                            </div>
                         )}
-                         {job.isNew && (
-                            <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
-                                <Info className="h-4 w-4" />
-                                NUEVO
-                            </Badge>
+                         {job.isNew && !job.isFeatured && (
+                             <div className={cn("dark theme-new")}>
+                                <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
+                                    <Info className="h-4 w-4" />
+                                    NUEVO
+                                </Badge>
+                             </div>
                         )}
                     </div>
                     <CardHeader className="p-6 pb-2">
@@ -97,6 +101,7 @@ export function JobListings() {
     const [keyword, setKeyword] = useState('');
     const [location, setLocation] = useState('all');
     const [category, setCategory] = useState('all');
+    const [contractType, setContractType] = useState('all');
 
     const filteredJobs = useMemo(() => {
         let jobs = allJobs
@@ -104,7 +109,8 @@ export function JobListings() {
                 const keywordMatch = keyword.toLowerCase() ? job.title.toLowerCase().includes(keyword.toLowerCase()) || job.description.toLowerCase().includes(keyword.toLowerCase()) : true;
                 const locationMatch = location && location !== 'all' ? job.location === location : true;
                 const categoryMatch = category && category !== 'all' ? job.category === category : true;
-                return keywordMatch && locationMatch && categoryMatch;
+                const contractTypeMatch = contractType && contractType !== 'all' ? job.type === contractType : true;
+                return keywordMatch && locationMatch && categoryMatch && contractTypeMatch;
             });
         
         jobs.sort((a, b) => {
@@ -114,7 +120,7 @@ export function JobListings() {
         });
 
         return jobs;
-    }, [keyword, location, category]);
+    }, [keyword, location, category, contractType]);
 
     return (
         <div className="space-y-8">
@@ -123,8 +129,8 @@ export function JobListings() {
                     <CardTitle>Encuentra tu próximo trabajo</CardTitle>
                     <CardDescription>Busca entre miles de ofertas de las mejores empresas.</CardDescription>
                 </CardHeader>
-                <CardContent className="flex flex-col md:flex-row gap-4 items-center">
-                    <div className="flex-grow relative w-full">
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
+                    <div className="lg:col-span-2 relative w-full">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                         <Input 
                             placeholder="Puesto o palabra clave" 
@@ -133,7 +139,7 @@ export function JobListings() {
                             onChange={(e) => setKeyword(e.target.value)}
                         />
                     </div>
-                    <div className="flex-grow relative w-full">
+                    <div className="relative w-full">
                         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                          <Select value={location} onValueChange={setLocation}>
                             <SelectTrigger className="w-full pl-10">
@@ -160,29 +166,43 @@ export function JobListings() {
                             </SelectContent>
                         </Select>
                     </div>
-                    <Select value={category} onValueChange={setCategory}>
-                        <SelectTrigger className="w-full md:w-[200px]">
-                             <SelectValue placeholder="Categoría" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">Todas</SelectItem>
-                            <SelectItem value="tech">Tecnología</SelectItem>
-                            <SelectItem value="design">Diseño</SelectItem>
-                            <SelectItem value="marketing">Marketing</SelectItem>
-                            <SelectItem value="sales">Ventas</SelectItem>
-                            <SelectItem value="domestic">Doméstico</SelectItem>
-                            <SelectItem value="construction">Construcción</SelectItem>
-                            <SelectItem value="admin">Administración</SelectItem>
-                            <SelectItem value="gastronomy">Gastronomía</SelectItem>
-                            <SelectItem value="health">Salud</SelectItem>
-                            <SelectItem value="education">Educación</SelectItem>
-                            <SelectItem value="hr">Recursos Humanos</SelectItem>
-                            <SelectItem value="finance">Finanzas</SelectItem>
-                            <SelectItem value="legal">Legal</SelectItem>
-                            <SelectItem value="logistics">Logística</SelectItem>
-                            <SelectItem value="other">Otro</SelectItem>
-                        </SelectContent>
-                    </Select>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                        <Select value={category} onValueChange={setCategory}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Categorías de Empleos" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Todas las categorías</SelectItem>
+                                <SelectItem value="tech">Tecnología</SelectItem>
+                                <SelectItem value="design">Diseño</SelectItem>
+                                <SelectItem value="marketing">Marketing</SelectItem>
+                                <SelectItem value="sales">Ventas</SelectItem>
+                                <SelectItem value="domestic">Doméstico</SelectItem>
+                                <SelectItem value="construction">Construcción</SelectItem>
+                                <SelectItem value="admin">Administración</SelectItem>
+                                <SelectItem value="gastronomy">Gastronomía</SelectItem>
+                                <SelectItem value="health">Salud</SelectItem>
+                                <SelectItem value="education">Educación</SelectItem>
+                                <SelectItem value="hr">Recursos Humanos</SelectItem>
+                                <SelectItem value="finance">Finanzas</SelectItem>
+                                <SelectItem value="legal">Legal</SelectItem>
+                                <SelectItem value="logistics">Logística</SelectItem>
+                                <SelectItem value="other">Otro</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <Select value={contractType} onValueChange={setContractType}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Tipos de Contratos" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Todos los tipos</SelectItem>
+                                <SelectItem value="Full-time">Full-time</SelectItem>
+                                <SelectItem value="Part-time">Part-time</SelectItem>
+                                <SelectItem value="Contract">Contract</SelectItem>
+                                <SelectItem value="Changa">Changa</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </CardContent>
             </Card>
 
