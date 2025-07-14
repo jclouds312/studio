@@ -99,13 +99,35 @@ export const allUsers: User[] = [
     },
     {
         id: '8',
-        name: 'Ana Garcia (Outlook)',
-        email: 'ana.garcia.outlook@example.com',
+        name: 'Usuario de Google',
+        email: 'user.google@example.com',
         password: 'password123',
         avatar: 'https://placehold.co/40x40.png',
         role: 'user',
         status: 'Verificado',
         createdAt: '2024-05-20',
+        profileData: userProfileJuan
+    },
+     {
+        id: '9',
+        name: 'Usuario de Facebook',
+        email: 'user.facebook@example.com',
+        password: 'password123',
+        avatar: 'https://placehold.co/40x40.png',
+        role: 'user',
+        status: 'Verificado',
+        createdAt: '2024-05-21',
         profileData: userProfileAna
+    },
+    {
+        id: '10',
+        name: 'Usuario de Microsoft',
+        email: 'user.microsoft@example.com',
+        password: 'password123',
+        avatar: 'https://placehold.co/40x40.png',
+        role: 'user',
+        status: 'Verificado',
+        createdAt: '2024-05-22',
+        profileData: userProfileJuan
     }
 ];

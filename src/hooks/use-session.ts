@@ -20,6 +20,8 @@ interface RegisterData {
     role: 'user' | 'company' | 'admin';
 }
 
+type SocialProvider = 'google' | 'facebook' | 'microsoft';
+
 export function useSession() {
     const router = useRouter();
     const { toast } = useToast();
@@ -99,22 +101,19 @@ export function useSession() {
         performLogin(newUser);
     }, [performLogin, toast]);
     
-    const loginWithSocial = useCallback((provider: 'google' | 'facebook' | 'microsoft', role: 'user' | 'company' = 'user') => {
-        // Simulate getting a unique email from the social provider
-        const simulatedEmail = `${provider}-${role}-${Math.floor(Math.random() * 10000)}@example.com`;
-        const simulatedName = `${provider.charAt(0).toUpperCase() + provider.slice(1)} ${role.charAt(0).toUpperCase() + role.slice(1)}`;
-
+    const loginWithSocial = useCallback((provider: SocialProvider, role: 'user' | 'company' = 'user') => {
+        // Use a consistent, predictable email for the simulation
+        const simulatedEmail = `user.${provider}@example.com`;
+        
         let user = allUsers.find(u => u.email.toLowerCase() === simulatedEmail.toLowerCase());
 
         if (user) {
-            // User exists, log them in (unlikely in this simulation, but good practice)
+            // User exists, just log them in
             performLogin(user);
         } else {
-            // User does not exist, register them
-            toast({
-                title: "Creando cuenta nueva...",
-                description: `Registrando con tu cuenta de ${provider}.`,
-            });
+            // If the simulated user doesn't exist in our data file, create them.
+            // This makes the simulation robust.
+            const simulatedName = `Usuario de ${provider.charAt(0).toUpperCase() + provider.slice(1)}`;
             const newUser: User = {
                 id: String(Date.now()),
                 name: simulatedName,
@@ -124,10 +123,10 @@ export function useSession() {
                 status: 'Verificado',
                 createdAt: new Date().toISOString().split('T')[0],
             };
-            allUsers.push(newUser);
+            allUsers.push(newUser); // Add to our in-memory "database"
             performLogin(newUser);
         }
-    }, [performLogin, toast]);
+    }, [performLogin]);
 
     const login = useCallback((email: string, password?: string) => {
         const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
