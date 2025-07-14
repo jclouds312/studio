@@ -82,11 +82,11 @@ export function CompanyDashboard() {
   };
 
   if (!session.isMounted) {
-    return <div>Cargando...</div>;
+    return <div className="flex justify-center items-center h-64"><Loader2 className="h-8 w-8 animate-spin" /></div>;
   }
   
-  if (!session.user) {
-    return <div>Acceso denegado.</div>;
+  if (!session.user || session.user.role !== 'company') {
+    return <div className="text-center py-12">Acceso denegado. Esta sección es solo para empresas.</div>;
   }
   
   const companyJobs = allJobs.filter(job => job.company === session.user?.name);
@@ -122,7 +122,7 @@ export function CompanyDashboard() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {companyJobs.map((job) => (
+                            {companyJobs.length > 0 ? companyJobs.map((job) => (
                                 <TableRow key={job.id}>
                                     <TableCell className="font-medium">
                                         <Link href={`/jobs/${job.id}`} className="hover:underline">{job.title}</Link>
@@ -144,7 +144,13 @@ export function CompanyDashboard() {
                                         </div>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            )) : (
+                                <TableRow>
+                                    <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                                        No tienes ninguna publicación de trabajo activa.
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </CardContent>

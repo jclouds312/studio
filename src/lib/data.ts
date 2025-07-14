@@ -209,6 +209,27 @@ export const allJobs: Job[] = [
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'health',
     whatsapp: '+5493811234567'
+  },
+  {
+    id: '13',
+    title: 'Gerente de Producto',
+    company: 'Facebook Latam',
+    location: 'Remoto',
+    type: 'Full-time',
+    description: 'Lidera la estrategia y la hoja de ruta de nuestros productos para América Latina. Trabajarás con equipos multifuncionales para lanzar nuevas funciones y optimizar la experiencia del usuario.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'tech',
+    isFeatured: true
+  },
+  {
+    id: '14',
+    title: 'Ingeniero de Datos',
+    company: 'Facebook Latam',
+    location: 'Buenos Aires',
+    type: 'Full-time',
+    description: 'Diseña y construye pipelines de datos a gran escala para soportar nuestros productos y análisis. Se requiere experiencia con Spark, Hadoop y arquitecturas de datos en la nube.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'tech',
   }
 ];
 
@@ -245,6 +266,17 @@ export const allCompanies: CompanyProfile[] = [
         phone: 'N/A',
         logoUrl: 'https://placehold.co/40x40.png',
         status: 'Inactiva',
+    },
+     {
+        id: '4',
+        name: 'Facebook Latam',
+        cuit: '30-11223344-5',
+        address: 'Juana Manso 999',
+        city: 'CABA',
+        province: 'Buenos Aires',
+        phone: '11-5555-5555',
+        logoUrl: 'https://placehold.co/40x40.png',
+        status: 'Activa',
     },
 ];
 
