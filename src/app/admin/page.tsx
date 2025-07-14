@@ -28,7 +28,7 @@ export default function AdminPage() {
                 <SidebarInset>
                     <main className="flex-1 container mx-auto py-8 px-4">
                         <AdminDashboard />
-                         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 mt-8">
+                         <Tabs value={active-tab} onValueChange={setActiveTab} className="space-y-4 mt-8">
                             <TabsContent value="overview">
                                 <OverviewTab setActiveTab={setActiveTab} />
                             </TabsContent>
