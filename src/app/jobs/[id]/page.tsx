@@ -6,7 +6,7 @@ import { allJobs } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info } from 'lucide-react';
+import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -37,6 +37,10 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
     return '';
   }
 
+  const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(job.location + ', Argentina')}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+  const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(job.location + ', Argentina')}`;
+
+
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
       <Header />
@@ -62,7 +66,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                             </Badge>
                         </div>
                     )}
-                     {job.isNew && (
+                     {job.isNew && !job.isFeatured && (
                         <div className={cn("dark", getThemeClass())}>
                             <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
                                 <Info className="h-4 w-4" />
@@ -92,7 +96,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             </Card>
           </div>
 
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 space-y-6">
              <Card>
                 <CardHeader>
                     <CardTitle>Acciones</CardTitle>
@@ -113,6 +117,32 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                      <Button size="lg" variant="secondary" className="w-full">
                         <Star className="mr-2 h-4 w-4" />
                         Guardar oferta
+                    </Button>
+                </CardContent>
+             </Card>
+
+             <Card>
+                <CardHeader>
+                    <CardTitle>Ubicación</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="aspect-video w-full overflow-hidden rounded-lg border">
+                        <iframe
+                            width="100%"
+                            height="100%"
+                            loading="lazy"
+                            allowFullScreen
+                            referrerPolicy="no-referrer-when-downgrade"
+                            src={mapUrl}
+                            title={`Mapa de ${job.location}`}
+                            style={{ border: 0 }}
+                        ></iframe>
+                    </div>
+                    <Button asChild variant="outline" className="w-full">
+                        <a href={mapLink} target="_blank" rel="noopener noreferrer">
+                           <ExternalLink className="mr-2 h-4 w-4" />
+                            Abrir en Google Maps
+                        </a>
                     </Button>
                 </CardContent>
              </Card>
