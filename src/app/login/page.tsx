@@ -66,8 +66,32 @@ export default function LoginPage() {
               Inicia sesión o regístrate para continuar
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <form className="space-y-4" onSubmit={handleFormSubmit}>
+          <CardContent className="space-y-6">
+            <div className="flex justify-center gap-4">
+                <Button variant="outline" size="icon" onClick={() => loginWithSocial('johnatanvallejomarulanda@gmail.com')}>
+                  <GoogleIcon className="h-6 w-6" />
+                   <span className="sr-only">Login con Google</span>
+                </Button>
+                 <Button variant="outline" size="icon" onClick={() => loginWithSocial('empresa.facebook@example.com')}>
+                  <FacebookIcon className="h-6 w-6" />
+                   <span className="sr-only">Login con Facebook</span>
+                </Button>
+                <Button variant="outline" size="icon" onClick={() => loginWithSocial('ana.garcia.outlook@example.com')}>
+                  <MicrosoftIcon className="h-6 w-6" />
+                   <span className="sr-only">Login con Outlook</span>
+                </Button>
+            </div>
+             <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <Separator />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">
+                  O inicia sesión con tu correo
+                </span>
+              </div>
+            </div>
+             <form className="space-y-4" onSubmit={handleFormSubmit}>
               <div className="space-y-1">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" placeholder="tu@email.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -80,30 +104,6 @@ export default function LoginPage() {
                 Iniciar Sesión
               </Button>
             </form>
-             <div className="relative my-2">
-              <div className="absolute inset-0 flex items-center">
-                <Separator />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">
-                  O
-                </span>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('johnatanvallejomarulanda@gmail.com')}>
-                  <GoogleIcon className="mr-2 h-5 w-5" />
-                  Google
-                </Button>
-                 <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('empresa.facebook@example.com')}>
-                  <FacebookIcon className="mr-2 h-5 w-5" />
-                  Facebook
-                </Button>
-                <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('ana.garcia.outlook@example.com')}>
-                  <MicrosoftIcon className="mr-2 h-5 w-5" />
-                  Outlook
-                </Button>
-            </div>
             <p className="text-center text-sm text-muted-foreground">
               ¿No tienes una cuenta?{' '}
               <Link href="/register" className="underline hover:text-primary">
