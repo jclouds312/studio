@@ -76,7 +76,8 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
 
   const getThemeClass = () => {
     if (job.isFeatured) return 'theme-premium';
-    if (job.isNew) return 'theme-new';
+    // The blue theme for 'new' was removed per user feedback to keep it simple.
+    // If needed, it can be re-added here.
     return '';
   }
 
@@ -99,7 +100,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <Card className="relative overflow-hidden">
+            <Card className={cn("relative overflow-hidden", getThemeClass())}>
                  <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                     {job.isFeatured && (
                          <Badge variant="default" className="bg-amber-400 text-amber-900 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-amber-900/20">
@@ -108,7 +109,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                         </Badge>
                     )}
                      {job.isNew && !job.isFeatured && (
-                        <Badge variant="secondary" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary/20">
+                        <Badge variant="secondary" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary/20 bg-blue-500/10 text-blue-400">
                             <Info className="h-4 w-4" />
                             NUEVO
                         </Badge>
@@ -130,7 +131,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
               <CardContent>
                 <Separator className="my-4"/>
                 <h3 className="text-lg font-semibold mb-2 text-primary">Descripción del trabajo</h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">{job.description}</p>
+                <p className="text-card-foreground whitespace-pre-wrap">{job.description}</p>
               </CardContent>
             </Card>
           </div>

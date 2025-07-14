@@ -83,9 +83,14 @@ function JobListingCard({ job }: { job: Job }) {
         });
     }
 
+    const getThemeClass = () => {
+        if (job.isFeatured) return 'theme-premium';
+        return '';
+    }
+
     return (
         <Link href={`/jobs/${job.id}`} className="block h-full">
-            <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col h-full">
+            <Card className={cn("hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col h-full", getThemeClass())}>
                 <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                     {job.isFeatured && (
                          <Badge variant="default" className="bg-amber-400 text-amber-900 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-amber-900/20">
@@ -113,7 +118,7 @@ function JobListingCard({ job }: { job: Job }) {
                     </div>
                 </CardHeader>
                 <CardContent className="p-6 pt-4 flex-grow">
-                    <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
+                    <p className="text-sm text-card-foreground line-clamp-2">{job.description}</p>
                 </CardContent>
                 <CardFooter className="flex flex-row justify-between items-center bg-muted/50 p-4 border-t mt-auto">
                     <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
