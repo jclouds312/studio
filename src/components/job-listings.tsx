@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { allJobs } from "@/lib/data";
+import { cn } from "@/lib/utils";
 
 function JobListingCard({ job }: { job: Job }) {
     const { toast } = useToast();
@@ -33,44 +34,46 @@ function JobListingCard({ job }: { job: Job }) {
     };
 
     return (
-        <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col bg-card/60 backdrop-blur-lg">
-            <Link href={`/jobs/${job.id}`} className="flex-grow block p-6">
-                {job.isFeatured && (
-                    <div className="absolute top-4 right-4">
-                        <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
-                            <Sparkles className="h-4 w-4" />
-                            DESTACADO
-                        </Badge>
+        <div className={cn(job.isFeatured && 'theme-premium')}>
+            <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col bg-card/80 backdrop-blur-sm">
+                <Link href={`/jobs/${job.id}`} className="flex-grow block p-6">
+                    {job.isFeatured && (
+                        <div className="absolute top-4 right-4">
+                            <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
+                                <Sparkles className="h-4 w-4" />
+                                DESTACADO
+                            </Badge>
+                        </div>
+                    )}
+                    <div className="flex gap-4">
+                        <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-secondary p-1 shrink-0" data-ai-hint="company logo" />
+                        <div className="flex-grow">
+                            <CardTitle className="text-lg md:text-xl mb-1">{job.title}</CardTitle>
+                            <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
+                                <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
+                                <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
+                            </CardDescription>
+                        </div>
                     </div>
-                )}
-                <div className="flex gap-4">
-                    <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-secondary p-1 shrink-0" data-ai-hint="company logo" />
-                    <div className="flex-grow">
-                        <CardTitle className="text-lg md:text-xl mb-1">{job.title}</CardTitle>
-                        <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
-                            <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
-                            <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
-                        </CardDescription>
+                    <CardContent className="p-0 pt-4">
+                        <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
+                    </CardContent>
+                </Link>
+                <CardFooter className="flex flex-row justify-between items-center bg-secondary/20 p-4 border-t">
+                     <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
+                     <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" onClick={(e) => handleAction(e, 'save')}>
+                            <Star className="mr-2 h-4 w-4" />
+                            Guardar
+                        </Button>
+                         <Button size="sm" onClick={(e) => handleAction(e, 'apply')}>
+                            <Send className="mr-2 h-4 w-4" />
+                            Aplicar
+                        </Button>
                     </div>
-                </div>
-                <CardContent className="p-0 pt-4">
-                    <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
-                </CardContent>
-            </Link>
-            <CardFooter className="flex flex-row justify-between items-center bg-secondary/20 p-4 border-t">
-                 <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
-                 <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" onClick={(e) => handleAction(e, 'save')}>
-                        <Star className="mr-2 h-4 w-4" />
-                        Guardar
-                    </Button>
-                     <Button size="sm" onClick={(e) => handleAction(e, 'apply')}>
-                        <Send className="mr-2 h-4 w-4" />
-                        Aplicar
-                    </Button>
-                </div>
-            </CardFooter>
-        </Card>
+                </CardFooter>
+            </Card>
+        </div>
     );
 }
 
