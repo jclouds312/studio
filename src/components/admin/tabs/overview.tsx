@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +24,7 @@ import {
 import React from "react";
 import Image from "next/image";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
-import { Bar, CartesianGrid, XAxis, BarChart as RechartsBarChart, YAxis, Tooltip as RechartsTooltip } from "recharts";
+import { Bar, CartesianGrid, XAxis, BarChart as RechartsBarChart, YAxis } from "recharts";
 import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -34,7 +33,6 @@ import type { Transaction, PaymentMetrics } from '@/lib/types';
 import Papa from 'papaparse';
 import { saveAs } from 'file-saver';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
 
 
 // Datos simulados para el informe de pagos
@@ -140,6 +138,7 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
   const { toast } = useToast();
   const [isPaying, setIsPaying] = React.useState(false);
   const [paymentSuccess, setPaymentSuccess] = React.useState(false);
+  const [isMpConnected, setIsMpConnected] = React.useState(false);
   
   const handlePayment = async () => {
     setIsPaying(true);
@@ -291,6 +290,14 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
     }
   };
 
+  const handleConnectMp = () => {
+    toast({
+        title: "Conexión Simulada",
+        description: "Tu Access Token ha sido guardado (simulado).",
+    });
+    setIsMpConnected(true);
+  }
+
 
   return (
     <div className="space-y-8">
@@ -329,7 +336,7 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
+            <div className="text-2xl font-bold">${paymentMetrics.monthlyRecurringRevenue.toLocaleString('es-AR')}</div>
             <p className="text-xs text-muted-foreground">
               +19% desde el mes pasado
             </p>
@@ -486,21 +493,32 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
                  <CardDescription>Conecta tu cuenta para recibir pagos por suscripciones y servicios.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="mp-token">Access Token</Label>
-                  <div className="relative">
-                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
-                    <Input id="mp-token" type="password" placeholder="APP_USR-..." className="pl-10"/>
-                  </div>
-                </div>
-                <Button>
-                    <Star className="mr-2 h-4 w-4"/>
-                    Guardar y Conectar
-                </Button>
+                {isMpConnected ? (
+                    <div className="flex flex-col items-center justify-center text-center p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                        <Sparkles className="h-10 w-10 text-green-400 mb-2"/>
+                        <p className="font-semibold text-green-300">¡Mercado Pago Conectado!</p>
+                        <p className="text-xs text-green-400/80">Ya puedes procesar pagos de forma segura.</p>
+                        <Button variant="link" size="sm" className="mt-2 text-muted-foreground" onClick={() => setIsMpConnected(false)}>Desconectar</Button>
+                    </div>
+                ) : (
+                    <>
+                        <div className="space-y-2">
+                            <Label htmlFor="mp-token">Access Token</Label>
+                            <div className="relative">
+                                <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
+                                <Input id="mp-token" type="password" placeholder="APP_USR-..." className="pl-10"/>
+                            </div>
+                        </div>
+                        <Button onClick={handleConnectMp}>
+                            <Star className="mr-2 h-4 w-4"/>
+                            Guardar y Conectar
+                        </Button>
+                    </>
+                )}
                  <Separator/>
                  <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
                   <AlertDialogTrigger asChild>
-                    <Button variant="outline">
+                    <Button variant="outline" disabled={!isMpConnected}>
                         <DollarSign className="mr-2 h-4 w-4"/>
                         Simular Pago de Cliente
                     </Button>
