@@ -75,10 +75,10 @@ function JobListingCard({ job }: { job: Job }) {
                         <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
                     </CardContent>
                     <CardFooter className="flex flex-row justify-between items-center bg-secondary/20 p-4 border-t mt-auto">
-                        <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
+                        <Badge variant="outline" className="text-xs capitalize text-amber-950 bg-amber-400 border-amber-500">{job.type}</Badge>
                         <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" onClick={(e) => handleAction(e, 'save')}>
-                                <Star className="mr-2 h-4 w-4" />
+                            <Button variant="ghost" size="sm" className="text-amber-400 hover:text-amber-300" onClick={(e) => handleAction(e, 'save')}>
+                                <Star className="mr-2 h-4 w-4 text-amber-400" />
                                 Guardar
                             </Button>
                             <Button size="sm" onClick={(e) => handleAction(e, 'apply')}>

@@ -100,12 +100,12 @@ body {
   }
   
  .dark.theme-premium {
-    --primary: 340 70% 60%; /* Deeper wine/magenta color for primary actions */
-    --primary-foreground: 340 10% 98%;
-    --card: 340 40% 12% / 0.8; /* Dark, deep wine card background */
-    --card-foreground: 340 10% 98%;
-    --border: 340 35% 25%; /* Border to match the wine theme */
-    --ring: 340 70% 60%;
+    --primary: 349 83% 47%; /* Deep, dark wine red */
+    --primary-foreground: 349 10% 98%;
+    --card: 349 40% 12% / 0.8; /* Dark, deep wine card background */
+    --card-foreground: 349 10% 98%;
+    --border: 349 35% 25%; /* Border to match the wine theme */
+    --ring: 349 83% 47%;
   }
 
   .dark.theme-new {
