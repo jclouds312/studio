@@ -14,7 +14,7 @@ export default function RegisterPage() {
       <main className="flex-1 flex items-center justify-center container mx-auto py-12 px-4">
         <Card className="w-full max-w-lg shadow-xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Únete a Conexión Laboral</CardTitle>
+            <CardTitle className="text-2xl">Únete a LaburoYA</CardTitle>
             <CardDescription>
               Crea tu cuenta para empezar. Es rápido y fácil.
             </CardDescription>
