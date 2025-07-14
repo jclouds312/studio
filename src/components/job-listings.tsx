@@ -19,8 +19,8 @@ function JobListingCard({ job }: { job: Job }) {
     const { toast } = useToast();
 
     const handleAction = (e: React.MouseEvent, action: 'apply' | 'save') => {
-        e.preventDefault(); // Evita que el Link se active
-        e.stopPropagation(); // Evita que el evento se propague al Link contenedor
+        e.preventDefault(); 
+        e.stopPropagation();
 
         if (action === 'apply') {
             toast({
@@ -156,6 +156,10 @@ export function JobListings() {
                             <SelectItem value="sales">Ventas</SelectItem>
                             <SelectItem value="domestic">Doméstico</SelectItem>
                             <SelectItem value="construction">Construcción</SelectItem>
+                            <SelectItem value="admin">Administración</SelectItem>
+                            <SelectItem value="gastronomy">Gastronomía</SelectItem>
+                            <SelectItem value="health">Salud</SelectItem>
+                            <SelectItem value="education">Educación</SelectItem>
                             <SelectItem value="other">Otro</SelectItem>
                         </SelectContent>
                     </Select>

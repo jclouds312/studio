@@ -31,7 +31,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className={cn("flex flex-col min-h-screen bg-transparent", "dark")}>
+    <div className="flex flex-col min-h-screen bg-transparent">
       <Header />
       <main className="flex-1 container mx-auto py-8 px-4">
         <div className="mb-6">
@@ -47,7 +47,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
           <div className="lg:col-span-2">
             <Card className="relative overflow-hidden">
                 {job.isFeatured && (
-                    <div className={cn("absolute top-4 right-4 z-10")}>
+                    <div className={cn("absolute top-4 right-4 z-10", "dark")}>
                         <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
                             <Sparkles className="h-4 w-4" />
                             DESTACADO

@@ -10,7 +10,7 @@ export type Job = {
     type: 'Full-time' | 'Part-time' | 'Contract' | 'Changa';
     description: string;
     companyLogo: string;
-    category: 'tech' | 'design' | 'marketing' | 'sales' | 'domestic' | 'construction' | 'other';
+    category: 'tech' | 'design' | 'marketing' | 'sales' | 'domestic' | 'construction' | 'admin' | 'gastronomy' | 'health' | 'education' | 'other';
     isFeatured?: boolean;
     whatsapp?: string;
 };
