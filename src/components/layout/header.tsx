@@ -15,6 +15,7 @@ import { useSession } from '@/hooks/use-session';
 export function Header() {
   const { session, logout } = useSession();
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith('/admin');
@@ -38,6 +39,16 @@ export function Header() {
             </div>
         </header>
     );
+  }
+
+  const handleLinkClick = () => setIsMenuOpen(false);
+  const handleChatClick = () => {
+    setIsMenuOpen(false);
+    setIsChatOpen(true);
+  };
+  const handleLogoutClick = () => {
+    setIsMenuOpen(false);
+    logout();
   }
 
   return (
@@ -99,60 +110,60 @@ export function Header() {
             )}
            
             <div className="md:hidden">
-              <Sheet>
+              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Abrir menú</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="p-0">
+                <SheetContent side="right" className="p-0 bg-card/80 backdrop-blur-xl border-l-border/50">
                    <SheetHeader className="p-4 border-b">
                      <SheetTitle>
-                       <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
+                       <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity" onClick={handleLinkClick}>
                           <Briefcase className="h-6 w-6" />
                           <span className="font-bold text-lg text-foreground">LaburoYA</span>
                         </Link>
                       </SheetTitle>
                   </SheetHeader>
-                  <div className="flex flex-col gap-4 p-4">
+                  <div className="flex flex-col gap-2 p-4">
                     {session.isLoggedIn ? (
                       <>
-                        <Button variant="outline" asChild size="lg" className="justify-start gap-2">
-                            <Link href="/profile">
-                                <Avatar className="w-8 h-8 mr-2">
+                        <Button variant="ghost" asChild size="lg" className="justify-start" onClick={handleLinkClick}>
+                            <Link href="/profile" className="flex items-center gap-3">
+                                <Avatar className="w-8 h-8 mr-1">
                                     <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
                                     <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
                                 </Avatar>
                                 Mi Perfil
                             </Link>
                         </Button>
-                         <Button variant="outline" asChild size="lg" className="justify-start gap-2" onClick={() => setIsChatOpen(true)}>
-                            <div className='flex items-center'>
-                                <MessageSquare className="mr-2 h-5 w-5"/>Mensajes
-                            </div>
+                         <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleChatClick}>
+                           <div className='flex items-center'>
+                               <MessageSquare />Mensajes
+                           </div>
                           </Button>
                        {isAdmin && (
-                          <Button variant="outline" asChild size="lg" className="justify-start gap-2">
-                            <Link href="/admin"><Shield className="mr-2 h-5 w-5"/>Panel de Admin</Link>
+                          <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleLinkClick}>
+                            <Link href="/admin"><Shield />Panel de Admin</Link>
                           </Button>
                         )}
                         {isCompany && (
-                          <Button variant="outline" asChild size="lg" className="justify-start gap-2">
-                            <Link href="/company/dashboard"><Building className="mr-2 h-5 w-5"/>Panel de Empresa</Link>
+                          <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleLinkClick}>
+                            <Link href="/company/dashboard"><Building />Panel de Empresa</Link>
                           </Button>
                         )}
-                        <Button variant="destructive" size="lg" className="justify-start gap-2" onClick={logout}>
-                          <LogOut className="mr-2 h-5 w-5"/>Cerrar Sesión
+                        <Button variant="destructive" size="lg" className="justify-start gap-4" onClick={handleLogoutClick}>
+                          <LogOut />Cerrar Sesión
                         </Button>
                       </>
                     ) : (
                       <>
-                        <Button variant="outline" asChild size="lg" className="justify-start gap-2">
-                          <Link href="/login"><LogIn className="mr-2 h-5 w-5"/>Iniciar Sesión</Link>
+                        <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleLinkClick}>
+                          <Link href="/login"><LogIn />Iniciar Sesión</Link>
                         </Button>
-                        <Button asChild size="lg" className="justify-start gap-2">
-                          <Link href="/register"><UserPlus className="mr-2 h-5 w-5"/>Registrarse</Link>
+                        <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleLinkClick}>
+                          <Link href="/register"><UserPlus />Registrarse</Link>
                         </Button>
                       </>
                     )}
