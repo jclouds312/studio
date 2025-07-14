@@ -59,9 +59,11 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center container mx-auto py-12 px-4">
         <Card className="w-full max-w-md shadow-2xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Bienvenido a Conexión Laboral</CardTitle>
-            <CardDescription>
-              Inicia sesión para continuar
+            <CardTitle className="text-4xl font-bold">
+              <span style={{color: '#FBBF24'}}>LaburoYA</span>
+            </CardTitle>
+            <CardDescription className="pt-2">
+              Inicia sesión o regístrate para continuar
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
