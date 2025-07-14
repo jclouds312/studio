@@ -70,7 +70,7 @@ export const allUsers: User[] = [
 export const allJobs: Job[] = [
   {
     id: '1',
-    title: 'Frontend Developer',
+    title: 'Frontend Developer (React)',
     company: 'Tech Solutions Inc.',
     location: 'Buenos Aires',
     type: 'Full-time',
@@ -82,7 +82,7 @@ export const allJobs: Job[] = [
   },
   {
     id: '2',
-    title: 'Diseñador/a UX/UI',
+    title: 'Diseñador/a UX/UI Sr.',
     company: 'Creative Minds',
     location: 'Córdoba',
     type: 'Contract',
@@ -112,7 +112,7 @@ export const allJobs: Job[] = [
   },
   {
     id: '5',
-    title: 'Representante de Ventas',
+    title: 'Representante de Ventas B2B',
     company: 'Lead Gen',
     location: 'Buenos Aires',
     type: 'Full-time',
@@ -132,6 +132,69 @@ export const allJobs: Job[] = [
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'domestic',
     whatsapp: '+5492212345678'
+  },
+  {
+    id: '7',
+    title: 'Analista de Recursos Humanos',
+    company: 'Capital Humano S.A.',
+    location: 'Mendoza',
+    type: 'Full-time',
+    description: 'Buscamos un Analista de RRHH para gestionar el ciclo completo de reclutamiento, la incorporación de empleados y las relaciones laborales. Se requiere experiencia en procesos de selección y conocimiento de la legislación laboral argentina.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'hr'
+  },
+  {
+    id: '8',
+    title: 'Mozo/a con experiencia',
+    company: 'Restaurante El Buen Sabor',
+    location: 'Mar del Plata',
+    type: 'Part-time',
+    description: 'Restaurante céntrico busca mozo/a para la temporada de verano. Se requiere experiencia comprobable, buena presencia y disponibilidad para trabajar fines de semana y feriados. Se ofrece excelente ambiente laboral y propinas.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'gastronomy',
+    whatsapp: '+5492231234567'
+  },
+  {
+    id: '9',
+    title: 'Analista Contable Jr.',
+    company: 'Finanzas Claras',
+    location: 'Remoto',
+    type: 'Full-time',
+    description: 'Estudio contable busca Analista Jr. para tareas de conciliaciones bancarias, análisis de cuentas y asistencia en la preparación de balances. Ideal para estudiantes avanzados o recién recibidos de Contador Público.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'finance',
+    isFeatured: true
+  },
+  {
+    id: '10',
+    title: 'Repositor/a de Supermercado',
+    company: 'Supermercados Argentinos',
+    location: 'Quilmes',
+    type: 'Full-time',
+    description: 'Buscamos repositores para nuestra sucursal de Quilmes. Las tareas incluyen la reposición de mercadería en góndolas, control de stock y atención al cliente. No se requiere experiencia previa.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'logistics'
+  },
+  {
+    id: '11',
+    title: 'Abogado/a Corporativo',
+    company: 'Estudio Jurídico Integral',
+    location: 'Buenos Aires',
+    type: 'Full-time',
+    description: 'Importante estudio jurídico busca abogado/a con experiencia en derecho corporativo para asesoramiento a empresas, redacción de contratos y seguimiento de litigios. Se requiere matrícula activa.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'legal'
+  },
+  {
+    id: '12',
+    title: 'Enfermero/a Profesional',
+    company: 'Clínica Salud Total',
+    location: 'San Miguel de Tucumán',
+    type: 'Full-time',
+    description: 'Se necesita enfermero/a con matrícula para cubrir puesto en sala de internación. Se valorará experiencia en cuidados intensivos. Disponibilidad para turnos rotativos.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'health',
+    whatsapp: '+5493811234567'
   }
 ];
 

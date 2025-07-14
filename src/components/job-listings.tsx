@@ -126,7 +126,7 @@ export function JobListings() {
                             <SelectContent>
                                 <SelectItem value="all">Todas las ubicaciones</SelectItem>
                                 <SelectItem value="Remoto">Remoto</SelectItem>
-                                <SelectItem value="Buenos Aires">Buenos Aires (CABA)</SelectItem>
+                                <SelectItem value="Buenos Aires">Buenos Aires</SelectItem>
                                 <SelectItem value="La Matanza">La Matanza (GBA)</SelectItem>
                                 <SelectItem value="Quilmes">Quilmes (GBA)</SelectItem>
                                 <SelectItem value="Lomas de Zamora">Lomas de Zamora (GBA)</SelectItem>
@@ -160,6 +160,10 @@ export function JobListings() {
                             <SelectItem value="gastronomy">Gastronomía</SelectItem>
                             <SelectItem value="health">Salud</SelectItem>
                             <SelectItem value="education">Educación</SelectItem>
+                            <SelectItem value="hr">Recursos Humanos</SelectItem>
+                            <SelectItem value="finance">Finanzas</SelectItem>
+                            <SelectItem value="legal">Legal</SelectItem>
+                            <SelectItem value="logistics">Logística</SelectItem>
                             <SelectItem value="other">Otro</SelectItem>
                         </SelectContent>
                     </Select>

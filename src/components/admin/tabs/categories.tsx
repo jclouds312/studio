@@ -35,6 +35,11 @@ const initialCategories: Category[] = [
     { id: 'gastronomy', name: 'Gastronomía', description: 'Chefs, mozos, baristas, etc.' },
     { id: 'health', name: 'Salud', description: 'Enfermería, cuidado de ancianos, etc.' },
     { id: 'education', name: 'Educación', description: 'Docentes, tutores, etc.' },
+    { id: 'hr', name: 'Recursos Humanos', description: 'Reclutamiento, gestión de personal, etc.' },
+    { id: 'finance', name: 'Finanzas', description: 'Contabilidad, banca, inversiones, etc.' },
+    { id: 'legal', name: 'Legal', description: 'Abogacía, asesoría jurídica, etc.' },
+    { id: 'logistics', name: 'Logística', description: 'Transporte, depósito, supply chain, etc.' },
+    { id: 'other', name: 'Otro', description: 'Otras categorías no especificadas.' },
 ];
 
 function CategoryFormModal({ isOpen, setIsOpen, category, onSave }: { isOpen: boolean; setIsOpen: (open: boolean) => void; category: Category | null; onSave: (category: Category) => void; }) {

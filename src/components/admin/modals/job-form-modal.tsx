@@ -129,6 +129,10 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
                     <SelectItem value="gastronomy">Gastronomía</SelectItem>
                     <SelectItem value="health">Salud</SelectItem>
                     <SelectItem value="education">Educación</SelectItem>
+                    <SelectItem value="hr">Recursos Humanos</SelectItem>
+                    <SelectItem value="finance">Finanzas</SelectItem>
+                    <SelectItem value="legal">Legal</SelectItem>
+                    <SelectItem value="logistics">Logística</SelectItem>
                     <SelectItem value="other">Otro</SelectItem>
                 </SelectContent>
                 </Select>
