@@ -28,6 +28,7 @@ import {
 import Image from "next/image";
 import type { Candidate } from '@/lib/types';
 import { CandidateProfileModal } from './modals/candidate-profile-modal';
+import { ChatPanel } from '../chat/chat-panel';
 
 const companyApplicants: Candidate[] = allUsers
     .filter(u => u.role === 'user' && ['juan.perez@example.com', 'ana.garcia@example.com'].includes(u.email))
@@ -44,10 +45,16 @@ export function CompanyDashboard() {
   const [paymentSuccess, setPaymentSuccess] = React.useState(false);
   const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
+  const [isChatOpen, setIsChatOpen] = React.useState(false);
 
   const handleViewProfile = (candidate: Candidate) => {
     setSelectedCandidate(candidate);
     setIsProfileModalOpen(true);
+  };
+  
+  const handleContact = () => {
+    setIsProfileModalOpen(false);
+    setIsChatOpen(true);
   };
 
   const handleConnectMp = () => {
@@ -107,10 +114,12 @@ export function CompanyDashboard() {
 
   return (
     <>
+    <ChatPanel isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
     <CandidateProfileModal 
       isOpen={isProfileModalOpen} 
       setIsOpen={setIsProfileModalOpen} 
-      candidate={selectedCandidate} 
+      candidate={selectedCandidate}
+      onContact={handleContact}
     />
     <div className="company-dashboard-theme max-w-7xl mx-auto space-y-8">
       <div className="space-y-2">
@@ -300,7 +309,7 @@ export function CompanyDashboard() {
                                         <Eye className="h-4 w-4" />
                                          <span className="sr-only">Ver Perfil</span>
                                     </Button>
-                                     <Button variant="ghost" size="icon">
+                                     <Button variant="ghost" size="icon" onClick={handleContact}>
                                         <MessageSquare className="h-4 w-4" />
                                          <span className="sr-only">Contactar</span>
                                     </Button>

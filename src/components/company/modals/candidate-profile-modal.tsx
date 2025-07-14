@@ -13,9 +13,10 @@ interface CandidateProfileModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   candidate: Candidate | null;
+  onContact: () => void;
 }
 
-export function CandidateProfileModal({ isOpen, setIsOpen, candidate }: CandidateProfileModalProps) {
+export function CandidateProfileModal({ isOpen, setIsOpen, candidate, onContact }: CandidateProfileModalProps) {
   if (!candidate) return null;
 
   return (
@@ -61,7 +62,7 @@ export function CandidateProfileModal({ isOpen, setIsOpen, candidate }: Candidat
               <FileDown className="mr-2 h-4 w-4" />
               Descargar CV
             </Button>
-            <Button type="button">
+            <Button type="button" onClick={onContact}>
                 <MessageSquare className="mr-2 h-4 w-4" />
                 Contactar
             </Button>
@@ -71,4 +72,3 @@ export function CandidateProfileModal({ isOpen, setIsOpen, candidate }: Candidat
     </Dialog>
   );
 }
-

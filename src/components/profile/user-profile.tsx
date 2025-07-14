@@ -274,7 +274,7 @@ function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
                                     </Badge>
                                 </TableCell>
                                 <TableCell>
-                                    <Button variant="outline" size="sm" onClick={onChatOpen}>
+                                    <Button variant="outline" size="sm" onClick={onChatOpen} disabled={app.status !== 'Contactado'}>
                                         <MessageSquare className="mr-2 h-4 w-4"/>
                                         Chatear
                                     </Button>
