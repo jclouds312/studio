@@ -16,7 +16,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { cn } from '@/lib/utils';
 
 export default function JobDetailPage({ params }: { params: { id: string } }) {
-  const job = allJobs.find((j) => j.id === params.id);
+  const { id } = params;
+  const job = allJobs.find((j) => j.id === id);
   const { toast } = useToast();
 
   if (!job) {
