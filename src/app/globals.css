@@ -102,8 +102,8 @@ body {
  .dark.theme-premium {
     --primary: 349 83% 47%; /* Deep, dark wine red */
     --primary-foreground: 349 10% 98%;
-    --card: 349 40% 12% / 0.8; /* Dark, deep wine card background */
-    --card-foreground: 349 10% 98%;
+    --card: 349 50% 10% / 0.9;
+    --card-foreground: 0 0% 100%;
     --border: 349 35% 25%; /* Border to match the wine theme */
     --ring: 349 83% 47%;
   }
