@@ -1,0 +1,21 @@
+{
+  "name": "LaburoYA",
+  "short_name": "LaburoYA",
+  "description": "Encuentra tu próximo trabajo en Argentina.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#110f1a",
+  "theme_color": "#a855f7",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

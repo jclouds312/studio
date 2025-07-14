@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase, Sparkles, Star } from "lucide-react";
+import { MapPin, Search, Briefcase, Sparkles, Star, Send } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
 import React, { useState, useMemo } from "react";
@@ -17,16 +17,23 @@ import { allJobs } from "@/lib/data";
 function JobListingCard({ job }: { job: Job }) {
     const { toast } = useToast();
 
-    const handleSaveJob = (e: React.MouseEvent) => {
+    const handleAction = (e: React.MouseEvent, action: 'apply' | 'save') => {
         e.preventDefault(); // Evita que el Link se active
-        toast({
-            title: "¡Oferta Guardada!",
-            description: `Has guardado la oferta de ${job.title}.`,
-        });
+        if (action === 'apply') {
+            toast({
+                title: "¡Postulación Enviada!",
+                description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
+            });
+        } else {
+            toast({
+                title: "¡Oferta Guardada!",
+                description: `Has guardado la oferta de ${job.title}.`,
+            });
+        }
     };
 
     return (
-        <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col">
+        <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col bg-card/60 backdrop-blur-lg">
             <Link href={`/jobs/${job.id}`} className="flex-grow block p-6">
                 {job.isFeatured && (
                     <div className="absolute top-4 right-4">
@@ -52,10 +59,16 @@ function JobListingCard({ job }: { job: Job }) {
             </Link>
             <CardFooter className="flex flex-row justify-between items-center bg-secondary/20 p-4 border-t">
                  <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
-                 <Button variant="ghost" size="sm" onClick={handleSaveJob}>
-                    <Star className="mr-2 h-4 w-4" />
-                    Guardar
-                </Button>
+                 <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" onClick={(e) => handleAction(e, 'save')}>
+                        <Star className="mr-2 h-4 w-4" />
+                        Guardar
+                    </Button>
+                     <Button size="sm" onClick={(e) => handleAction(e, 'apply')}>
+                        <Send className="mr-2 h-4 w-4" />
+                        Aplicar
+                    </Button>
+                </div>
             </CardFooter>
         </Card>
     );

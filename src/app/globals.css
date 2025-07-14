@@ -11,7 +11,7 @@ body {
     --background: 265 30% 12%; /* Dark Lilac Background */
     --foreground: 0 0% 98%;
     
-    --card: 262 35% 15%; /* Intense purple for cards */
+    --card: 262 35% 15% / 0.6; /* Intense purple for cards with transparency */
     --card-foreground: 0 0% 98%;
     
     --popover: 260 20% 5%;
@@ -58,7 +58,7 @@ body {
     --background: 265 30% 12%; /* Dark Lilac Background */
     --foreground: 0 0% 98%;
     
-    --card: 262 35% 15%;
+    --card: 262 35% 15% / 0.6;
     --card-foreground: 0 0% 98%;
     
     --popover: 260 20% 5%;

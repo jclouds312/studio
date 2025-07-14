@@ -43,7 +43,7 @@ export function Header() {
   return (
     <>
     <ChatPanel isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
-    <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-40">
+    <header className="bg-card/60 backdrop-blur-lg border-b sticky top-0 z-40">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
             <div className='flex items-center gap-2'>
