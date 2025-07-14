@@ -11,7 +11,7 @@ import Image from "next/image";
 import React, { useState, useMemo, useContext } from "react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { allJobs } from "@/data";
 import { cn } from "@/lib/utils";
 import { UserProfileContext } from "@/context/user-profile-context";
@@ -83,12 +83,6 @@ function JobListingCard({ job }: { job: Job }) {
         });
     }
 
-    const getThemeClass = () => {
-        if (job.isFeatured) return 'theme-premium';
-        if (job.isNew) return 'theme-new';
-        return '';
-    }
-
     return (
         <Link href={`/jobs/${job.id}`} className="block h-full">
             <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col h-full">
@@ -100,7 +94,7 @@ function JobListingCard({ job }: { job: Job }) {
                         </Badge>
                     )}
                      {job.isNew && !job.isFeatured && (
-                        <Badge variant="secondary" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary/20">
+                        <Badge variant="secondary" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary/20 bg-blue-500/10 text-blue-400">
                             <Info className="h-4 w-4" />
                             NUEVO
                         </Badge>
@@ -110,7 +104,7 @@ function JobListingCard({ job }: { job: Job }) {
                     <div className="flex gap-4">
                         <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-white p-1 shrink-0" data-ai-hint="company logo" />
                         <div className="flex-grow">
-                            <CardTitle className="text-lg md:text-xl mb-1">{job.title}</CardTitle>
+                            <CardTitle className="text-lg md:text-xl mb-1 text-blue-400">{job.title}</CardTitle>
                             <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
                                 <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
                                 <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
@@ -125,7 +119,7 @@ function JobListingCard({ job }: { job: Job }) {
                     <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
                     <div className="flex items-center gap-2">
                         <Button variant="ghost" size="sm" onClick={onSaveClick}>
-                            <Star className={cn("mr-2 h-4 w-4", isSaved && "fill-amber-400 text-amber-500")} />
+                            <Star className={cn("mr-2 h-4 w-4 text-amber-400", isSaved && "fill-amber-400")} />
                             {isSaved ? 'Guardado' : 'Guardar'}
                         </Button>
                         <Button size="sm" onClick={handleApply} disabled={isApplying}>

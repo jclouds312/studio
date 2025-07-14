@@ -9,15 +9,16 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building, Moon, Sun, Settings } from 'lucide-react';
 import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ChatPanel } from '../chat/chat-panel';
 import { useSession } from '@/hooks/use-session';
+import { useTheme } from "next-themes";
 
 export function Header() {
   const { session, logout } = useSession();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [theme, setTheme] = useState('dark');
+  const { setTheme } = useTheme();
   
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith('/admin');
@@ -26,25 +27,15 @@ export function Header() {
   const isCompany = session.isLoggedIn && session.user?.role === 'company';
   const isWorker = session.isLoggedIn && session.user?.role === 'user';
 
-
-  useEffect(() => {
-    document.body.classList.remove('theme-new', 'dark');
-    document.body.classList.add(theme);
-    if(theme === 'dark') {
-       document.body.classList.add('dark');
-    }
-  }, [theme]);
-
-
   if (!session.isMounted) {
     return (
-        <header className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-40">
+        <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-40">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16">
                     <div className='flex items-center gap-2'>
                         <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                             <Briefcase className="h-6 w-6" />
-                            <span className="font-bold text-xl">Conexión Laboral</span>
+                            <span className="font-bold text-xl">LaburoYA</span>
                         </Link>
                     </div>
                 </div>
@@ -62,30 +53,43 @@ export function Header() {
     setIsMenuOpen(false);
     logout();
   }
-  const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'dark' ? 'theme-new' : 'dark');
-  }
 
   return (
     <>
     <ChatPanel isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
-    <header className="bg-card/60 backdrop-blur-lg border-b sticky top-0 z-40">
+    <header className="bg-background/60 backdrop-blur-lg border-b sticky top-0 z-40">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
             <div className='flex items-center gap-2'>
                 {isAdminPage && session.isLoggedIn && <SidebarTrigger className="md:hidden"/>}
                 <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                     <Briefcase className="h-6 w-6" />
-                     <span className="font-bold text-xl text-foreground">Conexión Laboral</span>
+                     <span className="font-bold text-xl text-foreground">LaburoYA</span>
                 </Link>
             </div>
           
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setTheme("light")}>
+                  Claro
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("dark")}>
+                  Oscuro
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("system")}>
+                  Sistema
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {session.isLoggedIn ? (
               <div className="hidden md:flex items-center gap-2">
                 <DropdownMenu>
@@ -158,7 +162,7 @@ export function Header() {
                      <SheetTitle>
                        <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity" onClick={handleLinkClick}>
                           <Briefcase className="h-6 w-6" />
-                          <span className="font-bold text-lg text-foreground">Conexión Laboral</span>
+                          <span className="font-bold text-lg text-foreground">LaburoYA</span>
                         </Link>
                       </SheetTitle>
                   </SheetHeader>

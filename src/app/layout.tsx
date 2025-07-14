@@ -1,19 +1,11 @@
 
 'use client';
 
-import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
 import { UserProfileProvider } from '@/context/user-profile-context';
-
-/*
-export const metadata: Metadata = {
-  title: 'Conexión Laboral AR',
-  description: 'Encuentra tu próximo trabajo en Argentina.',
-  manifest: '/manifest.json',
-};
-*/
+import { ThemeProvider } from '@/context/theme-provider';
 
 export default function RootLayout({
   children,
@@ -21,12 +13,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <head>
-        <title>Conexión Laboral AR</title>
+        <title>LaburoYA</title>
         <meta name="description" content="Encuentra tu próximo trabajo en Argentina." />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#3F51B5" />
+        <meta name="theme-color" content="#8B5CF6" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -34,10 +26,17 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className={cn("font-body antialiased min-h-screen")}>
-        <UserProfileProvider>
-            {children}
-            <Toaster />
-        </UserProfileProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <UserProfileProvider>
+              {children}
+              <Toaster />
+          </UserProfileProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,17 +1,14 @@
 
 'use client';
 
-import { Header } from '@/components/layout/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
-import { Footer } from '@/components/layout/footer';
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useSession } from '@/hooks/use-session';
-import { cn } from '@/lib/utils';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -56,19 +53,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
       <main className="flex-1 flex items-center justify-center container mx-auto py-12 px-4">
-        <Card className="w-full max-w-lg shadow-2xl">
-          <CardHeader className="text-center">
-            <CardTitle className="text-4xl font-bold text-primary">
+        <Card className="w-full max-w-2xl shadow-2xl">
+          <CardHeader className="text-center p-8">
+            <CardTitle className="text-5xl font-bold text-amber-400">
               LaburoYA
             </CardTitle>
-            <CardDescription className="pt-2">
+            <CardDescription className="pt-2 text-base">
               Inicia sesión o regístrate para continuar.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 px-8 pb-8">
             <div className="grid grid-cols-2 gap-4">
                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('google')}>
                   <GoogleIcon className="mr-2 h-7 w-7" />
@@ -117,7 +112,5 @@ export default function LoginPage() {
           </CardContent>
         </Card>
       </main>
-      <Footer />
-    </div>
   );
 }
