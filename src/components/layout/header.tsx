@@ -26,13 +26,13 @@ export function Header() {
 
   if (!session.isMounted) {
     return (
-        <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-40">
+        <header className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-40">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16">
                     <div className='flex items-center gap-2'>
                         <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                             <Briefcase className="h-6 w-6" />
-                            <span className="font-bold text-xl" style={{color: '#FBBF24'}}>LaburoYA</span>
+                            <span className="font-bold text-xl">Conexión Laboral</span>
                         </Link>
                     </div>
                 </div>
@@ -61,7 +61,7 @@ export function Header() {
                 {isAdminPage && session.isLoggedIn && <SidebarTrigger className="md:hidden"/>}
                 <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
                     <Briefcase className="h-6 w-6" />
-                     <span className="font-bold text-xl" style={{color: '#FBBF24'}}>LaburoYA</span>
+                     <span className="font-bold text-xl text-foreground">Conexión Laboral</span>
                 </Link>
             </div>
           
@@ -117,20 +117,20 @@ export function Header() {
                     <span className="sr-only">Abrir menú</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="p-0 bg-card/80 backdrop-blur-xl border-l-border/50">
+                <SheetContent side="right" className="p-0 bg-background/95 backdrop-blur-sm">
                    <SheetHeader className="p-4 border-b">
                      <SheetTitle>
                        <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity" onClick={handleLinkClick}>
                           <Briefcase className="h-6 w-6" />
-                          <span className="font-bold text-lg text-foreground">LaburoYA</span>
+                          <span className="font-bold text-lg text-foreground">Conexión Laboral</span>
                         </Link>
                       </SheetTitle>
                   </SheetHeader>
                   <div className="flex flex-col gap-2 p-4">
                     {session.isLoggedIn ? (
                       <>
-                        <Button variant="ghost" asChild size="lg" className="justify-start" onClick={handleLinkClick}>
-                            <Link href="/profile" className="flex items-center gap-3">
+                        <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleLinkClick}>
+                            <Link href="/profile">
                                 <Avatar className="w-8 h-8 mr-1">
                                     <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
                                     <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
@@ -139,7 +139,7 @@ export function Header() {
                             </Link>
                         </Button>
                          <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleChatClick}>
-                           <div className='flex items-center'>
+                           <div className='flex items-center gap-3'>
                                <MessageSquare />Mensajes
                            </div>
                           </Button>

@@ -54,31 +54,27 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-transparent">
+    <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1 flex items-center justify-center container mx-auto py-12 px-4">
         <Card className="w-full max-w-lg shadow-2xl">
           <CardHeader className="text-center">
             <CardTitle className="text-4xl font-bold">
-              <span style={{color: '#FBBF24'}}>LaburoYA</span>
+              Conexión Laboral
             </CardTitle>
             <CardDescription className="pt-2">
-              Inicia sesión o regístrate para continuar
+              Inicia sesión para encontrar tu próximo trabajo.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex justify-center gap-4">
-                <Button variant="outline" size="icon" onClick={() => loginWithSocial('johnatanvallejomarulanda@gmail.com')}>
-                  <GoogleIcon className="h-7 w-7" />
-                   <span className="sr-only">Login con Google</span>
+                <Button variant="outline" className="w-full" onClick={() => loginWithSocial('johnatanvallejomarulanda@gmail.com')}>
+                  <GoogleIcon className="mr-2 h-5 w-5" />
+                  Ingresar con Google
                 </Button>
-                 <Button variant="outline" size="icon" onClick={() => loginWithSocial('empresa.facebook@example.com')}>
-                  <FacebookIcon className="h-7 w-7" />
-                   <span className="sr-only">Login con Facebook</span>
-                </Button>
-                <Button variant="outline" size="icon" onClick={() => loginWithSocial('ana.garcia.outlook@example.com')}>
-                  <MicrosoftIcon className="h-7 w-7" />
-                   <span className="sr-only">Login con Outlook</span>
+                 <Button variant="outline" className="w-full" onClick={() => loginWithSocial('empresa.facebook@example.com')}>
+                  <FacebookIcon className="mr-2 h-5 w-5" />
+                  Ingresar con Facebook
                 </Button>
             </div>
              <div className="relative">

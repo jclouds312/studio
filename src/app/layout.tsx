@@ -9,7 +9,7 @@ import { UserProfileProvider } from '@/context/user-profile-context';
 
 /*
 export const metadata: Metadata = {
-  title: 'LaburoYA',
+  title: 'Conexión Laboral AR',
   description: 'Encuentra tu próximo trabajo en Argentina.',
   manifest: '/manifest.json',
 };
@@ -21,12 +21,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className='dark'>
+    <html lang="es">
       <head>
-        <title>LaburoYA</title>
+        <title>Conexión Laboral AR</title>
         <meta name="description" content="Encuentra tu próximo trabajo en Argentina." />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#0F0C1E" />
+        <meta name="theme-color" content="#3F51B5" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

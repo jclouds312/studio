@@ -90,62 +90,56 @@ function JobListingCard({ job }: { job: Job }) {
     }
 
     return (
-        <div className={cn(getThemeClass())}>
-            <Link href={`/jobs/${job.id}`} className="block h-full">
-                <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col bg-card/80 backdrop-blur-sm h-full">
-                    <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
-                        {job.isFeatured && (
-                            <div className={cn("dark theme-premium")}>
-                                <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
-                                    <Sparkles className="h-4 w-4" />
-                                    DESTACADO
-                                </Badge>
-                            </div>
-                        )}
-                         {job.isNew && !job.isFeatured && (
-                             <div className={cn("dark theme-new")}>
-                                <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
-                                    <Info className="h-4 w-4" />
-                                    NUEVO
-                                </Badge>
-                             </div>
-                        )}
+        <Link href={`/jobs/${job.id}`} className="block h-full">
+            <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col h-full">
+                <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
+                    {job.isFeatured && (
+                        <Badge variant="default" className="bg-primary text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
+                            <Sparkles className="h-4 w-4" />
+                            DESTACADO
+                        </Badge>
+                    )}
+                     {job.isNew && !job.isFeatured && (
+                        <Badge variant="secondary" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary/20">
+                            <Info className="h-4 w-4" />
+                            NUEVO
+                        </Badge>
+                    )}
+                </div>
+                <CardHeader className="p-6 pb-2">
+                    <div className="flex gap-4">
+                        <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-white p-1 shrink-0" data-ai-hint="company logo" />
+                        <div className="flex-grow">
+                            <CardTitle className="text-lg md:text-xl mb-1">{job.title}</CardTitle>
+                            <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
+                                <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
+                                <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
+                            </CardDescription>
+                        </div>
                     </div>
-                    <CardHeader className="p-6 pb-2">
-                        <div className="flex gap-4">
-                            <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-secondary p-1 shrink-0" data-ai-hint="company logo" />
-                            <div className="flex-grow">
-                                <CardTitle className="text-lg md:text-xl mb-1">{job.title}</CardTitle>
-                                <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
-                                    <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
-                                    <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
-                                </CardDescription>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="p-6 pt-4 flex-grow">
-                        <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
-                    </CardContent>
-                    <CardFooter className="flex flex-row justify-between items-center bg-secondary/20 p-4 border-t mt-auto">
-                        <Badge variant="outline" className="text-xs capitalize border-amber-500 bg-amber-400/80 text-amber-950">{job.type}</Badge>
-                        <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" className="text-amber-500 hover:text-amber-400" onClick={onSaveClick}>
-                                <Star className={cn("mr-2 h-4 w-4", isSaved && "fill-amber-400 text-amber-500")} />
-                                {isSaved ? 'Guardado' : 'Guardar'}
-                            </Button>
-                            <Button size="sm" onClick={handleApply} disabled={isApplying}>
-                                {isApplying ? (
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                ) : (
-                                    <Send className="mr-2 h-4 w-4" />
-                                )}
-                                Postularse
-                            </Button>
-                        </div>
-                    </CardFooter>
-                </Card>
-            </Link>
-        </div>
+                </CardHeader>
+                <CardContent className="p-6 pt-4 flex-grow">
+                    <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
+                </CardContent>
+                <CardFooter className="flex flex-row justify-between items-center bg-muted/50 p-4 border-t mt-auto">
+                    <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
+                    <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" onClick={onSaveClick}>
+                            <Star className={cn("mr-2 h-4 w-4", isSaved && "fill-amber-400 text-amber-500")} />
+                            {isSaved ? 'Guardado' : 'Guardar'}
+                        </Button>
+                        <Button size="sm" onClick={handleApply} disabled={isApplying}>
+                            {isApplying ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <Send className="mr-2 h-4 w-4" />
+                            )}
+                            Postularse
+                        </Button>
+                    </div>
+                </CardFooter>
+            </Card>
+        </Link>
     );
 }
 
@@ -176,7 +170,7 @@ export function JobListings() {
 
     return (
         <div className="space-y-8">
-            <Card className="shadow-lg sticky top-[70px] z-30 backdrop-blur-sm bg-card/80 border-border/50">
+            <Card className="shadow-lg sticky top-[70px] z-30 bg-card/95 backdrop-blur-sm border-border/50">
                 <CardHeader>
                     <CardTitle>Encuentra tu próximo trabajo</CardTitle>
                     <CardDescription>Busca entre miles de ofertas de las mejores empresas.</CardDescription>
@@ -185,7 +179,7 @@ export function JobListings() {
                     <div className="lg:col-span-2 relative w-full">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                         <Input 
-                            placeholder="Puesto o palabra clave" 
+                            placeholder="Puesto, empresa o palabra clave" 
                             className="pl-10"
                             value={keyword}
                             onChange={(e) => setKeyword(e.target.value)}
@@ -221,7 +215,7 @@ export function JobListings() {
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                         <Select value={category} onValueChange={setCategory}>
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Categorías de Empleos" />
+                                <SelectValue placeholder="Categoría" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Todas las categorías</SelectItem>
@@ -244,7 +238,7 @@ export function JobListings() {
                         </Select>
                         <Select value={contractType} onValueChange={setContractType}>
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Tipos de Contratos" />
+                                <SelectValue placeholder="Tipo de Contrato" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Todos los tipos</SelectItem>

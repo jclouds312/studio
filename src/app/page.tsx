@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 export default function Home() {
   return (
-    <div className={cn("flex flex-col min-h-screen bg-transparent", "dark")}>
+    <div className={cn("flex flex-col min-h-screen")}>
       <Header />
       <main className="flex-1 container mx-auto py-8 px-4">
          <JobListings />
