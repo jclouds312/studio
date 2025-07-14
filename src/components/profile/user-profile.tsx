@@ -1,13 +1,13 @@
 
 'use client';
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare, Trash2, Link as LinkIcon, Star, Settings } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare, Trash2, Link as LinkIcon, Star, Settings, Building, Mail, Globe } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from '../ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,17 +15,92 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
 import { ChatPanel } from '../chat/chat-panel';
-import type { Job } from '@/lib/types';
+import type { Job, CompanyProfile } from '@/lib/types';
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
 import { UserProfileContext } from '@/context/user-profile-context';
 import { cn } from '@/lib/utils';
+import { allCompanies } from '@/lib/data';
 
 const roleDisplayMap = {
     user: 'Trabajador',
     company: 'Empresa',
     admin: 'Administrador',
 };
+
+function CompanyProfileView({ company }: { company: CompanyProfile | null }) {
+    const { toast } = useToast();
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
+    
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+
+        setTimeout(() => {
+          setIsSubmitting(false);
+          toast({
+            title: "Perfil de Empresa Actualizado",
+            description: "Los cambios se han guardado correctamente.",
+          });
+        }, 1500);
+    };
+
+    if (!company) return <Loader2 className="animate-spin" />;
+
+    return (
+         <Card>
+            <CardHeader>
+                <CardTitle>Perfil de la Empresa</CardTitle>
+                <CardDescription>Gestiona la información pública y los datos de contacto de tu empresa.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="companyName">Nombre de la Empresa</Label>
+                            <Input id="companyName" defaultValue={company.name} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="cuit">CUIT</Label>
+                            <Input id="cuit" defaultValue={company.cuit} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="phone">Teléfono de Contacto</Label>
+                            <Input id="phone" type="tel" defaultValue={company.phone} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="address">Dirección</Label>
+                            <Input id="address" defaultValue={company.address} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="city">Ciudad</Label>
+                            <Input id="city" defaultValue={company.city} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="province">Provincia</Label>
+                            <Input id="province" defaultValue={company.province} />
+                        </div>
+                    </div>
+                     <div className="flex justify-end pt-2">
+                        <Button type="submit" size="lg" disabled={isSubmitting}>
+                            {isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Guardando...
+                            </>
+                            ) : (
+                            <>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Guardar Cambios
+                            </>
+                            )}
+                        </Button>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
+    )
+}
 
 function EditProfileTab() {
   const { toast } = useToast();
@@ -82,7 +157,7 @@ function EditProfileTab() {
                         <Label htmlFor="email">Email</Label>
                         <div className="relative">
                             <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                            <Input id="email" type="email" className="pl-10" defaultValue={session.user?.email} placeholder="Tu email" disabled/>
+                            <Input id="email" type="email" className="pl-10" defaultValue={session.user?.email} disabled/>
                         </div>
                     </div>
                     {!isAdmin && (
@@ -313,13 +388,28 @@ export function UserProfile() {
   const { session } = useSession();
   const { profileData } = useContext(UserProfileContext);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
+  const [companyProfile, setCompanyProfile] = useState<CompanyProfile | null>(null);
 
-  if (!session.isMounted || !profileData) return <div className='flex justify-center items-center h-64'><Loader2 className="h-8 w-8 animate-spin" /></div>;
+  useEffect(() => {
+    if (session.isMounted && session.user?.role === 'company') {
+      const company = allCompanies.find(c => c.name === session.user?.name);
+      setCompanyProfile(company || null);
+    }
+  }, [session.isMounted, session.user]);
+
+
+  if (!session.isMounted || (!profileData && !companyProfile)) return <div className='flex justify-center items-center h-64'><Loader2 className="h-8 w-8 animate-spin" /></div>;
   if (!session.user) return <div>Usuario no encontrado.</div>;
   
   const { user } = session;
   const isAdmin = user.role === 'admin';
+  const isCompany = user.role === 'company';
   const roleDisplay = roleDisplayMap[user.role] || user.role;
+
+  const getAvatarUrl = () => {
+    if (isCompany) return companyProfile?.logoUrl || 'https://placehold.co/128x128.png';
+    return user.avatar || profileData?.avatarUrl || 'https://placehold.co/128x128.png';
+  }
 
   return (
     <>
@@ -328,7 +418,7 @@ export function UserProfile() {
       <div className="flex flex-col items-center text-center space-y-4">
         <div className="relative w-32 h-32">
             <Avatar className="w-32 h-32 border-4 border-primary shadow-lg">
-                <AvatarImage src={user.avatar || profileData.avatarUrl} alt={user.name} data-ai-hint="person user"/>
+                <AvatarImage src={getAvatarUrl()} alt={user.name} data-ai-hint="person user"/>
                 <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <Button size="icon" className="absolute bottom-1 right-1 rounded-full hover:scale-110 transition-transform" aria-label="Cambiar foto de perfil">
@@ -393,6 +483,18 @@ export function UserProfile() {
             </TabsList>
             <TabsContent value="edit-profile" className="mt-6">
                 <EditProfileTab />
+            </TabsContent>
+        </Tabs>
+      ) : isCompany ? (
+        <Tabs defaultValue="company-profile" className="w-full">
+            <TabsList className="grid w-full grid-cols-1">
+                <TabsTrigger value="company-profile">
+                    <Building className="mr-2 h-4 w-4" />
+                    Perfil de Empresa
+                </TabsTrigger>
+            </TabsList>
+            <TabsContent value="company-profile" className="mt-6">
+                <CompanyProfileView company={companyProfile} />
             </TabsContent>
         </Tabs>
       ) : (
