@@ -175,8 +175,9 @@ function AdminPlanView() {
                 const Icon = icons[plan.iconName] as LucideIcon;
                 return (
                     <Card key={plan.name} className={cn(
-                        "flex flex-col",
-                        plan.isPopular && "border-primary shadow-2xl relative"
+                        "flex flex-col dark",
+                        plan.isPopular && "border-primary shadow-2xl relative",
+                        plan.name === 'Empresa Plus' && 'theme-premium'
                     )}>
                         {plan.isPopular && (
                             <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
@@ -263,8 +264,9 @@ function CustomerPlanView() {
                         <CarouselItem key={index} className="pl-4 md:basis-1/2">
                             <div className="p-1 h-full">
                                 <Card className={cn(
-                                    "flex flex-col h-full transition-all duration-300",
-                                    plan.isPopular && "border-2 border-primary shadow-2xl"
+                                    "flex flex-col h-full transition-all duration-300 dark",
+                                    plan.isPopular && "border-2 border-primary shadow-2xl",
+                                    plan.name === 'Empresa Plus' && 'theme-premium'
                                 )}>
                                     {plan.isPopular && (
                                         <div className="w-full flex justify-center">
