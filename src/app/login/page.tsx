@@ -11,6 +11,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useSession } from '@/hooks/use-session';
+import { cn } from '@/lib/utils';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -69,16 +70,18 @@ export default function LoginPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" className="w-full" onClick={() => loginWithSocial('juan.perez@example.com')}>
-                  <GoogleIcon className="mr-2 h-5 w-5" />
+                <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('juan.perez@example.com')}>
+                  <GoogleIcon className="mr-2 h-7 w-7" />
                   Ingresar con Google
                 </Button>
-                 <Button variant="outline" className="w-full" onClick={() => loginWithSocial('empresa.facebook@example.com')}>
-                  <FacebookIcon className="mr-2 h-5 w-5" />
+                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('empresa.facebook@example.com')}>
+                  <FacebookIcon className="mr-2 h-7 w-7" />
                   Ingresar con Facebook
                 </Button>
-                 <Button variant="outline" className="w-full col-span-2" onClick={() => loginWithSocial('ana.garcia.outlook@example.com')}>
-                  <MicrosoftIcon className="mr-2 h-5 w-5" />
+            </div>
+             <div className="grid grid-cols-1">
+                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('ana.garcia.outlook@example.com')}>
+                  <MicrosoftIcon className="mr-2 h-7 w-7" />
                   Ingresar con Outlook
                 </Button>
             </div>

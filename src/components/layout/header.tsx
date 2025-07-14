@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building } from 'lucide-react';
+import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building, Moon, Sun } from 'lucide-react';
 import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChatPanel } from '../chat/chat-panel';
 import { useSession } from '@/hooks/use-session';
 
@@ -16,12 +16,21 @@ export function Header() {
   const { session, logout } = useSession();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [theme, setTheme] = useState('dark');
   
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith('/admin');
 
   const isAdmin = session.isLoggedIn && session.user?.role === 'admin';
   const isCompany = session.isLoggedIn && session.user?.role === 'company';
+
+  useEffect(() => {
+    document.body.classList.remove('theme-new', 'dark');
+    document.body.classList.add(theme);
+    if(theme === 'dark') {
+       document.body.classList.add('dark');
+    }
+  }, [theme]);
 
 
   if (!session.isMounted) {
@@ -50,6 +59,9 @@ export function Header() {
     setIsMenuOpen(false);
     logout();
   }
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'dark' ? 'theme-new' : 'dark');
+  }
 
   return (
     <>
@@ -66,6 +78,11 @@ export function Header() {
             </div>
           
           <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Toggle theme</span>
+            </Button>
             {session.isLoggedIn ? (
                <div className="hidden md:flex items-center gap-4">
                 {isAdmin && (

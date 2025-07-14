@@ -98,7 +98,7 @@ export function CompanyFormModal({ isOpen, setIsOpen, company, onSave }: Company
               <Label htmlFor="cuit" className="text-right">
                 CUIT
               </Label>
-              <Input id="cuit" value={formData.cuit || ''} onChange={handleInputChange} className="col-span-3" required/>
+              <Input id="cuit" value={formData.cuit || ''} onChange={handleInputChange} className="col-span-3" required placeholder="30-XXXXXXXX-X"/>
             </div>
              <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="address" className="text-right">
