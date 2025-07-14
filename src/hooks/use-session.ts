@@ -4,7 +4,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { allUsers } from '@/lib/users';
+import { allUsers } from '@/lib/data';
 import type { User } from '@/lib/types';
 
 interface Session {
@@ -17,7 +17,7 @@ interface RegisterData {
     name: string;
     email: string;
     password?: string;
-    role: 'user' | 'company';
+    role: 'user' | 'company' | 'admin';
 }
 
 export function useSession() {
@@ -51,7 +51,14 @@ export function useSession() {
             localStorage.setItem('userEmail', user.email);
             setSession({ isLoggedIn: true, user, isMounted: true });
             toast({ title: `¡Bienvenido, ${user.name}!` });
-            router.push('/');
+            
+            if (user.role === 'company') {
+                router.push('/company/dashboard');
+            } else if (user.role === 'admin') {
+                router.push('/admin');
+            } else {
+                router.push('/');
+            }
         } catch (error) {
             console.error("Could not access localStorage.", error);
         }

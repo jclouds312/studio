@@ -78,13 +78,13 @@ export function RegisterForm() {
                     <RadioGroup defaultValue="user" onValueChange={(value) => setRole(value as 'user' | 'company')} className="grid grid-cols-2 gap-4">
                         <div>
                             <RadioGroupItem value="user" id="r1" className="peer sr-only" />
-                            <Label htmlFor="r1" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                            <Label htmlFor="r1" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">
                                 Busco Trabajo
                             </Label>
                         </div>
                         <div>
                              <RadioGroupItem value="company" id="r2" className="peer sr-only" />
-                             <Label htmlFor="r2" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                             <Label htmlFor="r2" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">
                                 Quiero Contratar
                             </Label>
                         </div>

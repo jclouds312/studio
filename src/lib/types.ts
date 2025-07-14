@@ -110,4 +110,3 @@ export type SubscriptionPlan = {
   iconName: keyof typeof import('lucide-react').icons;
   pricing: PricingOption[];
 };
-
