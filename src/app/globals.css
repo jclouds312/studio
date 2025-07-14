@@ -107,6 +107,15 @@ body {
     --border: 340 35% 25%; /* Border to match the wine theme */
     --ring: 340 70% 60%;
   }
+
+  .dark.theme-new {
+    --primary: 210 100% 56%; /* Argentinian Blue */
+    --primary-foreground: 210 40% 98%;
+    --card: 210 90% 25% / 0.8; /* Dark, deep blue card background */
+    --card-foreground: 210 40% 98%;
+    --border: 210 60% 35%; /* Border to match the blue theme */
+    --ring: 210 100% 56%;
+  }
 }
 
 @layer base {

@@ -78,6 +78,7 @@ export const allJobs: Job[] = [
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'tech',
     isFeatured: true,
+    isNew: false,
     whatsapp: '+5491123456789'
   },
   {
@@ -88,7 +89,8 @@ export const allJobs: Job[] = [
     type: 'Contract',
     description: 'Creative Minds busca un talentoso Diseñador UX/UI para crear experiencias de usuario increíbles. El candidato ideal debe tener un ojo para el diseño limpio y artístico, poseer habilidades superiores de UI y ser capaz de traducir requisitos de alto nivel en flujos de interacción y artefactos.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'design'
+    category: 'design',
+    isNew: true,
   },
   {
     id: '3',
@@ -98,7 +100,8 @@ export const allJobs: Job[] = [
     type: 'Full-time',
     description: 'Únete a nuestro equipo de backend para diseñar e implementar aplicaciones del lado del servidor escalables y robustas. Trabajarás con un equipo de desarrolladores para construir y mantener nuestros servicios principales, asegurando un alto rendimiento y capacidad de respuesta a las solicitudes del front-end.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'tech'
+    category: 'tech',
+    isNew: true,
   },
    {
     id: '4',
@@ -152,6 +155,7 @@ export const allJobs: Job[] = [
     description: 'Restaurante céntrico busca mozo/a para la temporada de verano. Se requiere experiencia comprobable, buena presencia y disponibilidad para trabajar fines de semana y feriados. Se ofrece excelente ambiente laboral y propinas.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'gastronomy',
+    isNew: true,
     whatsapp: '+5492231234567'
   },
   {

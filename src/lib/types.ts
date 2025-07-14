@@ -12,6 +12,7 @@ export type Job = {
     companyLogo: string;
     category: 'tech' | 'design' | 'marketing' | 'sales' | 'domestic' | 'construction' | 'admin' | 'gastronomy' | 'health' | 'education' | 'other' | 'hr' | 'finance' | 'legal' | 'logistics';
     isFeatured?: boolean;
+    isNew?: boolean;
     whatsapp?: string;
 };
 

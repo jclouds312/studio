@@ -6,7 +6,7 @@ import { allJobs } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send } from 'lucide-react';
+import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -30,6 +30,12 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
     });
   };
 
+  const getThemeClass = () => {
+    if (job.isFeatured) return 'theme-premium';
+    if (job.isNew) return 'theme-new';
+    return '';
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
       <Header />
@@ -46,14 +52,24 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <Card className="relative overflow-hidden">
-                {job.isFeatured && (
-                    <div className={cn("absolute top-4 right-4 z-10", "dark theme-premium")}>
-                        <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
-                            <Sparkles className="h-4 w-4" />
-                            DESTACADO
-                        </Badge>
-                    </div>
-                )}
+                 <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
+                    {job.isFeatured && (
+                        <div className={cn("dark", getThemeClass())}>
+                            <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
+                                <Sparkles className="h-4 w-4" />
+                                DESTACADO
+                            </Badge>
+                        </div>
+                    )}
+                     {job.isNew && (
+                        <div className={cn("dark", getThemeClass())}>
+                            <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
+                                <Info className="h-4 w-4" />
+                                NUEVO
+                            </Badge>
+                        </div>
+                    )}
+                </div>
               <CardHeader>
                 <div className="flex items-start gap-4">
                   <Image src={job.companyLogo} alt={`${job.company} logo`} width={64} height={64} className="rounded-lg border bg-secondary p-1" data-ai-hint="company logo"/>

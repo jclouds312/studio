@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase, Sparkles, Star, Send } from "lucide-react";
+import { MapPin, Search, Briefcase, Sparkles, Star, Send, Info } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
 import React, { useState, useMemo } from "react";
@@ -35,18 +35,30 @@ function JobListingCard({ job }: { job: Job }) {
         }
     };
 
+    const getThemeClass = () => {
+        if (job.isFeatured) return 'theme-premium';
+        if (job.isNew) return 'theme-new';
+        return '';
+    }
+
     return (
-        <div className={cn(job.isFeatured && 'dark theme-premium')}>
+        <div className={cn("dark", getThemeClass())}>
             <Link href={`/jobs/${job.id}`} className="block h-full">
                 <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col bg-card/80 backdrop-blur-sm h-full">
-                    {job.isFeatured && (
-                        <div className="absolute top-4 right-4 z-10">
+                    <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
+                        {job.isFeatured && (
                             <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
                                 <Sparkles className="h-4 w-4" />
                                 DESTACADO
                             </Badge>
-                        </div>
-                    )}
+                        )}
+                         {job.isNew && (
+                            <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
+                                <Info className="h-4 w-4" />
+                                NUEVO
+                            </Badge>
+                        )}
+                    </div>
                     <CardHeader className="p-6 pb-2">
                         <div className="flex gap-4">
                             <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-secondary p-1 shrink-0" data-ai-hint="company logo" />
@@ -95,7 +107,11 @@ export function JobListings() {
                 return keywordMatch && locationMatch && categoryMatch;
             });
         
-        jobs.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
+        jobs.sort((a, b) => {
+            const scoreA = (a.isFeatured ? 2 : 0) + (a.isNew ? 1 : 0);
+            const scoreB = (b.isFeatured ? 2 : 0) + (b.isNew ? 1 : 0);
+            return scoreB - scoreA;
+        });
 
         return jobs;
     }, [keyword, location, category]);
