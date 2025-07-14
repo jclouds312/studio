@@ -1,12 +1,13 @@
 
 'use client';
 
+import React from 'react';
 import { Header } from '@/components/layout/header';
 import { allJobs } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink } from 'lucide-react';
+import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -14,21 +15,63 @@ import { Separator } from '@/components/ui/separator';
 import { Footer } from '@/components/layout/footer';
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from '@/lib/utils';
+import { useSession } from '@/hooks/use-session';
 
 export default function JobDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const job = allJobs.find((j) => j.id === id);
   const { toast } = useToast();
+  const { session } = useSession();
+  const [isApplying, setIsApplying] = React.useState(false);
 
   if (!job) {
     notFound();
   }
   
-  const handleApply = () => {
-    toast({
-        title: "¡Postulación Enviada!",
-        description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
-    });
+  const handleApply = async () => {
+    setIsApplying(true);
+
+    if (!session.isLoggedIn || !session.user) {
+        toast({
+            title: "Inicia Sesión",
+            description: "Debes iniciar sesión para postularte a una oferta.",
+            variant: "destructive"
+        });
+        setIsApplying(false);
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/send-application-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                jobTitle: job.title,
+                companyName: job.company,
+                companyEmail: 'hr@example.com', // En una app real, esto vendría del perfil de la empresa
+                userName: session.user.name,
+                userEmail: session.user.email,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al enviar la postulación.');
+        }
+
+        toast({
+            title: "¡Postulación Enviada!",
+            description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
+        });
+    } catch (error) {
+        console.error(error);
+        toast({
+            title: "Error",
+            description: "No se pudo completar la postulación. Intenta de nuevo.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsApplying(false);
+    }
   };
 
   const getThemeClass = () => {
@@ -102,8 +145,12 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                     <CardTitle>Acciones</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                    <Button size="lg" className="w-full" onClick={handleApply}>
-                        <Send className="mr-2 h-4 w-4" />
+                    <Button size="lg" className="w-full" onClick={handleApply} disabled={isApplying}>
+                        {isApplying ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <Send className="mr-2 h-4 w-4" />
+                        )}
                         Postularse ahora
                     </Button>
                     {job.whatsapp && (

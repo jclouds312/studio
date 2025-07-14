@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase, Sparkles, Star, Send, Info } from "lucide-react";
+import { MapPin, Search, Briefcase, Sparkles, Star, Send, Info, Loader2 } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
 import React, { useState, useMemo, useContext } from "react";
@@ -15,20 +15,62 @@ import { useToast } from "@/hooks/use-toast";
 import { allJobs } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { UserProfileContext } from "@/context/user-profile-context";
+import { useSession } from "@/hooks/use-session";
 
 function JobListingCard({ job }: { job: Job }) {
     const { toast } = useToast();
     const { savedJobs, handleSaveJob } = useContext(UserProfileContext);
+    const { session } = useSession();
+    const [isApplying, setIsApplying] = useState(false);
 
     const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
 
-    const handleApply = (e: React.MouseEvent) => {
+    const handleApply = async (e: React.MouseEvent) => {
         e.preventDefault(); 
         e.stopPropagation();
-        toast({
-            title: "¡Postulación Enviada!",
-            description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
-        });
+        setIsApplying(true);
+
+        if (!session.isLoggedIn || !session.user) {
+            toast({
+                title: "Inicia Sesión",
+                description: "Debes iniciar sesión para postularte a una oferta.",
+                variant: "destructive"
+            });
+            setIsApplying(false);
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/send-application-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    jobTitle: job.title,
+                    companyName: job.company,
+                    companyEmail: 'hr@example.com', // En una app real, esto vendría del perfil de la empresa
+                    userName: session.user.name,
+                    userEmail: session.user.email,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al enviar la postulación.');
+            }
+
+            toast({
+                title: "¡Postulación Enviada!",
+                description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
+            });
+        } catch (error) {
+            console.error(error);
+            toast({
+                title: "Error",
+                description: "No se pudo completar la postulación. Intenta de nuevo.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsApplying(false);
+        }
     };
 
     const onSaveClick = (e: React.MouseEvent) => {
@@ -91,8 +133,12 @@ function JobListingCard({ job }: { job: Job }) {
                                 <Star className={cn("mr-2 h-4 w-4", isSaved && "fill-amber-400 text-amber-500")} />
                                 {isSaved ? 'Guardado' : 'Guardar'}
                             </Button>
-                            <Button size="sm" onClick={handleApply}>
-                                <Send className="mr-2 h-4 w-4" />
+                            <Button size="sm" onClick={handleApply} disabled={isApplying}>
+                                {isApplying ? (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Send className="mr-2 h-4 w-4" />
+                                )}
                                 Postularse
                             </Button>
                         </div>
