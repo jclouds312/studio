@@ -36,7 +36,7 @@ function JobListingCard({ job }: { job: Job }) {
     };
 
     return (
-        <div className={cn(job.isFeatured && 'dark')}>
+        <div className={cn(job.isFeatured && 'dark theme-premium')}>
             <Link href={`/jobs/${job.id}`} className="block h-full">
                 <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col bg-card/80 backdrop-blur-sm h-full">
                     {job.isFeatured && (

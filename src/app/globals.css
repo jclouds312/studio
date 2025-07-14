@@ -98,6 +98,13 @@ body {
     --sidebar-border: 260 35% 25%;
     --sidebar-ring: 256 80% 60%;
   }
+  
+  .dark.theme-premium {
+    --primary: 330 80% 60%; /* Grape Wine primary */
+    --card: 330 40% 15% / 0.8;
+    --card-foreground: 330 10% 98%;
+    --border: 330 35% 25%;
+  }
 }
 
 @layer base {
