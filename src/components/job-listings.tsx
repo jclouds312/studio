@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase, Sparkles, Star, Link as LinkIcon } from "lucide-react";
+import { MapPin, Search, Briefcase, Sparkles, Star } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
 import React, { useState, useMemo } from "react";
@@ -17,7 +17,8 @@ import { allJobs } from "@/lib/data";
 function JobListingCard({ job }: { job: Job }) {
     const { toast } = useToast();
 
-    const handleSaveJob = () => {
+    const handleSaveJob = (e: React.MouseEvent) => {
+        e.preventDefault(); // Evita que el Link se active
         toast({
             title: "¡Oferta Guardada!",
             description: `Has guardado la oferta de ${job.title}.`,
@@ -26,45 +27,35 @@ function JobListingCard({ job }: { job: Job }) {
 
     return (
         <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col">
-            <Link href={`/jobs/${job.id}`} className="flex-grow block">
+            <Link href={`/jobs/${job.id}`} className="flex-grow block p-6">
                 {job.isFeatured && (
-                    <div className="absolute top-2 right-2">
+                    <div className="absolute top-4 right-4">
                         <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
                             <Sparkles className="h-4 w-4" />
                             DESTACADO
                         </Badge>
                     </div>
                 )}
-                <CardHeader>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-secondary p-1" data-ai-hint="company logo" />
-                        <div className="flex-grow">
-                            <CardTitle className="text-lg md:text-xl">{job.title}</CardTitle>
-                            <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 pt-1 text-sm">
-                                <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
-                                <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
-                            </CardDescription>
-                        </div>
+                <div className="flex gap-4">
+                    <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-secondary p-1 shrink-0" data-ai-hint="company logo" />
+                    <div className="flex-grow">
+                        <CardTitle className="text-lg md:text-xl mb-1">{job.title}</CardTitle>
+                        <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
+                            <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
+                            <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
+                        </CardDescription>
                     </div>
-                </CardHeader>
-                <CardContent>
+                </div>
+                <CardContent className="p-0 pt-4">
                     <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
                 </CardContent>
             </Link>
-            <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4">
-                 <Badge variant="secondary" className="text-xs capitalize">{job.type}</Badge>
-                 <div className="flex gap-2 w-full sm:w-auto">
-                    <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={handleSaveJob}>
-                        <Star className="mr-2 h-4 w-4" />
-                        Guardar
-                    </Button>
-                    <Button variant="default" className="w-full sm:w-auto" size="sm" asChild>
-                        <Link href={`/jobs/${job.id}`}>
-                            <LinkIcon className="mr-2 h-4 w-4" />
-                            Ver Oferta
-                        </Link>
-                    </Button>
-                 </div>
+            <CardFooter className="flex flex-row justify-between items-center bg-secondary/20 p-4 border-t">
+                 <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
+                 <Button variant="ghost" size="sm" onClick={handleSaveJob}>
+                    <Star className="mr-2 h-4 w-4" />
+                    Guardar
+                </Button>
             </CardFooter>
         </Card>
     );
@@ -90,10 +81,11 @@ export function JobListings() {
     }, [keyword, location, category]);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             <Card className="shadow-lg sticky top-[70px] z-30 backdrop-blur-sm bg-card/80 border-border/50">
                 <CardHeader>
                     <CardTitle>Encuentra tu próximo trabajo</CardTitle>
+                    <CardDescription>Busca entre miles de ofertas de las mejores empresas.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col md:flex-row gap-4 items-center">
                     <div className="flex-grow relative w-full">
@@ -144,11 +136,11 @@ export function JobListings() {
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredJobs.length > 0 ? (
                     filteredJobs.map(job => <JobListingCard key={job.id} job={job} />)
                 ) : (
-                    <Card>
+                    <Card className="col-span-full">
                         <CardContent className="pt-6">
                             <p className="text-center text-muted-foreground">No se encontraron trabajos con esos criterios. Intenta con otros filtros.</p>
                         </CardContent>
