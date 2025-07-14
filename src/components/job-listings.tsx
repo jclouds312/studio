@@ -34,11 +34,11 @@ function JobListingCard({ job }: { job: Job }) {
     };
 
     return (
-        <div className={cn(job.isFeatured && 'theme-premium')}>
-            <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col bg-card/80 backdrop-blur-sm">
+        <div className={cn(job.isFeatured && 'dark theme-premium')}>
+            <Card className="hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:border-primary/50 relative overflow-hidden flex flex-col bg-card/80 backdrop-blur-sm h-full">
                 <Link href={`/jobs/${job.id}`} className="flex-grow block p-6">
                     {job.isFeatured && (
-                        <div className="absolute top-4 right-4">
+                        <div className="absolute top-4 right-4 z-10">
                             <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
                                 <Sparkles className="h-4 w-4" />
                                 DESTACADO
@@ -59,7 +59,7 @@ function JobListingCard({ job }: { job: Job }) {
                         <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
                     </CardContent>
                 </Link>
-                <CardFooter className="flex flex-row justify-between items-center bg-secondary/20 p-4 border-t">
+                <CardFooter className="flex flex-row justify-between items-center bg-secondary/20 p-4 border-t mt-auto">
                      <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
                      <div className="flex items-center gap-2">
                         <Button variant="ghost" size="sm" onClick={(e) => handleAction(e, 'save')}>
@@ -122,15 +122,21 @@ export function JobListings() {
                             <SelectContent>
                                 <SelectItem value="all">Todas las ubicaciones</SelectItem>
                                 <SelectItem value="Remoto">Remoto</SelectItem>
-                                <SelectItem value="Buenos Aires">Buenos Aires</SelectItem>
+                                <SelectItem value="Buenos Aires">Buenos Aires (CABA)</SelectItem>
+                                <SelectItem value="La Matanza">La Matanza (GBA)</SelectItem>
+                                <SelectItem value="Quilmes">Quilmes (GBA)</SelectItem>
+                                <SelectItem value="Lomas de Zamora">Lomas de Zamora (GBA)</SelectItem>
+                                <SelectItem value="La Plata">La Plata</SelectItem>
+                                <SelectItem value="Mar del Plata">Mar del Plata</SelectItem>
                                 <SelectItem value="Córdoba">Córdoba</SelectItem>
                                 <SelectItem value="Rosario">Rosario</SelectItem>
-                                <SelectItem value="La Plata">La Plata</SelectItem>
                                 <SelectItem value="Mendoza">Mendoza</SelectItem>
-                                <SelectItem value="Tucumán">San Miguel de Tucumán</SelectItem>
-                                <SelectItem value="Mar del Plata">Mar del Plata</SelectItem>
+                                <SelectItem value="San Miguel de Tucumán">San Miguel de Tucumán</SelectItem>
                                 <SelectItem value="Salta">Salta</SelectItem>
                                 <SelectItem value="Santa Fe">Santa Fe</SelectItem>
+                                <SelectItem value="Neuquén">Neuquén</SelectItem>
+                                <SelectItem value="Bariloche">Bariloche</SelectItem>
+                                <SelectItem value="Ushuaia">Ushuaia</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

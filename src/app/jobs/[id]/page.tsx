@@ -46,7 +46,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
           <div className="lg:col-span-2">
             <Card className="relative overflow-hidden">
                 {job.isFeatured && (
-                    <div className="absolute top-4 right-4">
+                    <div className="absolute top-4 right-4 dark theme-premium z-10">
                         <Badge variant="default" className="bg-primary/90 text-primary-foreground text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary-foreground/20">
                             <Sparkles className="h-4 w-4" />
                             DESTACADO
@@ -85,9 +85,11 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                         Postularse ahora
                     </Button>
                     {job.whatsapp && (
-                        <Button size="lg" variant="outline" className="w-full bg-green-500/10 border-green-500/30 hover:bg-green-500/20 text-green-400 hover:text-green-300">
-                             <Phone className="mr-2 h-4 w-4" />
-                            Contactar por WhatsApp
+                        <Button asChild size="lg" variant="outline" className="w-full bg-green-500/10 border-green-500/30 hover:bg-green-500/20 text-green-400 hover:text-green-300">
+                             <a href={`https://wa.me/${job.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer">
+                                <Phone className="mr-2 h-4 w-4" />
+                                Contactar por WhatsApp
+                             </a>
                         </Button>
                     )}
                      <Button size="lg" variant="secondary" className="w-full">
