@@ -100,10 +100,10 @@ body {
   }
   
  .dark.theme-premium {
+    --card: 349 50% 12% / 0.9;
+    --card-foreground: 0 0% 100%;
     --primary: 349 83% 47%; /* Deep, dark wine red */
     --primary-foreground: 349 10% 98%;
-    --card: 349 50% 10% / 0.9;
-    --card-foreground: 0 0% 100%;
     --border: 349 35% 25%; /* Border to match the wine theme */
     --ring: 349 83% 47%;
   }
@@ -115,6 +115,12 @@ body {
     --card-foreground: 210 40% 98%;
     --border: 210 60% 35%; /* Border to match the blue theme */
     --ring: 210 100% 56%;
+  }
+
+  .dark .company-dashboard-theme .card {
+    --card: 25 80% 20% / 0.8; /* Peach/Orange toned card */
+    --card-foreground: 25 95% 90%;
+    --border: 25 70% 30%;
   }
 }
 

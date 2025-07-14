@@ -92,10 +92,10 @@ export function CompanyDashboard() {
   const companyJobs = allJobs.filter(job => job.company === session.user?.name);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="company-dashboard-theme max-w-7xl mx-auto space-y-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Panel de Empresa</h1>
-        <p className="text-muted-foreground">Gestiona tus publicaciones, candidatos y suscripciones.</p>
+        <h1 className="text-4xl font-bold tracking-tight">Panel de Empresa</h1>
+        <p className="text-lg text-muted-foreground">Gestiona tus publicaciones, candidatos y suscripciones.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
