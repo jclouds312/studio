@@ -61,7 +61,7 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center container mx-auto py-12 px-4">
         <Card className="w-full max-w-lg shadow-2xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-4xl font-bold text-amber-400">
+            <CardTitle className="text-4xl font-bold text-primary">
               LaburoYA
             </CardTitle>
             <CardDescription className="pt-2">

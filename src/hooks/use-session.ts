@@ -20,40 +20,6 @@ interface RegisterData {
     role: 'user' | 'company' | 'admin';
 }
 
-// SIMULATED SOCIAL PROFILES
-const socialProfiles = {
-    google: {
-        name: 'Usuario de Google',
-        email: 'g-user-12345@example.com',
-        role: 'user'
-    },
-    facebook: {
-        name: 'Usuario de Facebook',
-        email: 'fb-user-67890@example.com',
-        role: 'user'
-    },
-    microsoft: {
-        name: 'Usuario de Microsoft',
-        email: 'ms-user-13579@example.com',
-        role: 'user'
-    },
-    google_company: {
-        name: 'Empresa de Google',
-        email: 'g-company-12345@example.com',
-        role: 'company'
-    },
-    facebook_company: {
-        name: 'Empresa de Facebook',
-        email: 'fb-company-67890@example.com',
-        role: 'company'
-    },
-    microsoft_company: {
-        name: 'Empresa de Microsoft',
-        email: 'ms-company-13579@example.com',
-        role: 'company'
-    }
-}
-
 export function useSession() {
     const router = useRouter();
     const { toast } = useToast();
@@ -69,21 +35,13 @@ export function useSession() {
             const userEmail = localStorage.getItem('userEmail');
             if (loggedInStatus && userEmail) {
                 const currentUser = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase()) || null;
-                if (!currentUser) {
-                     // This could happen if our "DB" changes. Let's create the user.
-                    const tempUser = JSON.parse(localStorage.getItem('tempUser') || '{}');
-                    if(tempUser.email === userEmail) {
-                         allUsers.push(tempUser);
-                         setSession({ isLoggedIn: true, user: tempUser, isMounted: true });
-                    } else {
-                        // Can't find user, log out
-                        localStorage.removeItem('isLoggedIn');
-                        localStorage.removeItem('userEmail');
-                        localStorage.removeItem('tempUser');
-                        setSession({ isLoggedIn: false, user: null, isMounted: true });
-                    }
-                } else {
+                if (currentUser) {
                     setSession({ isLoggedIn: true, user: currentUser, isMounted: true });
+                } else {
+                    // If user is not in our static list but was logged in, log them out.
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('userEmail');
+                    setSession({ isLoggedIn: false, user: null, isMounted: true });
                 }
             } else {
                 setSession({ isLoggedIn: false, user: null, isMounted: true });
@@ -98,13 +56,6 @@ export function useSession() {
         try {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userEmail', user.email);
-            // Store a temporary user object in case it's a new social user not yet in our static `allUsers` array
-            if (!allUsers.find(u => u.email === user.email)) {
-                 localStorage.setItem('tempUser', JSON.stringify(user));
-            } else {
-                 localStorage.removeItem('tempUser');
-            }
-
             setSession({ isLoggedIn: true, user, isMounted: true });
             toast({ title: `¡Bienvenido, ${user.name}!` });
             
@@ -149,13 +100,14 @@ export function useSession() {
     }, [performLogin, toast]);
     
     const loginWithSocial = useCallback((provider: 'google' | 'facebook' | 'microsoft', role: 'user' | 'company' = 'user') => {
-        const profileKey = role === 'company' ? `${provider}_company` : provider;
-        const simulatedProfile = socialProfiles[profileKey];
-        
-        let user = allUsers.find(u => u.email.toLowerCase() === simulatedProfile.email.toLowerCase());
+        // Simulate getting a unique email from the social provider
+        const simulatedEmail = `${provider}-${role}-${Math.floor(Math.random() * 10000)}@example.com`;
+        const simulatedName = `${provider.charAt(0).toUpperCase() + provider.slice(1)} ${role.charAt(0).toUpperCase() + role.slice(1)}`;
+
+        let user = allUsers.find(u => u.email.toLowerCase() === simulatedEmail.toLowerCase());
 
         if (user) {
-            // User exists, log them in
+            // User exists, log them in (unlikely in this simulation, but good practice)
             performLogin(user);
         } else {
             // User does not exist, register them
@@ -163,13 +115,19 @@ export function useSession() {
                 title: "Creando cuenta nueva...",
                 description: `Registrando con tu cuenta de ${provider}.`,
             });
-            register({
-                name: simulatedProfile.name,
-                email: simulatedProfile.email,
-                role: simulatedProfile.role as 'user' | 'company',
-            });
+            const newUser: User = {
+                id: String(Date.now()),
+                name: simulatedName,
+                email: simulatedEmail,
+                role: role,
+                avatar: 'https://placehold.co/40x40.png',
+                status: 'Verificado',
+                createdAt: new Date().toISOString().split('T')[0],
+            };
+            allUsers.push(newUser);
+            performLogin(newUser);
         }
-    }, [performLogin, register, toast]);
+    }, [performLogin, toast]);
 
     const login = useCallback((email: string, password?: string) => {
         const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
@@ -188,7 +146,6 @@ export function useSession() {
         try {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userEmail');
-            localStorage.removeItem('tempUser');
             setSession({ isLoggedIn: false, user: null, isMounted: true });
             toast({ title: 'Has cerrado sesión exitosamente.' });
             router.push('/login');
