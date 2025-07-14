@@ -57,7 +57,7 @@ export default function LoginPage() {
     <div className="flex flex-col min-h-screen bg-transparent">
       <Header />
       <main className="flex-1 flex items-center justify-center container mx-auto py-12 px-4">
-        <Card className="w-full max-w-md shadow-2xl">
+        <Card className="w-full max-w-lg shadow-2xl">
           <CardHeader className="text-center">
             <CardTitle className="text-4xl font-bold">
               <span style={{color: '#FBBF24'}}>LaburoYA</span>
@@ -69,15 +69,15 @@ export default function LoginPage() {
           <CardContent className="space-y-6">
             <div className="flex justify-center gap-4">
                 <Button variant="outline" size="icon" onClick={() => loginWithSocial('johnatanvallejomarulanda@gmail.com')}>
-                  <GoogleIcon className="h-6 w-6" />
+                  <GoogleIcon className="h-7 w-7" />
                    <span className="sr-only">Login con Google</span>
                 </Button>
                  <Button variant="outline" size="icon" onClick={() => loginWithSocial('empresa.facebook@example.com')}>
-                  <FacebookIcon className="h-6 w-6" />
+                  <FacebookIcon className="h-7 w-7" />
                    <span className="sr-only">Login con Facebook</span>
                 </Button>
                 <Button variant="outline" size="icon" onClick={() => loginWithSocial('ana.garcia.outlook@example.com')}>
-                  <MicrosoftIcon className="h-6 w-6" />
+                  <MicrosoftIcon className="h-7 w-7" />
                    <span className="sr-only">Login con Outlook</span>
                 </Button>
             </div>
