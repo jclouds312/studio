@@ -17,7 +17,7 @@ import Image from "next/image";
 import React from "react";
 import { CompanyFormModal } from "../modals/company-form-modal";
 import type { CompanyProfile } from "@/lib/types";
-import { allCompanies } from "@/lib/data";
+import { allCompanies } from "@/data";
 
 export function CompaniesTab() {
     const [companies, setCompanies] = React.useState(allCompanies);

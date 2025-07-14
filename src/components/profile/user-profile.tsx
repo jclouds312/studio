@@ -20,7 +20,7 @@ import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
 import { UserProfileContext } from '@/context/user-profile-context';
 import { cn } from '@/lib/utils';
-import { allCompanies } from '@/lib/data';
+import { allCompanies } from '@/data';
 
 const roleDisplayMap = {
     user: 'Trabajador',

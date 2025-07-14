@@ -17,7 +17,7 @@ import Image from "next/image";
 import React from "react";
 import { UserFormModal } from "../modals/user-form-modal";
 import type { User } from "@/lib/types";
-import { allUsers } from '@/lib/data';
+import { allUsers } from '@/data';
 import Link from "next/link";
 
 export function UsersTab() {

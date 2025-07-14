@@ -1,0 +1,157 @@
+import type { Job } from '@/lib/types';
+
+export const allJobs: Job[] = [
+  {
+    id: '1',
+    title: 'Frontend Developer (React)',
+    company: 'Tech Solutions Inc.',
+    location: 'Buenos Aires',
+    type: 'Full-time',
+    description: 'Buscamos un desarrollador Frontend para unirse a nuestro equipo. Serás responsable de construir el lado del cliente de nuestras aplicaciones web. Debes ser capaz de traducir las necesidades de nuestra empresa y clientes en aplicaciones interactivas funcionales y atractivas.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'tech',
+    isFeatured: true,
+    isNew: false,
+    whatsapp: '+5491123456789'
+  },
+  {
+    id: '2',
+    title: 'Diseñador/a UX/UI Sr.',
+    company: 'Creative Minds',
+    location: 'Córdoba',
+    type: 'Contract',
+    description: 'Creative Minds busca un talentoso Diseñador UX/UI para crear experiencias de usuario increíbles. El candidato ideal debe tener un ojo para el diseño limpio y artístico, poseer habilidades superiores de UI y ser capaz de traducir requisitos de alto nivel en flujos de interacción y artefactos.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'design',
+    isNew: true,
+  },
+  {
+    id: '3',
+    title: 'Ingeniero/a Backend (Node.js)',
+    company: 'Server Systems',
+    location: 'Remoto',
+    type: 'Full-time',
+    description: 'Únete a nuestro equipo de backend para diseñar e implementar aplicaciones del lado del servidor escalables y robustas. Trabajarás con un equipo de desarrolladores para construir y mantener nuestros servicios principales, asegurando un alto rendimiento y capacidad de respuesta a las solicitudes del front-end.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'tech',
+    isNew: true,
+  },
+   {
+    id: '4',
+    title: 'Manager de Marketing Digital',
+    company: 'Growth Hackers',
+    location: 'Rosario',
+    type: 'Part-time',
+    description: 'Estamos contratando un Manager de Marketing Digital para desarrollar, implementar, rastrear y optimizar nuestras campañas de marketing digital en todos los canales digitales. Debes tener un fuerte conocimiento de las herramientas y estrategias de marketing actuales.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'marketing'
+  },
+  {
+    id: '5',
+    title: 'Representante de Ventas B2B',
+    company: 'Lead Gen',
+    location: 'Buenos Aires',
+    type: 'Full-time',
+    description: 'Buscamos un Ejecutivo de Ventas competitivo y confiable para ayudarnos a desarrollar nuestras actividades comerciales. Las responsabilidades del Ejecutivo de Ventas incluyen descubrir y buscar nuevos prospectos de ventas, negociar acuerdos y mantener la satisfacción del cliente.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'sales',
+    isFeatured: true,
+    whatsapp: '+5491123456789'
+  },
+   {
+    id: '6',
+    title: 'Pintor de Interiores',
+    company: 'Servicios Varios',
+    location: 'La Plata',
+    type: 'Changa',
+    description: 'Se necesita pintor con experiencia para pintar un departamento de 2 ambientes. Se proveen materiales. Trabajo por día, pago al finalizar la jornada. Enviar fotos de trabajos previos por WhatsApp.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'domestic',
+    whatsapp: '+5492212345678'
+  },
+  {
+    id: '7',
+    title: 'Analista de Recursos Humanos',
+    company: 'Capital Humano S.A.',
+    location: 'Mendoza',
+    type: 'Full-time',
+    description: 'Buscamos un Analista de RRHH para gestionar el ciclo completo de reclutamiento, la incorporación de empleados y las relaciones laborales. Se requiere experiencia en procesos de selección y conocimiento de la legislación laboral argentina.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'hr'
+  },
+  {
+    id: '8',
+    title: 'Mozo/a con experiencia',
+    company: 'Restaurante El Buen Sabor',
+    location: 'Mar del Plata',
+    type: 'Part-time',
+    description: 'Restaurante céntrico busca mozo/a para la temporada de verano. Se requiere experiencia comprobable, buena presencia y disponibilidad para trabajar fines de semana y feriados. Se ofrece excelente ambiente laboral y propinas.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'gastronomy',
+    isNew: true,
+    whatsapp: '+5492231234567'
+  },
+  {
+    id: '9',
+    title: 'Analista Contable Jr.',
+    company: 'Finanzas Claras',
+    location: 'Remoto',
+    type: 'Full-time',
+    description: 'Estudio contable busca Analista Jr. para tareas de conciliaciones bancarias, análisis de cuentas y asistencia en la preparación de balances. Ideal para estudiantes avanzados o recién recibidos de Contador Público.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'finance',
+    isFeatured: true
+  },
+  {
+    id: '10',
+    title: 'Repositor/a de Supermercado',
+    company: 'Supermercados Argentinos',
+    location: 'Quilmes',
+    type: 'Full-time',
+    description: 'Buscamos repositores para nuestra sucursal de Quilmes. Las tareas incluyen la reposición de mercadería en góndolas, control de stock y atención al cliente. No se requiere experiencia previa.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'logistics'
+  },
+  {
+    id: '11',
+    title: 'Abogado/a Corporativo',
+    company: 'Estudio Jurídico Integral',
+    location: 'Buenos Aires',
+    type: 'Full-time',
+    description: 'Importante estudio jurídico busca abogado/a con experiencia en derecho corporativo para asesoramiento a empresas, redacción de contratos y seguimiento de litigios. Se requiere matrícula activa.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'legal'
+  },
+  {
+    id: '12',
+    title: 'Enfermero/a Profesional',
+    company: 'Clínica Salud Total',
+    location: 'San Miguel de Tucumán',
+    type: 'Full-time',
+    description: 'Se necesita enfermero/a con matrícula para cubrir puesto en sala de internación. Se valorará experiencia en cuidados intensivos. Disponibilidad para turnos rotativos.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'health',
+    whatsapp: '+5493811234567'
+  },
+  {
+    id: '13',
+    title: 'Gerente de Producto',
+    company: 'Facebook Latam',
+    location: 'Remoto',
+    type: 'Full-time',
+    description: 'Lidera la estrategia y la hoja de ruta de nuestros productos para América Latina. Trabajarás con equipos multifuncionales para lanzar nuevas funciones y optimizar la experiencia del usuario.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'tech',
+    isFeatured: true
+  },
+  {
+    id: '14',
+    title: 'Ingeniero de Datos',
+    company: 'Facebook Latam',
+    location: 'Buenos Aires',
+    type: 'Full-time',
+    description: 'Diseña y construye pipelines de datos a gran escala para soportar nuestros productos y análisis. Se requiere experiencia con Spark, Hadoop y arquitecturas de datos en la nube.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'tech',
+  }
+];

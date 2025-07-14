@@ -4,7 +4,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { allUsers } from '@/lib/data';
+import { allUsers } from '@/data';
 import type { User } from '@/lib/types';
 
 interface Session {

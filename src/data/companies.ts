@@ -1,0 +1,48 @@
+import type { CompanyProfile } from '@/lib/types';
+
+export const allCompanies: CompanyProfile[] = [
+    {
+        id: '1',
+        name: 'Tech Solutions Inc.',
+        cuit: '30-12345678-9',
+        address: 'Av. Corrientes 1234, Piso 5',
+        city: 'CABA',
+        province: 'Buenos Aires',
+        phone: '11-4321-9876',
+        logoUrl: 'https://placehold.co/40x40.png',
+        status: 'Activa',
+    },
+    {
+        id: '2',
+        name: 'Creative Minds',
+        cuit: '30-98765432-1',
+        address: 'Bv. San Juan 567',
+        city: 'Córdoba',
+        province: 'Córdoba',
+        phone: '351-123-4567',
+        logoUrl: 'https://placehold.co/40x40.png',
+        status: 'Activa',
+    },
+     {
+        id: '3',
+        name: 'Server Systems',
+        cuit: '30-55555555-5',
+        address: 'N/A',
+        city: 'Remoto',
+        province: 'N/A',
+        phone: 'N/A',
+        logoUrl: 'https://placehold.co/40x40.png',
+        status: 'Inactiva',
+    },
+     {
+        id: '4',
+        name: 'Facebook Latam',
+        cuit: '30-11223344-5',
+        address: 'Juana Manso 999',
+        city: 'CABA',
+        province: 'Buenos Aires',
+        phone: '11-5555-5555',
+        logoUrl: 'https://placehold.co/40x40.png',
+        status: 'Activa',
+    },
+];

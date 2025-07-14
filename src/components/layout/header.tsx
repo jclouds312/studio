@@ -4,8 +4,9 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building, Moon, Sun } from 'lucide-react';
+import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building, Moon, Sun, Settings } from 'lucide-react';
 import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
@@ -23,6 +24,8 @@ export function Header() {
 
   const isAdmin = session.isLoggedIn && session.user?.role === 'admin';
   const isCompany = session.isLoggedIn && session.user?.role === 'company';
+  const isWorker = session.isLoggedIn && session.user?.role === 'user';
+
 
   useEffect(() => {
     document.body.classList.remove('theme-new', 'dark');
@@ -84,37 +87,53 @@ export function Header() {
               <span className="sr-only">Toggle theme</span>
             </Button>
             {session.isLoggedIn ? (
-               <div className="hidden md:flex items-center gap-4">
-                {isAdmin && (
-                  <Button variant="ghost" asChild>
-                    <Link href="/admin" className="flex items-center gap-2">
-                        <Shield />
-                        <span>Panel Admin</span>
-                    </Link>
-                  </Button>
-                )}
-                {isCompany && (
-                  <Button variant="ghost" asChild>
-                    <Link href="/company/dashboard" className="flex items-center gap-2">
-                        <Building />
-                        <span>Panel Empresa</span>
-                    </Link>
-                  </Button>
-                )}
-                 <Button variant="ghost" size="icon" onClick={() => setIsChatOpen(true)}>
-                    <MessageSquare />
-                    <span className="sr-only">Abrir Chat</span>
-                  </Button>
-                <Link href="/profile">
-                  <Avatar className='h-9 w-9 border-2 border-primary/50'>
-                    <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
-                    <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
-                  </Avatar>
-                </Link>
-                 <Button variant="ghost" onClick={logout}>
-                    <LogOut className="mr-2"/>Cerrar Sesión
-                 </Button>
-               </div>
+              <div className="hidden md:flex items-center gap-2">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="flex items-center gap-2">
+                            <Avatar className='h-9 w-9 border-2 border-primary/50'>
+                                <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
+                                <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                            </Avatar>
+                            <span className="hidden lg:inline">{session.user?.name}</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {isWorker && (
+                            <>
+                                <DropdownMenuItem asChild>
+                                    <Link href="/profile"><User className="mr-2 h-4 w-4" />Mi Perfil</Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Link href="/profile"><Briefcase className="mr-2 h-4 w-4" />Mis Postulaciones</Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setIsChatOpen(true)}>
+                                    <MessageSquare className="mr-2 h-4 w-4" />Mensajes
+                                </DropdownMenuItem>
+                            </>
+                        )}
+                        {isCompany && (
+                            <DropdownMenuItem asChild>
+                                <Link href="/company/dashboard"><Building className="mr-2 h-4 w-4" />Panel de Empresa</Link>
+                            </DropdownMenuItem>
+                        )}
+                         {isAdmin && (
+                            <DropdownMenuItem asChild>
+                                <Link href="/admin"><Shield className="mr-2 h-4 w-4" />Panel de Admin</Link>
+                            </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem>
+                            <Settings className="mr-2 h-4 w-4" />Configuración
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={logout}>
+                            <LogOut className="mr-2 h-4 w-4" />Cerrar Sesión
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             ) : (
               <div className="hidden md:flex items-center gap-2">
                   <Button variant="ghost" asChild>
@@ -134,7 +153,7 @@ export function Header() {
                     <span className="sr-only">Abrir menú</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="p-0 bg-background/95 backdrop-blur-sm">
+                <SheetContent side="right" className="p-0 bg-card/60 backdrop-blur-lg">
                    <SheetHeader className="p-4 border-b">
                      <SheetTitle>
                        <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity" onClick={handleLinkClick}>
@@ -155,6 +174,11 @@ export function Header() {
                                 Mi Perfil
                             </Link>
                         </Button>
+                        {isWorker && (
+                          <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleLinkClick}>
+                            <Link href="/profile"><Briefcase />Mis Postulaciones</Link>
+                          </Button>
+                        )}
                          <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleChatClick}>
                            <div className='flex items-center gap-3'>
                                <MessageSquare />Mensajes

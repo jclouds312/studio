@@ -26,7 +26,7 @@ import { useSession } from '@/hooks/use-session';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useToast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { allPlans } from '@/lib/data';
+import { allPlans } from '@/data';
 import type { SubscriptionPlan, PricingOption } from '@/lib/types';
 
 

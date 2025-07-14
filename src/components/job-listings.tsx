@@ -12,7 +12,7 @@ import React, { useState, useMemo, useContext } from "react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { allJobs } from "@/lib/data";
+import { allJobs } from "@/data";
 import { cn } from "@/lib/utils";
 import { UserProfileContext } from "@/context/user-profile-context";
 import { useSession } from "@/hooks/use-session";

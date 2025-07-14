@@ -4,7 +4,7 @@ import { Footer } from '@/components/layout/footer';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { allJobs } from '@/lib/data';
+import { allJobs } from '@/data';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';

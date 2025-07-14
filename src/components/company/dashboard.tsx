@@ -9,7 +9,7 @@ import { PlusCircle, Edit, Trash2, Eye, MessageSquare, Star, KeyRound, DollarSig
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
-import { allJobs, allUsers } from '@/lib/data';
+import { allJobs, allUsers } from '@/data';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
 import { Label } from '../ui/label';

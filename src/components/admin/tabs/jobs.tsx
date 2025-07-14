@@ -1,7 +1,7 @@
 
 'use client';
 
-import { allJobs } from "@/lib/data";
+import { allJobs } from "@/data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

@@ -4,6 +4,7 @@
 import React, { createContext, useState, useCallback, ReactNode } from 'react';
 import type { Job, UserProfileData } from '@/lib/types';
 import { useSession } from '@/hooks/use-session';
+import { allJobs } from '@/data';
 
 // Datos iniciales del perfil
 const initialProfileData: UserProfileData = {
@@ -18,27 +19,9 @@ const initialProfileData: UserProfileData = {
         { id: '3', title: 'Pintor de Interiores', company: 'Servicios Varios', status: 'Contactado' },
     ],
     savedJobs: [
-        {
-            id: '5',
-            title: 'Representante de Ventas',
-            company: 'Lead Gen',
-            location: 'Buenos Aires',
-            type: 'Full-time' as const,
-            category: 'sales' as const,
-            companyLogo: '',
-            description: ''
-        },
-        {
-            id: '3',
-            title: 'Ingeniero/a Backend (Node.js)',
-            company: 'Server Systems',
-            location: 'Remoto',
-            type: 'Full-time' as const,
-            category: 'tech' as const,
-            companyLogo: '',
-            description: ''
-        },
-    ],
+        allJobs.find(job => job.id === '5')!,
+        allJobs.find(job => job.id === '3')!,
+    ].filter(Boolean), // Filtra cualquier undefined si no se encuentra el trabajo
     stats: {
         profileViews: 128,
         interviews: 3,
