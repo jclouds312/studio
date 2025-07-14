@@ -32,6 +32,17 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
     )
 }
 
+function MicrosoftIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
+      <path fill="#f25022" d="M22,22H2V2h20V22z"/>
+      <path fill="#7fba00" d="M46,22H26V2h20V22z"/>
+      <path fill="#00a4ef" d="M22,46H2V26h20V46z"/>
+      <path fill="#ffb900" d="M46,46H26V26h20V46z"/>
+    </svg>
+  );
+}
+
 export default function LoginPage() {
   const { login, loginWithSocial } = useSession();
   const [email, setEmail] = React.useState('');
@@ -77,7 +88,7 @@ export default function LoginPage() {
                 </span>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('johnatanvallejomarulanda@gmail.com')}>
                   <GoogleIcon className="mr-2 h-5 w-5" />
                   Google
@@ -85,6 +96,10 @@ export default function LoginPage() {
                  <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('empresa.facebook@example.com')}>
                   <FacebookIcon className="mr-2 h-5 w-5" />
                   Facebook
+                </Button>
+                <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('ana.garcia.outlook@example.com')}>
+                  <MicrosoftIcon className="mr-2 h-5 w-5" />
+                  Outlook
                 </Button>
             </div>
             <p className="text-center text-sm text-muted-foreground">

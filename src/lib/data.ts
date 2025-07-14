@@ -100,6 +100,17 @@ export const allUsers: User[] = [
         role: 'company',
         status: 'Verificado',
         createdAt: '2024-04-10'
+    },
+    {
+        id: '8',
+        name: 'Ana Garcia (Outlook)',
+        email: 'ana.garcia.outlook@example.com',
+        password: 'password123',
+        avatar: 'https://placehold.co/40x40.png',
+        role: 'user',
+        status: 'Verificado',
+        createdAt: '2024-05-20',
+        profileData: userProfileAna
     }
 ];
 
