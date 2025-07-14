@@ -8,32 +8,38 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Search, Briefcase, Sparkles, Star, Send, Info } from "lucide-react";
 import type { Job } from "@/lib/types";
 import Image from "next/image";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useContext } from "react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { allJobs } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import { UserProfileContext } from "@/context/user-profile-context";
 
 function JobListingCard({ job }: { job: Job }) {
     const { toast } = useToast();
+    const { savedJobs, handleSaveJob } = useContext(UserProfileContext);
 
-    const handleAction = (e: React.MouseEvent, action: 'apply' | 'save') => {
+    const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
+
+    const handleApply = (e: React.MouseEvent) => {
         e.preventDefault(); 
         e.stopPropagation();
-
-        if (action === 'apply') {
-            toast({
-                title: "¡Postulación Enviada!",
-                description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
-            });
-        } else {
-            toast({
-                title: "¡Oferta Guardada!",
-                description: `Has guardado la oferta de ${job.title}.`,
-            });
-        }
+        toast({
+            title: "¡Postulación Enviada!",
+            description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
+        });
     };
+
+    const onSaveClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleSaveJob(job);
+        toast({
+            title: isSaved ? "Oferta quitada de guardados" : "¡Oferta Guardada!",
+            description: isSaved ? `Has quitado la oferta de ${job.title}.` : `Has guardado la oferta de ${job.title}.`,
+        });
+    }
 
     const getThemeClass = () => {
         if (job.isFeatured) return 'theme-premium';
@@ -79,13 +85,13 @@ function JobListingCard({ job }: { job: Job }) {
                         <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
                     </CardContent>
                     <CardFooter className="flex flex-row justify-between items-center bg-secondary/20 p-4 border-t mt-auto">
-                        <Badge variant="outline" className="text-xs capitalize border-amber-500 bg-amber-400 text-amber-950">{job.type}</Badge>
+                        <Badge variant="outline" className="text-xs capitalize border-amber-500 bg-amber-400/80 text-amber-950">{job.type}</Badge>
                         <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" className="text-amber-500 hover:text-amber-400" onClick={(e) => handleAction(e, 'save')}>
-                                <Star className="mr-2 h-4 w-4" />
-                                Guardar
+                            <Button variant="ghost" size="sm" className="text-amber-500 hover:text-amber-400" onClick={onSaveClick}>
+                                <Star className={cn("mr-2 h-4 w-4", isSaved && "fill-amber-400 text-amber-500")} />
+                                {isSaved ? 'Guardado' : 'Guardar'}
                             </Button>
-                            <Button size="sm" onClick={(e) => handleAction(e, 'apply')}>
+                            <Button size="sm" onClick={handleApply}>
                                 <Send className="mr-2 h-4 w-4" />
                                 Postularse
                             </Button>

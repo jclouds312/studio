@@ -1,5 +1,4 @@
 
-
 import type { LucideIcon } from "lucide-react";
 
 export type Job = {
@@ -29,6 +28,18 @@ export type UserStats = {
     savedJobs: number;
 };
 
+// Tipo específico para los datos del perfil del trabajador
+export type UserProfileData = {
+    avatarUrl: string;
+    phone: string;
+    location: string;
+    professionalSummary: string;
+    experience: string;
+    applications: UserApplication[];
+    savedJobs: Job[];
+    stats: UserStats;
+}
+
 export type User = {
     id: string;
     name: string;
@@ -40,13 +51,8 @@ export type User = {
     role: 'admin' | 'user' | 'company';
     status?: 'Verificado' | 'Pendiente' | 'Suspendido';
     createdAt?: string;
-    // Expanded profile fields
-    professionalSummary?: string;
-    experience?: string;
-    skills?: string[];
-    applications?: UserApplication[];
-    savedJobs?: Job[];
-    stats?: UserStats;
+    // El perfil completo del trabajador se manejará con UserProfileData
+    profileData?: UserProfileData;
 };
 
 export type CompanyProfile = {

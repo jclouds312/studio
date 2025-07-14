@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,48 +18,8 @@ import { ChatPanel } from '../chat/chat-panel';
 import type { Job } from '@/lib/types';
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
-
-const staticUser = {
-    name: 'Johnatan Vallejo',
-    email: 'johnatanvallejomarulanda@gmail.com',
-    avatarUrl: 'https://placehold.co/128x128.png',
-    phone: '+54 9 11 1234-5678',
-    location: 'Buenos Aires, CABA',
-    professionalSummary: 'Desarrollador Full-Stack con más de 5 años de experiencia en la creación de aplicaciones web escalables. Apasionado por las tecnologías modernas y el diseño centrado en el usuario.',
-    experience: '- Frontend Developer en Tech Solutions Inc. (2020-Actualidad)\n- Junior Developer en Creative Minds (2018-2020)',
-    applications: [
-        { id: '1', title: 'Frontend Developer', company: 'Tech Solutions Inc.', status: 'En revisión' },
-        { id: '2', title: 'Diseñador/a UX/UI', company: 'Creative Minds', status: 'Rechazado' },
-        { id: '3', title: 'Pintor de Interiores', company: 'Servicios Varios', status: 'Contactado' },
-    ],
-    savedJobs: [
-        {
-            id: '5',
-            title: 'Representante de Ventas',
-            company: 'Lead Gen',
-            location: 'Buenos Aires',
-            type: 'Full-time' as const,
-            category: 'sales' as const,
-            companyLogo: '',
-            description: ''
-        },
-        {
-            id: '3',
-            title: 'Ingeniero/a Backend (Node.js)',
-            company: 'Server Systems',
-            location: 'Remoto',
-            type: 'Full-time' as const,
-            category: 'tech' as const,
-            companyLogo: '',
-            description: ''
-        },
-    ],
-    stats: {
-        profileViews: 128,
-        interviews: 3,
-        savedJobs: 2,
-    }
-};
+import { UserProfileContext } from '@/context/user-profile-context';
+import { cn } from '@/lib/utils';
 
 const roleDisplayMap = {
     user: 'Trabajador',
@@ -70,6 +30,7 @@ const roleDisplayMap = {
 function EditProfileTab() {
   const { toast } = useToast();
   const { session } = useSession();
+  const { profileData } = useContext(UserProfileContext);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = React.useState<string | null>(null);
@@ -98,6 +59,8 @@ function EditProfileTab() {
       });
     }
   };
+
+  if (!profileData) return <Loader2 className="animate-spin" />;
 
   return (
       <Card>
@@ -128,14 +91,14 @@ function EditProfileTab() {
                                 <Label htmlFor="phone">Número de WhatsApp</Label>
                                 <div className="relative">
                                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                                    <Input id="phone" type="tel" className="pl-10" defaultValue={staticUser.phone} placeholder="+54 9 11 ...."/>
+                                    <Input id="phone" type="tel" className="pl-10" defaultValue={profileData.phone} placeholder="+54 9 11 ...."/>
                                 </div>
                             </div>
                             <div className="space-y-4">
                                 <Label htmlFor="location">Localidad</Label>
                                 <div className="relative">
                                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                                    <Input id="location" type="text" className="pl-10" defaultValue={staticUser.location} placeholder="Ej: Buenos Aires, CABA"/>
+                                    <Input id="location" type="text" className="pl-10" defaultValue={profileData.location} placeholder="Ej: Buenos Aires, CABA"/>
                                 </div>
                             </div>
                              <div className="space-y-4 md:col-span-2">
@@ -174,11 +137,11 @@ function EditProfileTab() {
                         <div className="space-y-4">
                             <div>
                                 <Label htmlFor="summary">Resumen Profesional</Label>
-                                <Textarea id="summary" rows={4} defaultValue={staticUser.professionalSummary} placeholder="Un breve resumen sobre tu perfil profesional..."/>
+                                <Textarea id="summary" rows={4} defaultValue={profileData.professionalSummary} placeholder="Un breve resumen sobre tu perfil profesional..."/>
                             </div>
                             <div>
                                 <Label htmlFor="experience">Experiencia Laboral</Label>
-                                <Textarea id="experience" rows={6} defaultValue={staticUser.experience} placeholder="Detalla tus trabajos anteriores, roles y responsabilidades..."/>
+                                <Textarea id="experience" rows={6} defaultValue={profileData.experience} placeholder="Detalla tus trabajos anteriores, roles y responsabilidades..."/>
                             </div>
                         </div>
                     </>
@@ -206,6 +169,9 @@ function EditProfileTab() {
 }
 
 function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
+    const { profileData } = useContext(UserProfileContext);
+    if (!profileData) return null;
+
     return (
         <Card>
             <CardHeader>
@@ -223,7 +189,7 @@ function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {staticUser.applications.map(app => (
+                        {profileData.applications.map(app => (
                             <TableRow key={app.id}>
                                 <TableCell className="font-medium">{app.title}</TableCell>
                                 <TableCell>{app.company}</TableCell>
@@ -248,6 +214,10 @@ function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
 }
 
 function SavedJobsTab() {
+  const { savedJobs, handleSaveJob } = useContext(UserProfileContext);
+
+  if (!savedJobs) return null;
+
   return (
     <Card>
       <CardHeader>
@@ -255,6 +225,13 @@ function SavedJobsTab() {
         <CardDescription>Tus ofertas de interés para postularte más tarde.</CardDescription>
       </CardHeader>
       <CardContent>
+        {savedJobs.length === 0 ? (
+             <div className="text-center py-8 text-muted-foreground">
+                <Bookmark className="mx-auto h-12 w-12 mb-4" />
+                <p>Aún no has guardado ninguna oferta.</p>
+                <p className="text-sm">Usa el ícono de la estrella <Star className="inline h-3 w-3" /> para guardar las que te interesen.</p>
+            </div>
+        ) : (
         <Table>
           <TableHeader>
             <TableRow>
@@ -265,7 +242,7 @@ function SavedJobsTab() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {staticUser.savedJobs.map((job: Job) => (
+            {savedJobs.map((job: Job) => (
               <TableRow key={job.id}>
                 <TableCell className="font-medium">{job.title}</TableCell>
                 <TableCell>{job.company}</TableCell>
@@ -277,7 +254,7 @@ function SavedJobsTab() {
                             Ver
                         </Link>
                     </Button>
-                    <Button variant="destructive" size="sm">
+                    <Button variant="destructive" size="sm" onClick={() => handleSaveJob(job)}>
                         <Trash2 className="mr-2 h-4 w-4"/>
                         Quitar
                     </Button>
@@ -286,12 +263,15 @@ function SavedJobsTab() {
             ))}
           </TableBody>
         </Table>
+        )}
       </CardContent>
     </Card>
   );
 }
 
 function StatsTab() {
+    const { profileData } = useContext(UserProfileContext);
+    if (!profileData) return null;
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card>
@@ -300,7 +280,7 @@ function StatsTab() {
                     <Eye className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{staticUser.stats.profileViews}</div>
+                    <div className="text-2xl font-bold">{profileData.stats.profileViews}</div>
                     <p className="text-xs text-muted-foreground">En los últimos 30 días</p>
                 </CardContent>
             </Card>
@@ -310,7 +290,7 @@ function StatsTab() {
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{staticUser.stats.interviews}</div>
+                    <div className="text-2xl font-bold">{profileData.stats.interviews}</div>
                     <p className="text-xs text-muted-foreground">Total de entrevistas</p>
                 </CardContent>
             </Card>
@@ -320,7 +300,7 @@ function StatsTab() {
                     <Bookmark className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{staticUser.stats.savedJobs}</div>
+                    <div className="text-2xl font-bold">{profileData.savedJobs.length}</div>
                     <p className="text-xs text-muted-foreground">Tus ofertas de interés</p>
                 </CardContent>
             </Card>
@@ -331,9 +311,10 @@ function StatsTab() {
 
 export function UserProfile() {
   const { session } = useSession();
+  const { profileData } = useContext(UserProfileContext);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
 
-  if (!session.isMounted) return <div>Cargando...</div>;
+  if (!session.isMounted || !profileData) return <div className='flex justify-center items-center h-64'><Loader2 className="h-8 w-8 animate-spin" /></div>;
   if (!session.user) return <div>Usuario no encontrado.</div>;
   
   const { user } = session;
@@ -347,7 +328,7 @@ export function UserProfile() {
       <div className="flex flex-col items-center text-center space-y-4">
         <div className="relative w-32 h-32">
             <Avatar className="w-32 h-32 border-4 border-primary shadow-lg">
-                <AvatarImage src={user.avatar || staticUser.avatarUrl} alt={user.name} data-ai-hint="person user"/>
+                <AvatarImage src={user.avatar || profileData.avatarUrl} alt={user.name} data-ai-hint="person user"/>
                 <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <Button size="icon" className="absolute bottom-1 right-1 rounded-full hover:scale-110 transition-transform" aria-label="Cambiar foto de perfil">
