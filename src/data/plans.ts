@@ -32,6 +32,7 @@ export const allPlans: SubscriptionPlan[] = [
                 price: '$2.000',
                 priceDetail: 'por mes',
                 priceAmount: 2000,
+                discount: undefined,
                 features: [
                     'Postulaciones ilimitadas',
                     'Perfil destacado en búsquedas',
@@ -77,6 +78,7 @@ export const allPlans: SubscriptionPlan[] = [
                 price: '$5.000',
                 priceDetail: 'por mes',
                 priceAmount: 5000,
+                discount: undefined,
                 features: [
                     'Todo lo del plan Profesional',
                     'Gestor de cuenta de carrera personal',
@@ -97,6 +99,7 @@ export const allPlans: SubscriptionPlan[] = [
             price: '$10.000',
             priceDetail: 'por mes',
             priceAmount: 10000,
+            discount: undefined,
             features: [
                 'Publica hasta 5 ofertas de trabajo',
                 'Acceso a base de datos de candidatos',
@@ -117,6 +120,7 @@ export const allPlans: SubscriptionPlan[] = [
                 price: '$25.000',
                 priceDetail: 'por mes',
                 priceAmount: 25000,
+                discount: undefined,
                 features: [
                     'Publicaciones ilimitadas',
                     'Destaca hasta 5 ofertas de trabajo',
@@ -162,6 +166,7 @@ export const allPlans: SubscriptionPlan[] = [
                 price: '$50.000',
                 priceDetail: 'por mes',
                 priceAmount: 50000,
+                discount: undefined,
                 features: [
                     'Todo lo del plan Empresa Plus',
                     'Integración con ATS de la empresa',

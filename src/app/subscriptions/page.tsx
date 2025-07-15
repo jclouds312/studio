@@ -121,7 +121,7 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
               ) : (
                   <>
                       <AlertDialogCancel disabled={isPaying}>Cancelar</AlertDialogCancel>
-                      <Button onClick={handlePayment} disabled={pricingOption.priceAmount < 0}>
+                      <Button onClick={handlePayment} disabled={isPaying}>
                         {isPaying ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

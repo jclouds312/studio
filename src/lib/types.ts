@@ -105,7 +105,7 @@ export type PricingOption = {
 export type SubscriptionPlan = {
   name: string;
   userType: 'worker' | 'company';
-  isPopular: boolean;
+  isPopular?: boolean;
   description: string;
   iconName: keyof typeof import('lucide-react').icons;
   pricing: PricingOption[];
