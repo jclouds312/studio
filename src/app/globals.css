@@ -18,7 +18,7 @@ body {
     --popover: 280 60% 8%;
     --popover-foreground: 0 0% 98%;
     
-    --primary: 285 90% 65%;   /* Vibrant, neon-like magenta */
+    --primary: 270 85% 65%;   /* Metallic bluish-purple */
     --primary-foreground: 0 0% 100%;
     
     --secondary: 280 50% 18%;
@@ -27,7 +27,7 @@ body {
     --muted: 280 50% 18%;
     --muted-foreground: 0 0% 60%;
     
-    --accent: 285 85% 70%;     /* Lighter neon accent for hover */
+    --accent: 270 85% 70%;     /* Lighter accent for hover */
     --accent-foreground: 0 0% 98%;
     
     --destructive: 0 63% 31%;
@@ -35,9 +35,9 @@ body {
     
     --border: 280 50% 18%;
     --input: 280 50% 15%;
-    --ring: 285 90% 65%;
+    --ring: 270 85% 65%;      /* Neon border effect */
     
-    --chart-1: 285 90% 65%;
+    --chart-1: 270 85% 65%;
     --chart-2: 160 70% 45%;
     --chart-3: 340 80% 55%;
     --chart-4: 20 80% 55%;
@@ -47,12 +47,12 @@ body {
 
     --sidebar-background: 280 60% 8%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 285 90% 65%;
+    --sidebar-primary: 270 85% 65%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 280 50% 18%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 280 50% 18%;
-    --sidebar-ring: 285 90% 65%;
+    --sidebar-ring: 270 85% 65%;
   }
  
   .dark {
@@ -65,7 +65,7 @@ body {
     --popover: 280 60% 8%;
     --popover-foreground: 0 0% 98%;
     
-    --primary: 285 90% 65%;   /* Vibrant, neon-like magenta */
+    --primary: 270 85% 65%;   /* Metallic bluish-purple */
     --primary-foreground: 0 0% 100%;
     
     --secondary: 280 50% 18%;
@@ -74,7 +74,7 @@ body {
     --muted: 280 50% 18%;
     --muted-foreground: 0 0% 60%;
     
-    --accent: 285 85% 70%;     /* Lighter neon accent for hover */
+    --accent: 270 85% 70%;     /* Lighter accent for hover */
     --accent-foreground: 0 0% 98%;
     
     --destructive: 0 63% 31%;
@@ -82,18 +82,18 @@ body {
     
     --border: 280 50% 18%;
     --input: 280 50% 15%;
-    --ring: 285 90% 65%;
+    --ring: 270 85% 65%;      /* Neon border effect */
     
-    --chart-1: 285 90% 65%;
+    --chart-1: 270 85% 65%;
     
     --sidebar-background: 280 60% 8%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 285 90% 65%;
+    --sidebar-primary: 270 85% 65%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 280 50% 18%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 280 50% 18%;
-    --sidebar-ring: 285 90% 65%;
+    --sidebar-ring: 270 85% 65%;
   }
 
   .theme-premium {
@@ -118,7 +118,7 @@ body {
 }
 
 html {
-  background: linear-gradient(160deg, hsl(275, 50%, 20%) 0%, hsl(285, 45%, 12%) 100%);
+  background: linear-gradient(160deg, hsl(275, 55%, 15%) 0%, hsl(285, 45%, 10%) 100%);
 }
 
 input {
