@@ -1,3 +1,4 @@
+
 import type { SubscriptionPlan } from '@/lib/types';
 
 export const allPlans: SubscriptionPlan[] = [
@@ -65,6 +66,27 @@ export const allPlans: SubscriptionPlan[] = [
         ]
     },
     {
+        name: 'Candidato VIP',
+        userType: 'worker',
+        isPopular: false,
+        description: 'Acceso total y asistencia personalizada para tu carrera.',
+        iconName: 'Award',
+        pricing: [
+             {
+                duration: 'monthly',
+                price: '$5.000',
+                priceDetail: 'por mes',
+                priceAmount: 5000,
+                features: [
+                    'Todo lo del plan Profesional',
+                    'Gestor de cuenta de carrera personal',
+                    'Creación de portafolio profesional',
+                    'Aplicaciones gestionadas por expertos',
+                ],
+            },
+        ]
+    },
+    {
         name: 'Empresa',
         userType: 'company',
         isPopular: false,
@@ -126,6 +148,27 @@ export const allPlans: SubscriptionPlan[] = [
                     'Candidatos pre-seleccionados por IA',
                 ],
             }
+        ]
+    },
+    {
+        name: 'Corporativo',
+        userType: 'company',
+        isPopular: false,
+        description: 'Soluciones a medida para grandes corporaciones.',
+        iconName: 'Gem',
+        pricing: [
+             {
+                duration: 'monthly',
+                price: '$50.000',
+                priceDetail: 'por mes',
+                priceAmount: 50000,
+                features: [
+                    'Todo lo del plan Empresa Plus',
+                    'Integración con ATS de la empresa',
+                    'Soporte prioritario y SLA dedicado',
+                    'Reportes de mercado personalizados',
+                ],
+            },
         ]
     },
 ];
