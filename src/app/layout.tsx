@@ -5,7 +5,6 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
 import { UserProfileProvider } from '@/context/user-profile-context';
-import { ThemeProvider } from '@/context/theme-provider';
 
 export default function RootLayout({
   children,
@@ -13,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning className="dark">
       <head>
         <title>LaburoYA</title>
         <meta name="description" content="Encuentra tu próximo trabajo en Argentina." />
@@ -26,17 +25,10 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className={cn("font-body antialiased min-h-screen")}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
           <UserProfileProvider>
               {children}
               <Toaster />
           </UserProfileProvider>
-        </ThemeProvider>
       </body>
     </html>
   );
