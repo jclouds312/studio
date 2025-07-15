@@ -7,6 +7,40 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
+
+@keyframes-border-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@layer utilities {
+  .card-neon-border {
+    @apply relative overflow-hidden p-px;
+  }
+  .card-neon-border::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: 150%;
+    background: conic-gradient(from 0deg, hsl(var(--primary)), hsl(285, 100%, 70%), hsl(300, 100%, 70%), hsl(var(--primary)));
+    animation: keyframes-border-spin 4s linear infinite;
+    z-index: -1;
+  }
+  .card-neon-border > * {
+    @apply h-full w-full rounded-[calc(var(--radius)-1px)];
+    background: hsl(var(--card));
+    z-index: 1;
+  }
+}
+
+
 @layer base {
   :root {
     --background: 280 60% 6%;   /* Deeper carbon purple */

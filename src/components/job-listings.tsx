@@ -90,54 +90,56 @@ function JobListingCard({ job }: { job: Job }) {
 
     return (
         <Link href={`/jobs/${job.id}`} className="block h-full group">
-            <Card className={cn("hover:shadow-xl transition-all duration-300 transform group-hover:scale-105 group-hover:border-primary/50 relative overflow-hidden flex flex-col h-full", getThemeClass())}>
-                <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
-                    {job.isFeatured && (
-                         <Badge variant="default" className="bg-amber-400 text-amber-900 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-amber-900/20">
-                            <Sparkles className="h-4 w-4" />
-                            DESTACADO
-                        </Badge>
-                    )}
-                     {job.isNew && !job.isFeatured && (
-                        <Badge variant="secondary" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary/20 bg-blue-500/10 text-blue-400">
-                            <Info className="h-4 w-4" />
-                            NUEVO
-                        </Badge>
-                    )}
-                </div>
-                <CardHeader className="p-6 pb-2">
-                    <div className="flex gap-4">
-                        <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-white p-1 shrink-0" data-ai-hint="company logo" />
-                        <div className="flex-grow">
-                            <CardTitle className="text-lg md:text-xl mb-1 text-blue-400">{job.title}</CardTitle>
-                            <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
-                                <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
-                                <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
-                            </CardDescription>
-                        </div>
+            <div className={cn("h-full card-neon-border rounded-lg", getThemeClass())}>
+                <Card className="hover:shadow-xl transition-all duration-300 transform group-hover:scale-[1.02] relative overflow-hidden flex flex-col h-full bg-transparent border-0">
+                    <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
+                        {job.isFeatured && (
+                             <Badge variant="default" className="bg-amber-400 text-amber-900 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-amber-900/20">
+                                <Sparkles className="h-4 w-4" />
+                                DESTACADO
+                            </Badge>
+                        )}
+                         {job.isNew && !job.isFeatured && (
+                            <Badge variant="secondary" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary/20 bg-blue-500/10 text-blue-400">
+                                <Info className="h-4 w-4" />
+                                NUEVO
+                            </Badge>
+                        )}
                     </div>
-                </CardHeader>
-                <CardContent className="p-6 pt-4 flex-grow flex flex-col justify-between">
-                    <p className="text-sm text-card-foreground line-clamp-2 mb-4">{job.description}</p>
-                    <div className="flex flex-row justify-between items-center pt-4 border-t mt-auto">
-                        <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
-                        <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" onClick={onSaveClick} className="hidden md:flex">
-                                <Star className={cn("mr-2 h-4 w-4 text-amber-400", isSaved && "fill-amber-400")} />
-                                {isSaved ? 'Guardado' : 'Guardar'}
-                            </Button>
-                            <Button size="sm" onClick={handleApply} disabled={isApplying}>
-                                {isApplying ? (
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                ) : (
-                                    <Send className="mr-2 h-4 w-4" />
-                                )}
-                                Postularse
-                            </Button>
+                    <CardHeader className="p-6 pb-2">
+                        <div className="flex gap-4">
+                            <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-white p-1 shrink-0" data-ai-hint="company logo" />
+                            <div className="flex-grow">
+                                <CardTitle className="text-lg md:text-xl mb-1 text-blue-400">{job.title}</CardTitle>
+                                <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
+                                    <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
+                                    <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
+                                </CardDescription>
+                            </div>
                         </div>
-                    </div>
-                </CardContent>
-            </Card>
+                    </CardHeader>
+                    <CardContent className="p-6 pt-4 flex-grow flex flex-col justify-between">
+                        <p className="text-sm text-card-foreground line-clamp-2 mb-4">{job.description}</p>
+                        <div className="flex flex-row justify-between items-center pt-4 border-t border-border/50 mt-auto">
+                            <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
+                            <div className="flex items-center gap-2">
+                                <Button variant="ghost" size="sm" onClick={onSaveClick} className="hidden md:flex">
+                                    <Star className={cn("mr-2 h-4 w-4 text-amber-400", isSaved && "fill-amber-400")} />
+                                    {isSaved ? 'Guardado' : 'Guardar'}
+                                </Button>
+                                <Button size="sm" onClick={handleApply} disabled={isApplying}>
+                                    {isApplying ? (
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Send className="mr-2 h-4 w-4" />
+                                    )}
+                                    Postularse
+                                </Button>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
         </Link>
     );
 }
