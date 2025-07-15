@@ -150,7 +150,7 @@ export const allPlans: SubscriptionPlan[] = [
             }
         ]
     },
-    {
+     {
         name: 'Corporativo',
         userType: 'company',
         isPopular: false,
