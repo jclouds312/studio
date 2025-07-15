@@ -31,9 +31,9 @@ export function Header() {
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16">
                     <div className='flex items-center gap-2'>
-                        <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
-                            <Briefcase className="h-6 w-6" />
-                            <span className="font-bold text-xl">LaburoYA</span>
+                        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                            <Briefcase className="h-6 w-6 text-amber-400" />
+                            <span className="font-bold text-xl text-amber-400">LaburoYA</span>
                         </Link>
                     </div>
                 </div>
@@ -60,9 +60,9 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
             <div className='flex items-center gap-2'>
                 {isAdminPage && session.isLoggedIn && <SidebarTrigger className="md:hidden"/>}
-                <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
-                    <Briefcase className="h-6 w-6" />
-                     <span className="font-bold text-xl text-foreground">LaburoYA</span>
+                <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                    <Briefcase className="h-6 w-6 text-amber-400" />
+                     <span className="font-bold text-xl text-amber-400">LaburoYA</span>
                 </Link>
             </div>
           
@@ -137,9 +137,9 @@ export function Header() {
                 <SheetContent side="right" className="p-0 bg-card/60 backdrop-blur-lg">
                    <SheetHeader className="p-4 border-b">
                      <SheetTitle>
-                       <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity" onClick={handleLinkClick}>
-                          <Briefcase className="h-6 w-6" />
-                          <span className="font-bold text-lg text-foreground">LaburoYA</span>
+                       <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity" onClick={handleLinkClick}>
+                          <Briefcase className="h-6 w-6 text-amber-400" />
+                          <span className="font-bold text-lg text-amber-400">LaburoYA</span>
                         </Link>
                       </SheetTitle>
                   </SheetHeader>
