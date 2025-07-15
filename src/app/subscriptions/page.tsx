@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle, Building, Award, LucideIcon, icons } from 'lucide-react';
+import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle, Building, Award, LucideIcon, icons, Gem } from 'lucide-react';
 import React from 'react';
 import {
   AlertDialog,
@@ -228,13 +228,12 @@ function AdminPlanView() {
 
 function CustomerPlanView() {
     const { session } = useSession();
-    const userRole = session.user?.role;
+    const userRole = session.user?.role || 'user';
 
     const visiblePlans = allPlans.filter(plan => {
-        if (!userRole) return plan.userType === 'worker';
         if (userRole === 'user') return plan.userType === 'worker';
         if (userRole === 'company') return plan.userType === 'company';
-        return true; 
+        return false; 
     });
 
     const title = userRole === 'company' ? 'Planes para Empresas' : 'Planes para Candidatos';
@@ -252,7 +251,7 @@ function CustomerPlanView() {
         </div>
 
         <Carousel 
-            className="w-full max-w-sm md:max-w-xl lg:max-w-4xl mx-auto"
+            className="w-full max-w-sm md:max-w-4xl lg:max-w-6xl mx-auto"
             opts={{
                 align: "start",
                 loop: false,
@@ -262,12 +261,12 @@ function CustomerPlanView() {
                 {visiblePlans.map((plan, index) => {
                     const Icon = icons[plan.iconName] as LucideIcon;
                     return (
-                        <CarouselItem key={index} className="pl-4 md:basis-1/2">
+                        <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
                             <div className="p-1 h-full">
                                 <Card className={cn(
                                     "flex flex-col h-full transition-all duration-300 dark",
                                     plan.isPopular && "border-2 border-primary shadow-2xl",
-                                    plan.name === 'Empresa Plus' && 'theme-premium'
+                                    plan.name.includes('Plus') && 'theme-premium'
                                 )}>
                                     {plan.isPopular && (
                                         <div className="w-full flex justify-center">
@@ -282,13 +281,13 @@ function CustomerPlanView() {
                                             <Icon className="h-8 w-8 text-primary" />
                                         </div>
                                         <CardTitle className="text-3xl">{plan.name}</CardTitle>
-                                        <CardDescription className="text-base">{plan.description}</CardDescription>
+                                        <CardDescription className="text-base h-10">{plan.description}</CardDescription>
                                     </CardHeader>
 
                                     <Tabs defaultValue={plan.pricing[0].duration} className="w-full flex-grow flex flex-col">
-                                        <CardContent className="flex-grow space-y-6">
+                                        <CardContent className="flex-grow flex flex-col space-y-6">
                                             {plan.pricing.length > 1 && (
-                                                <TabsList className="grid w-full grid-cols-3">
+                                                <TabsList className="grid w-full grid-cols-3 mx-auto max-w-[90%]">
                                                     <TabsTrigger value="monthly">Mensual</TabsTrigger>
                                                     <TabsTrigger value="quarterly">3 Meses</TabsTrigger>
                                                     <TabsTrigger value="semi-annually">6 Meses</TabsTrigger>
@@ -298,7 +297,7 @@ function CustomerPlanView() {
                                             {plan.pricing.map((option) => (
                                                 <TabsContent key={option.duration} value={option.duration} className="m-0 flex-grow flex flex-col justify-between">
                                                     <div>
-                                                        <div className="text-center relative">
+                                                        <div className="text-center relative my-4">
                                                             {option.discount && (
                                                                 <Badge variant="destructive" className="absolute -top-2 right-0 rotate-12">
                                                                     {option.discount}
@@ -319,7 +318,7 @@ function CustomerPlanView() {
                                                             ))}
                                                         </ul>
                                                     </div>
-                                                    <div className="pt-6">
+                                                    <div className="pt-6 mt-auto">
                                                         <PaymentModal 
                                                             planName={plan.name} 
                                                             pricingOption={option}
