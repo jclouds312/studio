@@ -231,6 +231,7 @@ function CustomerPlanView() {
     const userRole = session.user?.role;
 
     const visiblePlans = allPlans.filter(plan => {
+        if (!userRole) return plan.userType === 'worker';
         if (userRole === 'user') return plan.userType === 'worker';
         if (userRole === 'company') return plan.userType === 'company';
         return true; 
