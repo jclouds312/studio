@@ -32,7 +32,7 @@ export function Header() {
                 <div className="flex items-center justify-between h-16">
                     <div className='flex items-center gap-2'>
                         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                            <Briefcase className="h-6 w-6 text-amber-400" />
+                            <Briefcase className="h-6 w-6 text-primary" />
                             <span className="font-bold text-xl text-amber-400">LaburoYA</span>
                         </Link>
                     </div>
@@ -61,7 +61,7 @@ export function Header() {
             <div className='flex items-center gap-2'>
                 {isAdminPage && session.isLoggedIn && <SidebarTrigger className="md:hidden"/>}
                 <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                    <Briefcase className="h-6 w-6 text-amber-400" />
+                    <Briefcase className="h-6 w-6 text-primary" />
                      <span className="font-bold text-xl text-amber-400">LaburoYA</span>
                 </Link>
             </div>
@@ -138,7 +138,7 @@ export function Header() {
                    <SheetHeader className="p-4 border-b">
                      <SheetTitle>
                        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity" onClick={handleLinkClick}>
-                          <Briefcase className="h-6 w-6 text-amber-400" />
+                          <Briefcase className="h-6 w-6 text-primary" />
                           <span className="font-bold text-lg text-amber-400">LaburoYA</span>
                         </Link>
                       </SheetTitle>
