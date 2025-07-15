@@ -212,8 +212,8 @@ export function CompanyDashboard() {
                         <h3 className="font-semibold">Método de Pago</h3>
                         {isMpConnected ? (
                             <div className="flex flex-col items-center justify-center text-center p-2 bg-green-500/10 border border-green-500/20 rounded-lg">
-                                <Image src="https://www.mercadopago.com.ar/static/logo-lila.svg" alt="Mercado Pago" width={100} height={25} data-ai-hint="company logo"/>
-                                <p className="font-semibold text-green-300 mt-2">¡Conectado!</p>
+                                <Sparkles className="h-8 w-8 text-green-400 mb-2"/>
+                                <p className="font-semibold text-green-300">¡Mercado Pago Conectado!</p>
                                 <Button variant="link" size="sm" className="mt-1 text-xs text-muted-foreground h-auto p-0" onClick={() => setIsMpConnected(false)}>Desconectar</Button>
                             </div>
                         ) : (
