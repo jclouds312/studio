@@ -9,32 +9,32 @@ body {
 
 @layer base {
   :root {
-    --background: 204 10% 96%; /* Light Gray */
-    --foreground: 222.2 84% 4.9%;
+    --background: 262 84% 4%; /* Darker base for components */
+    --foreground: 0 0% 98%;
+
+    --card: 262 80% 9%; /* Dark purple card */
+    --card-foreground: 0 0% 98%;
     
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 262 84% 4%;
+    --popover-foreground: 0 0% 98%;
     
     --primary: 262 84% 60%; /* Vibrant Purple */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 262 80% 15%;
+    --secondary-foreground: 0 0% 98%;
     
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 262 80% 15%;
+    --muted-foreground: 0 0% 60%;
     
     --accent: 262 80% 70%; /* Lighter purple for hover */
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-foreground: 0 0% 98%;
     
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
     
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 262 80% 15%;
+    --input: 262 80% 12%;
     --ring: 262 84% 60%;
     
     --chart-1: 262 84% 60%;
@@ -45,54 +45,54 @@ body {
     
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 84% 4.9%;
+    --sidebar-background: 262 84% 4%;
+    --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 262 84% 60%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 210 40% 96.1%;
-    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
-    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-accent: 262 80% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 262 80% 15%;
     --sidebar-ring: 262 84% 60%;
   }
  
   .dark {
-    --background: 204 10% 96%; /* Light Gray */
-    --foreground: 222.2 84% 4.9%;
+    --background: 262 84% 4%; /* Darker base for components */
+    --foreground: 0 0% 98%;
+
+    --card: 262 80% 9%; /* Dark purple card */
+    --card-foreground: 0 0% 98%;
     
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 262 84% 4%;
+    --popover-foreground: 0 0% 98%;
     
     --primary: 262 84% 60%; /* Vibrant Purple */
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
     
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --secondary: 262 80% 15%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 262 80% 15%;
+    --muted-foreground: 0 0% 60%;
     
     --accent: 262 80% 70%; /* Lighter purple for hover */
-    --accent-foreground: 0 0% 100%;
+    --accent-foreground: 0 0% 98%;
     
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
     
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 262 80% 15%;
+    --input: 262 80% 12%;
     --ring: 262 84% 60%;
     
     --chart-1: 262 84% 60%;
     
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 84% 4.9%;
+    --sidebar-background: 262 84% 4%;
+    --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 262 84% 60%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 210 40% 96.1%;
-    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
-    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-accent: 262 80% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 262 80% 15%;
     --sidebar-ring: 262 84% 60%;
   }
 
@@ -111,14 +111,14 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-transparent text-foreground;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 }
 
 html {
-  background: hsl(var(--background));
+  background: linear-gradient(160deg, hsl(260, 40%, 18%) 0%, hsl(270, 35%, 10%) 100%);
 }
 
 input {
@@ -130,3 +130,4 @@ input::placeholder {
     color: hsl(var(--muted-foreground));
     opacity: 0.8;
 }
+
