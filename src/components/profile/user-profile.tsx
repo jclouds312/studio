@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare, Trash2, Link as LinkIcon, Star, Settings, Building, Mail, Globe } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare, Trash2, Link as LinkIcon, Star, Settings, Building, Mail, Globe, Search } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from '../ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,6 +21,7 @@ import { useSession } from '@/hooks/use-session';
 import { UserProfileContext } from '@/context/user-profile-context';
 import { cn } from '@/lib/utils';
 import { allCompanies } from '@/data';
+import { JobListings } from '../job-listings';
 
 const roleDisplayMap = {
     user: 'Trabajador',
@@ -344,41 +345,10 @@ function SavedJobsTab() {
   );
 }
 
-function StatsTab() {
-    const { profileData } = useContext(UserProfileContext);
-    if (!profileData) return null;
+function OffersTab() {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Visualizaciones de Perfil</CardTitle>
-                    <Eye className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">{profileData.stats.profileViews}</div>
-                    <p className="text-xs text-muted-foreground">En los últimos 30 días</p>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Entrevistas Programadas</CardTitle>
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">{profileData.stats.interviews}</div>
-                    <p className="text-xs text-muted-foreground">Total de entrevistas</p>
-                </CardContent>
-            </Card>
-             <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Ofertas Guardadas</CardTitle>
-                    <Bookmark className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">{profileData.savedJobs.length}</div>
-                    <p className="text-xs text-muted-foreground">Tus ofertas de interés</p>
-                </CardContent>
-            </Card>
+        <div className="space-y-8">
+            <JobListings />
         </div>
     )
 }
@@ -507,14 +477,14 @@ export function UserProfile() {
             <TabsTrigger value="applications">
                 <Briefcase className="mr-2 h-4 w-4" />
                 Postulaciones
-                </TabsTrigger>
-                <TabsTrigger value="saved-jobs">
+            </TabsTrigger>
+            <TabsTrigger value="saved-jobs">
                 <Bookmark className="mr-2 h-4 w-4" />
                 Guardados
-                </TabsTrigger>
-            <TabsTrigger value="stats">
-                <Eye className="mr-2 h-4 w-4" />
-                Estadísticas
+            </TabsTrigger>
+            <TabsTrigger value="offers">
+                <Search className="mr-2 h-4 w-4" />
+                Buscar Ofertas
             </TabsTrigger>
             </TabsList>
             <TabsContent value="edit-profile" className="mt-6">
@@ -526,8 +496,8 @@ export function UserProfile() {
             <TabsContent value="saved-jobs" className="mt-6">
                 <SavedJobsTab />
             </TabsContent>
-            <TabsContent value="stats" className="mt-6">
-                <StatsTab />
+            <TabsContent value="offers" className="mt-6">
+                <OffersTab />
             </TabsContent>
         </Tabs>
       )}
