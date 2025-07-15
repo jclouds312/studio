@@ -109,16 +109,6 @@ body {
     --muted-foreground: 0 0% 85%; /* Un gris claro para texto secundario */
     --border: 346.8 77.2% 30%;
   }
-
-  .theme-new {
-    --card: 210 40% 98%; /* Gris muy claro, casi blanco */
-    --card-foreground: 222.2 47.4% 11.2%; /* Azul oscuro para texto */
-    --primary: 217.2 91.2% 59.8%; /* Azul brillante */
-    --primary-foreground: 210 40% 98%;
-    --muted-foreground: 215.4 16.3% 46.9%; /* Gris medio */
-    --border: 214.3 31.8% 91.4%;
-  }
-
 }
 
 @layer base {

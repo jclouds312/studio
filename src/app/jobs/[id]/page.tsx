@@ -76,8 +76,6 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
 
   const getThemeClass = () => {
     if (job.isFeatured) return 'theme-premium';
-    // The blue theme for 'new' was removed per user feedback to keep it simple.
-    // If needed, it can be re-added here.
     return '';
   }
 
