@@ -15,13 +15,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
 import { ChatPanel } from '../chat/chat-panel';
-import type { Job, CompanyProfile } from '@/lib/types';
+import type { CompanyProfile, Job as PrismaJob } from '@/lib/types';
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
 import { UserProfileContext } from '@/context/user-profile-context';
 import { cn } from '@/lib/utils';
 import { allCompanies } from '@/data';
 import { JobListings } from '../job-listings';
+import { allJobs as staticJobs } from '@/data';
 
 const roleDisplayMap = {
     user: 'Trabajador',
@@ -318,7 +319,7 @@ function SavedJobsTab() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {savedJobs.map((job: Job) => (
+            {savedJobs.map((job: PrismaJob) => (
               <TableRow key={job.id}>
                 <TableCell className="font-medium">{job.title}</TableCell>
                 <TableCell>{job.company}</TableCell>
@@ -348,7 +349,7 @@ function SavedJobsTab() {
 function OffersTab() {
     return (
         <div className="space-y-8">
-            <JobListings />
+            <JobListings initialJobs={staticJobs as PrismaJob[]} />
         </div>
     )
 }
@@ -374,7 +375,7 @@ export function UserProfile() {
   const { user } = session;
   const isAdmin = user.role === 'admin';
   const isCompany = user.role === 'company';
-  const roleDisplay = roleDisplayMap[user.role] || user.role;
+  const roleDisplay = roleDisplayMap[user.role as keyof typeof roleDisplayMap] || user.role;
 
   const getAvatarUrl = () => {
     if (isCompany) return companyProfile?.logoUrl || 'https://placehold.co/128x128.png';

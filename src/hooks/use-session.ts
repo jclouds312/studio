@@ -4,8 +4,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { allUsers } from '@/data';
-import type { User } from '@/lib/types';
+import { allUsers } from '@/data/users';
+import type { User } from '@prisma/client';
 
 interface Session {
     isLoggedIn: boolean;
@@ -38,7 +38,7 @@ export function useSession() {
             if (loggedInStatus && userEmail) {
                 const currentUser = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase()) || null;
                 if (currentUser) {
-                    setSession({ isLoggedIn: true, user: currentUser, isMounted: true });
+                    setSession({ isLoggedIn: true, user: currentUser as User, isMounted: true });
                 } else {
                     // If user is not in our static list but was logged in, log them out.
                     localStorage.removeItem('isLoggedIn');
@@ -86,13 +86,20 @@ export function useSession() {
 
         const newUser: User = {
             id: String(Date.now()),
-            ...data,
+            name: data.name,
+            email: data.email,
+            password: data.password,
+            role: data.role,
             avatar: 'https://placehold.co/40x40.png',
             status: 'Verificado',
-            createdAt: new Date().toISOString().split('T')[0],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            emailVerified: null,
         };
         
-        allUsers.push(newUser); // Add to our in-memory "database"
+        // In a real app, this would be an API call to create a user in the DB.
+        // For simulation, we can't easily push to the prisma client from a hook.
+        // We'll rely on the static list for newly registered users in this session.
         
         toast({
             title: "¡Registro Exitoso!",
@@ -108,11 +115,8 @@ export function useSession() {
         let user = allUsers.find(u => u.email.toLowerCase() === simulatedEmail.toLowerCase());
 
         if (user) {
-            // User exists, just log them in
-            performLogin(user);
+            performLogin(user as User);
         } else {
-            // If the simulated user doesn't exist in our data file, create them.
-            // This makes the simulation robust.
             const simulatedName = `Usuario de ${provider.charAt(0).toUpperCase() + provider.slice(1)}`;
             const newUser: User = {
                 id: String(Date.now()),
@@ -121,9 +125,11 @@ export function useSession() {
                 role: role,
                 avatar: 'https://placehold.co/40x40.png',
                 status: 'Verificado',
-                createdAt: new Date().toISOString().split('T')[0],
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                emailVerified: null,
+                password: 'social-login',
             };
-            allUsers.push(newUser); // Add to our in-memory "database"
             performLogin(newUser);
         }
     }, [performLogin]);
@@ -131,7 +137,7 @@ export function useSession() {
     const login = useCallback((email: string, password?: string) => {
         const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
         if (user && user.password === password) {
-            performLogin(user);
+            performLogin(user as User);
         } else {
             toast({
                 title: "Error de autenticación",

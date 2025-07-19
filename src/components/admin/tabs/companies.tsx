@@ -17,10 +17,10 @@ import Image from "next/image";
 import React from "react";
 import { CompanyFormModal } from "../modals/company-form-modal";
 import type { CompanyProfile } from "@/lib/types";
-import { allCompanies } from "@/data";
+import { allCompanies as staticCompanies } from "@/data/companies";
 
 export function CompaniesTab() {
-    const [companies, setCompanies] = React.useState(allCompanies);
+    const [companies, setCompanies] = React.useState<CompanyProfile[]>(staticCompanies);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [selectedCompany, setSelectedCompany] = React.useState<CompanyProfile | null>(null);
 

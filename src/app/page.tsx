@@ -4,15 +4,26 @@ import { Footer } from '@/components/layout/footer';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { allJobs } from '@/data/db';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Briefcase, MapPin, Sparkles, Info, Send, Star, Loader2 } from 'lucide-react';
 import React from 'react';
+import prisma from '@/lib/prisma';
 
-function JobCarousel() {
-    const featuredJobs = allJobs.filter(job => job.isFeatured || job.isNew);
+async function JobCarousel() {
+    const featuredJobs = await prisma.job.findMany({
+        where: {
+            OR: [
+                { isFeatured: true },
+                { isNew: true },
+            ],
+        },
+        take: 10,
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
 
     return (
         <div className="w-full">
@@ -76,13 +87,21 @@ function JobCarousel() {
     );
 }
 
-export default function Home() {
+export default async function Home() {
+  const jobs = await prisma.job.findMany({
+    orderBy: [
+        { isFeatured: 'desc' },
+        { isNew: 'desc' },
+        { createdAt: 'desc' },
+    ]
+  });
+
   return (
     <div className={cn("flex flex-col min-h-screen")}>
       <Header />
       <main className="flex-1 container mx-auto py-8 px-4 space-y-12">
          <JobCarousel />
-         <JobListings />
+         <JobListings initialJobs={jobs} />
       </main>
       <Footer />
     </div>

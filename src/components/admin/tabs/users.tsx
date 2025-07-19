@@ -16,12 +16,12 @@ import {
 import Image from "next/image";
 import React from "react";
 import { UserFormModal } from "../modals/user-form-modal";
-import type { User } from "@/lib/types";
-import { allUsers } from '@/data';
+import type { User } from "@prisma/client";
+import { allUsers as staticUsers } from '@/data/users';
 import Link from "next/link";
 
 export function UsersTab() {
-    const [users, setUsers] = React.useState(allUsers);
+    const [users, setUsers] = React.useState<User[]>(staticUsers);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
 
@@ -34,11 +34,13 @@ export function UsersTab() {
         if (selectedUser) {
             setUsers(users.map(u => u.id === userData.id ? userData : u));
         } else {
-            const newUser = {
+            const newUser: User = {
                 ...userData,
                 id: String(Date.now()),
-                createdAt: new Date().toISOString().split('T')[0],
-                avatar: 'https://placehold.co/40x40.png'
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                avatar: 'https://placehold.co/40x40.png',
+                emailVerified: null,
             };
             setUsers([...users, newUser]);
         }
@@ -106,7 +108,7 @@ export function UsersTab() {
                                             {user.status}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell>{user.createdAt}</TableCell>
+                                    <TableCell>{user.createdAt.toLocaleDateString()}</TableCell>
                                     <TableCell>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>

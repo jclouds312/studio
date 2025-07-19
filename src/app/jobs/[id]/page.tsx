@@ -3,7 +3,6 @@
 
 import React from 'react';
 import { Header } from '@/components/layout/header';
-import { allJobs } from '@/data/db';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,18 +15,34 @@ import { Footer } from '@/components/layout/footer';
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from '@/lib/utils';
 import { useSession } from '@/hooks/use-session';
+import type { Job } from '@prisma/client';
+import prisma from '@/lib/prisma';
 
-export default function JobDetailPage({ params }: { params: { id: string } }) {
+
+async function getJob(id: string): Promise<Job | null> {
+    const job = await prisma.job.findUnique({
+        where: { id },
+    });
+    return job;
+}
+
+export default async function JobDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
-  const job = allJobs.find((j) => j.id === id);
-  const { toast } = useToast();
-  const { session } = useSession();
-  const [isApplying, setIsApplying] = React.useState(false);
+  const job = await getJob(id);
 
   if (!job) {
     notFound();
   }
-  
+
+  return <JobDetailClient job={job} />;
+}
+
+
+function JobDetailClient({ job }: { job: Job }) {
+  const { toast } = useToast();
+  const { session } = useSession();
+  const [isApplying, setIsApplying] = React.useState(false);
+
   const handleApply = async () => {
     setIsApplying(true);
 

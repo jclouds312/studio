@@ -2,12 +2,13 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./dev.db"
 }
 
 model User {
@@ -16,90 +17,46 @@ model User {
   email         String    @unique
   password      String?
   avatar        String?
-  phone         String?
-  location      String?
   role          String
   status        String?
   createdAt     DateTime  @default(now())
-  
-  profileData   ProfileData?
-  applications  Application[]
-  savedJobs     Job[]      @relation("SavedJobs")
-  company       Company?   @relation(fields: [companyId], references: [id])
-  companyId     String?    @unique
-  transactions  Transaction[]
-
-  @@map("users")
-}
-
-model ProfileData {
-  id                  String @id @default(cuid())
-  professionalSummary String?
-  experience          String?
-  userId              String @unique
-  user                User   @relation(fields: [userId], references: [id])
-
-  @@map("profile_data")
-}
-
-model Application {
-  id      String @id @default(cuid())
-  jobId   String
-  userId  String
-  status  String
-  
-  job     Job   @relation(fields: [jobId], references: [id])
-  user    User  @relation(fields: [userId], references: [id])
-  
-  @@map("applications")
-}
-
-model Company {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  cuit      String   @unique
-  address   String?
-  city      String
-  province  String?
-  phone     String?
-  logoUrl   String?
-  status    String?
-  
-  owner     User?
-  jobs      Job[]
-
-  @@map("companies")
+  updatedAt     DateTime  @updatedAt
+  emailVerified DateTime?
 }
 
 model Job {
-  id            String   @id @default(cuid())
-  title         String
-  location      String
-  type          String
-  description   String
-  category      String
-  isFeatured    Boolean  @default(false)
-  isNew         Boolean  @default(false)
-  whatsapp      String?
-  
-  companyId     String
-  company       Company  @relation(fields: [companyId], references: [id])
-  
-  applications  Application[]
-  savedBy       User[]        @relation("SavedJobs")
-
-  @@map("jobs")
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String
+  type        String
+  description String
+  companyLogo String
+  category    String
+  isFeatured  Boolean?
+  isNew       Boolean?
+  whatsapp    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-model Transaction {
-  id      String   @id @default(cuid())
-  plan    String
-  status  String
-  amount  Float
-  date    DateTime @default(now())
-  
-  userId  String
-  user    User     @relation(fields: [userId], references: [id])
+model Company {
+  id       String  @id @default(cuid())
+  name     String
+  cuit     String  @unique
+  address  String?
+  city     String
+  province String?
+  phone    String?
+  logoUrl  String?
+  status   String?
+}
 
-  @@map("transactions")
+model Plan {
+  id          String  @id @default(cuid())
+  name        String
+  userType    String
+  isPopular   Boolean?
+  description String
+  iconName    String
 }

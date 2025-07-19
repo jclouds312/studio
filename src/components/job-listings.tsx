@@ -6,13 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { MapPin, Search, Briefcase, Sparkles, Star, Send, Info, Loader2 } from "lucide-react";
-import type { Job } from "@/lib/types";
+import type { Job } from "@prisma/client";
 import Image from "next/image";
 import React, { useState, useMemo, useContext } from "react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
-import { allJobs } from "@/data";
 import { cn } from "@/lib/utils";
 import { UserProfileContext } from "@/context/user-profile-context";
 import { useSession } from "@/hooks/use-session";
@@ -144,14 +143,14 @@ function JobListingCard({ job }: { job: Job }) {
     );
 }
 
-export function JobListings() {
+export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
     const [keyword, setKeyword] = useState('');
     const [location, setLocation] = useState('all');
     const [category, setCategory] = useState('all');
     const [contractType, setContractType] = useState('all');
 
     const filteredJobs = useMemo(() => {
-        let jobs = allJobs
+        let jobs = initialJobs
             .filter(job => {
                 const keywordMatch = keyword.toLowerCase() ? job.title.toLowerCase().includes(keyword.toLowerCase()) || job.description.toLowerCase().includes(keyword.toLowerCase()) : true;
                 const locationMatch = location && location !== 'all' ? job.location === location : true;
@@ -167,7 +166,7 @@ export function JobListings() {
         });
 
         return jobs;
-    }, [keyword, location, category, contractType]);
+    }, [keyword, location, category, contractType, initialJobs]);
 
     return (
         <div className="space-y-8">

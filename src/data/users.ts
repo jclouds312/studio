@@ -1,7 +1,8 @@
-import type { User, UserProfileData } from '@/lib/types';
+
+import type { User } from '@/lib/types';
 
 // Datos de perfil de ejemplo para usuarios
-const userProfileJuan: UserProfileData = {
+const userProfileJuan: any = {
     avatarUrl: 'https://placehold.co/128x128.png',
     phone: '+54 9 11 1234-5678',
     location: 'Buenos Aires, CABA',
@@ -12,7 +13,7 @@ const userProfileJuan: UserProfileData = {
     stats: { profileViews: 88, interviews: 1, savedJobs: 0 }
 };
 
-const userProfileAna: UserProfileData = {
+const userProfileAna: any = {
     avatarUrl: 'https://placehold.co/128x128.png',
     phone: '+54 9 351 8765-4321',
     location: 'Córdoba, Argentina',
@@ -24,7 +25,7 @@ const userProfileAna: UserProfileData = {
 };
 
 
-export const allUsers: User[] = [
+export const allUsers: any[] = [
     {
         id: '1',
         name: 'Juan Pérez',

@@ -1,7 +1,6 @@
 
 'use client';
 
-import { allJobs } from "@/data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,10 +15,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { JobFormModal } from "../modals/job-form-modal";
 import React from "react";
-import type { Job } from "@/lib/types";
+import type { Job } from "@prisma/client";
+import { allJobs as staticJobs } from "@/data/jobs";
 
 export function JobsTab() {
-    const [jobs, setJobs] = React.useState(allJobs);
+    const [jobs, setJobs] = React.useState<Job[]>(staticJobs);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [selectedJob, setSelectedJob] = React.useState<Job | null>(null);
 
@@ -34,7 +34,7 @@ export function JobsTab() {
             setJobs(jobs.map(j => j.id === jobData.id ? jobData : j));
         } else {
             // Create
-            setJobs([...jobs, { ...jobData, id: String(Date.now()) }]);
+            setJobs([...jobs, { ...jobData, id: String(Date.now()), createdAt: new Date(), updatedAt: new Date() }]);
         }
     };
     

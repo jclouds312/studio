@@ -4,7 +4,8 @@
 import React, { createContext, useState, useCallback, ReactNode } from 'react';
 import type { Job, UserProfileData } from '@/lib/types';
 import { useSession } from '@/hooks/use-session';
-import { allJobs } from '@/data';
+import type { Job as PrismaJob } from '@prisma/client';
+import { allJobs as staticJobs } from '@/data/jobs';
 
 // Datos iniciales del perfil
 const initialProfileData: UserProfileData = {
@@ -18,10 +19,7 @@ const initialProfileData: UserProfileData = {
         { id: '2', title: 'Diseñador/a UX/UI', company: 'Creative Minds', status: 'Rechazado' },
         { id: '3', title: 'Pintor de Interiores', company: 'Servicios Varios', status: 'Contactado' },
     ],
-    savedJobs: [
-        allJobs.find(job => job.id === '5')!,
-        allJobs.find(job => job.id === '3')!,
-    ].filter(Boolean), // Filtra cualquier undefined si no se encuentra el trabajo
+    savedJobs: staticJobs.filter(job => ['5', '3'].includes(job.id)),
     stats: {
         profileViews: 128,
         interviews: 3,
@@ -32,8 +30,8 @@ const initialProfileData: UserProfileData = {
 
 interface UserProfileContextType {
     profileData: UserProfileData | null;
-    savedJobs: Job[];
-    handleSaveJob: (job: Job) => void;
+    savedJobs: PrismaJob[];
+    handleSaveJob: (job: PrismaJob) => void;
 }
 
 export const UserProfileContext = createContext<UserProfileContextType>({
@@ -45,9 +43,9 @@ export const UserProfileContext = createContext<UserProfileContextType>({
 export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     const { session } = useSession();
     const [profileData, setProfileData] = useState<UserProfileData | null>(initialProfileData);
-    const [savedJobs, setSavedJobs] = useState<Job[]>(initialProfileData.savedJobs);
+    const [savedJobs, setSavedJobs] = useState<PrismaJob[]>(initialProfileData.savedJobs as any);
 
-    const handleSaveJob = useCallback((job: Job) => {
+    const handleSaveJob = useCallback((job: PrismaJob) => {
         setSavedJobs(prevSavedJobs => {
             const isAlreadySaved = prevSavedJobs.some(savedJob => savedJob.id === job.id);
             if (isAlreadySaved) {
@@ -63,7 +61,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
         if(profileData){
             setProfileData(prevData => ({
                 ...prevData!,
-                savedJobs: savedJobs,
+                savedJobs: savedJobs as any,
                 stats: {
                     ...prevData!.stats,
                     savedJobs: savedJobs.length

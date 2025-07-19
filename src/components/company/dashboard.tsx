@@ -297,7 +297,7 @@ export function CompanyDashboard() {
                         <React.Fragment key={applicant.id}>
                             <div className="flex items-center gap-4 py-2 hover:bg-secondary/50 rounded-md px-2 -mx-2">
                                 <Avatar>
-                                    <AvatarImage src={applicant.avatar} data-ai-hint="person user"/>
+                                    <AvatarImage src={applicant.avatar!} data-ai-hint="person user"/>
                                     <AvatarFallback>{applicant.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div className="flex-1">
