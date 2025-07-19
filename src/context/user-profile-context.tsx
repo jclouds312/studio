@@ -3,8 +3,9 @@
 
 import React, { createContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import type { UserApplication, UserProfileData } from '@/lib/types';
-import type { Job, User } from '@prisma/client';
+import type { Job } from '@prisma/client';
 import { useSession } from '@/hooks/use-session';
+import { allJobs as staticJobs } from '@/data/jobs';
 
 // Define the shape of the context
 interface UserProfileContextType {
@@ -26,7 +27,6 @@ export const UserProfileContext = createContext<UserProfileContextType>({
 export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     const { session } = useSession();
     const [profileData, setProfileData] = useState<UserProfileData | null>(null);
-    const [savedJobs, setSavedJobs] = useState<Job[]>([]);
 
     useEffect(() => {
         // Here you would fetch the user's profile data from your database
@@ -40,51 +40,56 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
                 professionalSummary: 'Desarrollador Full-Stack con más de 5 años de experiencia en la creación de aplicaciones web escalables. Apasionado por las tecnologías modernas y el diseño centrado en el usuario.',
                 experience: '- Frontend Developer en Tech Solutions Inc. (2020-Actualidad)\n- Junior Developer en Creative Minds (2018-2020)',
                 applications: [
-                    { id: '1', title: 'Frontend Developer', company: 'Tech Solutions Inc.', status: 'En revisión' },
-                    { id: '2', title: 'Diseñador/a UX/UI', company: 'Creative Minds', status: 'Rechazado' },
-                    { id: '3', title: 'Pintor de Interiores', company: 'Servicios Varios', status: 'Contactado' },
+                    { id: '1', title: 'Frontend Developer (React)', company: 'Tech Solutions Inc.', status: 'En revisión' },
+                    { id: '2', title: 'Diseñador/a UX/UI Sr.', company: 'Creative Minds', status: 'Rechazado' },
+                    { id: '6', title: 'Pintor de Interiores', company: 'Servicios Varios', status: 'Contactado' },
                 ],
+                savedJobs: staticJobs.filter(job => ['5', '3'].includes(job.id)) as Job[],
                 stats: {
                     profileViews: 128,
                     interviews: 3,
-                    savedJobs: 2,
                 }
             };
             setProfileData(initialProfileData);
-            
-            // TODO: Replace with API call to get saved jobs
-            // setSavedJobs(staticJobs.filter(job => ['5', '3'].includes(job.id)));
         } else {
             setProfileData(null);
-            setSavedJobs([]);
         }
     }, [session.isLoggedIn, session.user]);
 
 
     const handleSaveJob = useCallback((job: Job) => {
-        setSavedJobs(prevSavedJobs => {
-            const isAlreadySaved = prevSavedJobs.some(savedJob => savedJob.id === job.id);
+        setProfileData(prevData => {
+            if (!prevData) return null;
+
+            const isAlreadySaved = prevData.savedJobs.some(savedJob => savedJob.id === job.id);
+            let updatedSavedJobs;
+
             if (isAlreadySaved) {
-                return prevSavedJobs.filter(savedJob => savedJob.id !== job.id);
+                updatedSavedJobs = prevData.savedJobs.filter(savedJob => savedJob.id !== job.id);
             } else {
-                return [...prevSavedJobs, job];
+                updatedSavedJobs = [...prevData.savedJobs, job];
             }
+
+            return {
+                ...prevData,
+                savedJobs: updatedSavedJobs,
+            };
         });
     }, []);
 
     const handleApplyForJob = useCallback((job: Job) => {
-        const newApplication: UserApplication = {
-            id: job.id,
-            title: job.title,
-            company: job.company,
-            status: 'En revisión'
-        };
-
         setProfileData(prevData => {
             if (!prevData) return null;
 
-            const alreadyApplied = prevData.applications.some(app => app.id === newApplication.id);
+            const alreadyApplied = prevData.applications.some(app => app.id === job.id);
             if (alreadyApplied) return prevData;
+
+            const newApplication: UserApplication = {
+                id: job.id,
+                title: job.title,
+                company: job.company,
+                status: 'En revisión'
+            };
 
             return {
                 ...prevData,
@@ -92,6 +97,8 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
             };
         });
     }, []);
+
+    const savedJobs = profileData?.savedJobs || [];
 
     return (
         <UserProfileContext.Provider value={{ profileData, savedJobs, handleSaveJob, handleApplyForJob }}>
