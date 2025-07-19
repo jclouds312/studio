@@ -14,7 +14,7 @@ import type { Job } from '@prisma/client';
 import { allJobs as staticJobs } from '@/data/jobs';
 
 
-async function JobCarousel() {
+function JobCarousel() {
     const allJobs: Job[] = staticJobs as Job[];
     const featuredJobs: Job[] = allJobs.filter(
         (job) => job.isFeatured || job.isNew
@@ -83,7 +83,7 @@ async function JobCarousel() {
     );
 }
 
-export default async function Home() {
+export default function Home() {
   const jobs: Job[] = staticJobs as Job[];
 
   const sortedJobs = [...jobs].sort((a, b) => {
@@ -92,7 +92,9 @@ export default async function Home() {
     if (scoreB !== scoreA) {
         return scoreB - scoreA;
     }
+    // @ts-ignore
     const dateA = new Date(a.createdAt).getTime();
+    // @ts-ignore
     const dateB = new Date(b.createdAt).getTime();
     return dateB - dateA;
   });

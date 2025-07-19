@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare, Trash2, Link as LinkIcon, Star, Settings, Building, Mail, Globe, Search } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare, Trash2, Link as LinkIcon, Star, Settings, Building, Mail, Globe, Search, UserCircle, Key } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from '../ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,8 +22,9 @@ import { UserProfileContext } from '@/context/user-profile-context';
 import { cn } from '@/lib/utils';
 import { allCompanies } from '@/data';
 import { JobListings } from '../job-listings';
-import { allJobs as staticJobs } from '@/data';
-import type { Job as PrismaJob } from '@prisma/client';
+import { getAllJobs } from '@/services/jobService';
+import { updateUser } from '@/services/userService';
+import type { Job as PrismaJob, Application as PrismaApplication } from '@prisma/client';
 
 
 const roleDisplayMap = {
@@ -109,23 +110,40 @@ function CompanyProfileView({ company }: { company: CompanyProfile | null }) {
 function EditProfileTab() {
   const { toast } = useToast();
   const { session } = useSession();
-  const { profileData } = useContext(UserProfileContext);
+  const { profileData, setProfileData } = useContext(UserProfileContext);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = React.useState<string | null>(null);
   const isAdmin = session.user?.role === 'admin';
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!session.user || !profileData) return;
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      toast({
-        title: "Perfil Actualizado",
-        description: "Tus cambios se han guardado correctamente.",
-      });
-    }, 1500);
+    const formData = new FormData(event.currentTarget);
+    const updatedData = {
+        name: formData.get('name') as string,
+        phone: formData.get('phone') as string,
+        location: formData.get('location') as string,
+        professionalSummary: formData.get('summary') as string,
+        experience: formData.get('experience') as string,
+    };
+    
+    try {
+        const updatedUser = await updateUser(session.user.id, updatedData);
+        if (updatedUser) {
+            setProfileData(prev => prev ? { ...prev, ...updatedUser } : null);
+            toast({
+                title: "Perfil Actualizado",
+                description: "Tus cambios se han guardado correctamente en la base de datos.",
+            });
+        }
+    } catch (error) {
+        toast({ title: "Error al actualizar", variant: "destructive" });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,14 +172,14 @@ function EditProfileTab() {
                         <Label htmlFor="name">Nombre completo</Label>
                         <div className="relative">
                             <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                            <Input id="name" type="text" className="pl-10" defaultValue={session.user?.name} placeholder="Tu nombre completo"/>
+                            <Input name="name" id="name" type="text" className="pl-10" defaultValue={session.user?.name || ''} placeholder="Tu nombre completo"/>
                         </div>
                     </div>
                      <div className="space-y-4">
                         <Label htmlFor="email">Email</Label>
                         <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                            <Input id="email" type="email" className="pl-10" defaultValue={session.user?.email} disabled/>
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                            <Input id="email" type="email" className="pl-10" defaultValue={session.user?.email || ''} disabled/>
                         </div>
                     </div>
                     {!isAdmin && (
@@ -170,14 +188,14 @@ function EditProfileTab() {
                                 <Label htmlFor="phone">Número de WhatsApp</Label>
                                 <div className="relative">
                                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                                    <Input id="phone" type="tel" className="pl-10" defaultValue={profileData.phone} placeholder="+54 9 11 ...."/>
+                                    <Input name="phone" id="phone" type="tel" className="pl-10" defaultValue={profileData.phone || ''} placeholder="+54 9 11 ...."/>
                                 </div>
                             </div>
                             <div className="space-y-4">
                                 <Label htmlFor="location">Localidad</Label>
                                 <div className="relative">
                                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                                    <Input id="location" type="text" className="pl-10" defaultValue={profileData.location} placeholder="Ej: Buenos Aires, CABA"/>
+                                    <Input name="location" id="location" type="text" className="pl-10" defaultValue={profileData.location || ''} placeholder="Ej: Buenos Aires, CABA"/>
                                 </div>
                             </div>
                              <div className="space-y-4 md:col-span-2">
@@ -216,11 +234,11 @@ function EditProfileTab() {
                         <div className="space-y-4">
                             <div>
                                 <Label htmlFor="summary">Resumen Profesional</Label>
-                                <Textarea id="summary" rows={4} defaultValue={profileData.professionalSummary} placeholder="Un breve resumen sobre tu perfil profesional..."/>
+                                <Textarea name="summary" id="summary" rows={4} defaultValue={profileData.professionalSummary || ''} placeholder="Un breve resumen sobre tu perfil profesional..."/>
                             </div>
                             <div>
                                 <Label htmlFor="experience">Experiencia Laboral</Label>
-                                <Textarea id="experience" rows={6} defaultValue={profileData.experience} placeholder="Detalla tus trabajos anteriores, roles y responsabilidades..."/>
+                                <Textarea name="experience" id="experience" rows={6} defaultValue={profileData.experience || ''} placeholder="Detalla tus trabajos anteriores, roles y responsabilidades..."/>
                             </div>
                         </div>
                     </>
@@ -249,7 +267,7 @@ function EditProfileTab() {
 
 function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
     const { profileData } = useContext(UserProfileContext);
-    if (!profileData) return null;
+    if (!profileData?.applications) return null;
 
     return (
         <Card>
@@ -263,6 +281,7 @@ function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
                         <TableRow>
                             <TableHead>Puesto</TableHead>
                             <TableHead>Empresa</TableHead>
+                            <TableHead>Fecha</TableHead>
                             <TableHead>Estado</TableHead>
                             <TableHead>Acciones</TableHead>
                         </TableRow>
@@ -270,15 +289,16 @@ function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
                     <TableBody>
                         {profileData.applications.map(app => (
                             <TableRow key={app.id}>
-                                <TableCell className="font-medium">{app.title}</TableCell>
-                                <TableCell>{app.company}</TableCell>
+                                <TableCell className="font-medium">{app.job.title}</TableCell>
+                                <TableCell>{app.job.company}</TableCell>
+                                <TableCell>{new Date(app.createdAt).toLocaleDateString()}</TableCell>
                                 <TableCell>
-                                    <Badge variant={app.status === 'Contactado' ? 'default' : (app.status === 'Rechazado' ? 'destructive' : 'secondary')}>
+                                    <Badge variant={app.status === 'CONTACTADO' ? 'default' : (app.status === 'RECHAZADO' ? 'destructive' : 'secondary')}>
                                         {app.status}
                                     </Badge>
                                 </TableCell>
                                 <TableCell>
-                                    <Button variant="outline" size="sm" onClick={onChatOpen} disabled={app.status !== 'Contactado'}>
+                                    <Button variant="outline" size="sm" onClick={onChatOpen} disabled={app.status !== 'CONTACTADO'}>
                                         <MessageSquare className="mr-2 h-4 w-4"/>
                                         Chatear
                                     </Button>
@@ -358,9 +378,15 @@ function SavedJobsTab() {
 }
 
 function OffersTab() {
+    const [initialJobs, setInitialJobs] = useState<PrismaJob[]>([]);
+
+    useEffect(() => {
+        getAllJobs().then(setInitialJobs);
+    }, []);
+
     return (
         <div className="space-y-8">
-            <JobListings initialJobs={staticJobs as PrismaJob[]} />
+            <JobListings initialJobs={initialJobs} />
         </div>
     )
 }
@@ -371,6 +397,11 @@ export function UserProfile() {
   const { profileData } = useContext(UserProfileContext);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   const [companyProfile, setCompanyProfile] = useState<CompanyProfile | null>(null);
+  const [initialJobs, setInitialJobs] = useState<PrismaJob[]>([]);
+
+    useEffect(() => {
+        getAllJobs().then(setInitialJobs);
+    }, []);
 
   useEffect(() => {
     if (session.isMounted && session.user?.role === 'company') {
@@ -390,15 +421,15 @@ export function UserProfile() {
 
   const getAvatarUrl = () => {
     if (isCompany) return companyProfile?.logoUrl || 'https://placehold.co/128x128.png';
-    return user.avatar || profileData?.avatarUrl || 'https://placehold.co/128x128.png';
+    return user.avatar || 'https://placehold.co/128x128.png';
   }
 
   return (
     <>
     <ChatPanel isOpen={isChatOpen} setIsOpen={setIsChatOpen} />
     <div className="max-w-5xl mx-auto space-y-8">
-      <div className="flex flex-col items-center text-center space-y-4">
-        <div className="relative w-32 h-32">
+      <div className="flex flex-col md:flex-row items-center text-center md:text-left gap-6">
+        <div className="relative w-32 h-32 shrink-0">
             <Avatar className="w-32 h-32 border-4 border-primary shadow-lg">
                 <AvatarImage src={getAvatarUrl()} alt={user.name} data-ai-hint="person user"/>
                 <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
@@ -407,15 +438,24 @@ export function UserProfile() {
                 <Upload className="w-4 h-4" />
             </Button>
         </div>
-        <div>
-            <h1 className="text-3xl font-bold">{user.name}</h1>
-            <p className="text-muted-foreground">{user.email}</p>
-            {user.role && (
-                <Badge variant="secondary" className="mt-2 capitalize flex items-center gap-1.5">
-                    <Shield className="h-3 w-3"/>
-                    {roleDisplay}
-                </Badge>
-            )}
+        <div className="space-y-2">
+            <h1 className="text-3xl font-bold flex items-center gap-2 justify-center md:justify-start">
+                {user.name}
+                {user.role && (
+                    <Badge variant="secondary" className="capitalize text-sm">
+                        <Shield className="mr-1.5 h-3 w-3"/>
+                        {roleDisplay}
+                    </Badge>
+                )}
+            </h1>
+            <div className='text-muted-foreground space-y-1'>
+                <p className="flex items-center gap-2 justify-center md:justify-start">
+                    <Mail className="h-4 w-4" /> {user.email}
+                </p>
+                <p className="flex items-center gap-2 justify-center md:justify-start text-xs font-mono">
+                    <Key className="h-4 w-4" /> User ID: {user.id}
+                </p>
+            </div>
         </div>
       </div>
 
@@ -509,7 +549,7 @@ export function UserProfile() {
                 <SavedJobsTab />
             </TabsContent>
             <TabsContent value="offers" className="mt-6">
-                <OffersTab />
+                 <JobListings initialJobs={initialJobs} />
             </TabsContent>
         </Tabs>
       )}

@@ -1,59 +1,31 @@
 
 import type { LucideIcon } from "lucide-react";
+import type { User as PrismaUser, Job as PrismaJob, Application as PrismaApplication } from '@prisma/client';
 
-export type Job = {
-    id: string;
-    title: string;
-    company: string;
-    location: string;
-    type: 'Full-time' | 'Part-time' | 'Contract' | 'Changa';
-    description: string;
-    companyLogo: string;
-    category: 'tech' | 'design' | 'marketing' | 'sales' | 'domestic' | 'construction' | 'admin' | 'gastronomy' | 'health' | 'education' | 'other' | 'hr' | 'finance' | 'legal' | 'logistics';
-    isFeatured?: boolean;
-    isNew?: boolean;
-    whatsapp?: string;
-};
+export type Job = PrismaJob;
+export type User = PrismaUser;
+export type Application = PrismaApplication;
+
 
 export type UserApplication = {
     id: string;
     title: string;
     company: string;
     status: 'En revisión' | 'Contactado' | 'Rechazado';
+    appliedDate: string;
 };
 
 export type UserStats = {
     profileViews: number;
     interviews: number;
-    savedJobs: number;
 };
 
 // Tipo específico para los datos del perfil del trabajador
 export type UserProfileData = {
-    avatarUrl: string;
-    phone: string;
-    location: string;
-    professionalSummary: string;
-    experience: string;
-    applications: UserApplication[];
+    applications: Application[];
     savedJobs: Job[];
     stats: UserStats;
 }
-
-export type User = {
-    id: string;
-    name: string;
-    email: string;
-    password?: string;
-    avatar?: string;
-    phone?: string;
-    location?: string;
-    role: 'admin' | 'user' | 'company';
-    status?: 'Verificado' | 'Pendiente' | 'Suspendido';
-    createdAt?: string;
-    // El perfil completo del trabajador se manejará con UserProfileData
-    profileData?: UserProfileData;
-};
 
 export type Candidate = User & {
     appliedFor: string;

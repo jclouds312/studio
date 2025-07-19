@@ -1,20 +1,21 @@
 
-import prisma from '@/lib/prisma';
+import { allJobs as staticJobs } from './jobs';
+import { allUsers as staticUsers } from './users';
+import { allCompanies as staticCompanies } from './companies';
 
-// This file now serves as a database access layer.
-// Functions here will use Prisma to interact with the database.
+// This file is kept for legacy purposes but services should be used instead.
+// Functions here will use the static data to simulate database interaction.
 
-// Example function, can be expanded for other models
 export const allJobs = async () => {
-  return await prisma.job.findMany();
+  return Promise.resolve(staticJobs);
 };
 
 export const allUsers = async () => {
-    return await prisma.user.findMany();
+    return Promise.resolve(staticUsers);
 };
 
 export const allCompanies = async () => {
-    return await prisma.companyProfile.findMany();
+    return Promise.resolve(staticCompanies);
 }
 
 // Static data can still be exported for things not in the DB yet, like plans

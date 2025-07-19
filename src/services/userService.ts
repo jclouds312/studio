@@ -1,46 +1,60 @@
 
 'use server';
 
+import prisma from '@/lib/prisma';
 import type { User } from '@prisma/client';
-import { allUsers } from '@/data/users';
-
-// This service uses static data for now.
-// It can be updated to use Prisma later.
 
 export async function getAllUsers(): Promise<User[]> {
-    return Promise.resolve(allUsers as User[]);
+    return await prisma.user.findMany({
+        include: {
+            savedJobs: true,
+            applications: true,
+        }
+    });
 }
 
 export async function getUserById(id: string): Promise<User | null> {
-    const user = allUsers.find(u => u.id === id) || null;
-    return Promise.resolve(user as User | null);
+    const user = await prisma.user.findUnique({
+        where: { id },
+        include: {
+            savedJobs: true,
+            applications: {
+                include: {
+                    job: true
+                }
+            }
+        }
+    });
+    return user;
 }
 
-export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'emailVerified'>): Promise<User> {
-    const newUser: User = {
-        ...data,
-        id: String(Date.now()),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        emailVerified: null,
-    };
-    allUsers.push(newUser);
-    return Promise.resolve(newUser);
+
+export async function getUserByEmail(email: string): Promise<User | null> {
+    return await prisma.user.findUnique({
+        where: { email },
+    });
+}
+
+
+export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'phone' | 'location' | 'professionalSummary' | 'experience' | 'avatar' | 'savedJobIds'>): Promise<User> {
+    const newUser = await prisma.user.create({ data });
+    return newUser;
 }
 
 export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): Promise<User | null> {
-    const userIndex = allUsers.findIndex(u => u.id === id);
-    if (userIndex === -1) return null;
-
-    const updatedUser = { ...allUsers[userIndex], ...data, updatedAt: new Date() };
-    allUsers[userIndex] = updatedUser;
-    return Promise.resolve(updatedUser as User);
+    const updatedUser = await prisma.user.update({
+        where: { id },
+        data: { ...data, updatedAt: new Date() },
+    });
+    return updatedUser;
 }
 
 export async function deleteUser(id: string): Promise<boolean> {
-    const initialLength = allUsers.length;
-    const filteredUsers = allUsers.filter(u => u.id !== id);
-    allUsers.length = 0;
-    Array.prototype.push.apply(allUsers, filteredUsers);
-    return Promise.resolve(allUsers.length < initialLength);
+     try {
+        await prisma.user.delete({ where: { id } });
+        return true;
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return false;
+    }
 }

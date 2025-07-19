@@ -4,7 +4,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { allUsers } from '@/data/users';
+import { getUserByEmail, createUser } from '@/services/userService';
 import type { User } from '@prisma/client';
 
 interface Session {
@@ -32,26 +32,28 @@ export function useSession() {
     });
 
     useEffect(() => {
-        try {
-            const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
-            const userEmail = localStorage.getItem('userEmail');
-            if (loggedInStatus && userEmail) {
-                const currentUser = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase()) || null;
-                if (currentUser) {
-                    setSession({ isLoggedIn: true, user: currentUser as User, isMounted: true });
+        const checkSession = async () => {
+            try {
+                const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
+                const userEmail = localStorage.getItem('userEmail');
+                if (loggedInStatus && userEmail) {
+                    const currentUser = await getUserByEmail(userEmail);
+                    if (currentUser) {
+                        setSession({ isLoggedIn: true, user: currentUser, isMounted: true });
+                    } else {
+                        localStorage.removeItem('isLoggedIn');
+                        localStorage.removeItem('userEmail');
+                        setSession({ isLoggedIn: false, user: null, isMounted: true });
+                    }
                 } else {
-                    // If user is not in our static list but was logged in, log them out.
-                    localStorage.removeItem('isLoggedIn');
-                    localStorage.removeItem('userEmail');
                     setSession({ isLoggedIn: false, user: null, isMounted: true });
                 }
-            } else {
+            } catch (error) {
+                console.error("Could not access localStorage or fetch user.", error);
                 setSession({ isLoggedIn: false, user: null, isMounted: true });
             }
-        } catch (error) {
-            console.error("Could not access localStorage.", error);
-            setSession({ isLoggedIn: false, user: null, isMounted: true });
-        }
+        };
+        checkSession();
     }, []);
 
     const performLogin = useCallback((user: User) => {
@@ -73,8 +75,8 @@ export function useSession() {
         }
     }, [router, toast]);
 
-    const register = useCallback((data: RegisterData) => {
-        const existingUser = allUsers.find(u => u.email.toLowerCase() === data.email.toLowerCase());
+    const register = useCallback(async (data: RegisterData) => {
+        const existingUser = await getUserByEmail(data.email);
         if (existingUser) {
             toast({
                 title: "Error de Registro",
@@ -84,22 +86,13 @@ export function useSession() {
             return;
         }
 
-        const newUser: User = {
-            id: String(Date.now()),
+        const newUser = await createUser({
             name: data.name,
             email: data.email,
-            password: data.password,
+            password: data.password, // In a real app, hash this password!
             role: data.role,
-            avatar: 'https://placehold.co/40x40.png',
-            status: 'Verificado',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            emailVerified: null,
-        };
-        
-        // In a real app, this would be an API call to create a user in the DB.
-        // For simulation, we can't easily push to the prisma client from a hook.
-        // We'll rely on the static list for newly registered users in this session.
+            status: 'VERIFICADO',
+        });
         
         toast({
             title: "¡Registro Exitoso!",
@@ -108,36 +101,30 @@ export function useSession() {
         performLogin(newUser);
     }, [performLogin, toast]);
     
-    const loginWithSocial = useCallback((provider: SocialProvider, role: 'user' | 'company' = 'user') => {
-        // Use a consistent, predictable email for the simulation
+    const loginWithSocial = useCallback(async (provider: SocialProvider, role: 'user' | 'company' = 'user') => {
         const simulatedEmail = `user.${provider}@example.com`;
         
-        let user = allUsers.find(u => u.email.toLowerCase() === simulatedEmail.toLowerCase());
+        let user = await getUserByEmail(simulatedEmail);
 
         if (user) {
-            performLogin(user as User);
+            performLogin(user);
         } else {
             const simulatedName = `Usuario de ${provider.charAt(0).toUpperCase() + provider.slice(1)}`;
-            const newUser: User = {
-                id: String(Date.now()),
+            const newUser = await createUser({
                 name: simulatedName,
                 email: simulatedEmail,
                 role: role,
-                avatar: 'https://placehold.co/40x40.png',
-                status: 'Verificado',
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                emailVerified: null,
+                status: 'VERIFICADO',
                 password: 'social-login',
-            };
+            });
             performLogin(newUser);
         }
     }, [performLogin]);
 
-    const login = useCallback((email: string, password?: string) => {
-        const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const login = useCallback(async (email: string, password?: string) => {
+        const user = await getUserByEmail(email);
         if (user && user.password === password) {
-            performLogin(user as User);
+            performLogin(user);
         } else {
             toast({
                 title: "Error de autenticación",
