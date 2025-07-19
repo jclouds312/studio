@@ -8,14 +8,14 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, MapPin, Sparkles, Info, Send, Star, Loader2 } from 'lucide-react';
+import { Briefcase, MapPin, Sparkles, Info } from 'lucide-react';
 import React from 'react';
 import type { Job } from '@prisma/client';
-import { allJobs as staticJobs } from '@/data/jobs';
+import { getAllJobs } from '@/services/jobService';
 
 
-function JobCarousel() {
-    const allJobs: Job[] = staticJobs as Job[];
+async function JobCarousel() {
+    const allJobs = await getAllJobs();
     const featuredJobs: Job[] = allJobs.filter(
         (job) => job.isFeatured || job.isNew
     ).slice(0, 10);
@@ -83,8 +83,8 @@ function JobCarousel() {
     );
 }
 
-export default function Home() {
-  const jobs: Job[] = staticJobs as Job[];
+export default async function Home() {
+  const jobs = await getAllJobs();
 
   const sortedJobs = [...jobs].sort((a, b) => {
     const scoreA = (a.isFeatured ? 2 : 0) + (a.isNew ? 1 : 0);
@@ -92,9 +92,7 @@ export default function Home() {
     if (scoreB !== scoreA) {
         return scoreB - scoreA;
     }
-    // @ts-ignore
     const dateA = new Date(a.createdAt).getTime();
-    // @ts-ignore
     const dateB = new Date(b.createdAt).getTime();
     return dateB - dateA;
   });

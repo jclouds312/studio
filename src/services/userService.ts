@@ -1,65 +1,56 @@
 
 'use server';
 
-import prisma from '@/lib/prisma';
-import type { User } from '@prisma/client';
+import type { User, Job } from '@prisma/client';
+import { allUsers as staticUsers } from '@/data/users';
+
+// Simulate a database connection by using static data
+let users: User[] = staticUsers as User[];
 
 export async function getAllUsers(): Promise<User[]> {
-    return await prisma.user.findMany({
-        include: {
-            savedJobs: true,
-            applications: true,
-        }
-    });
+    return Promise.resolve(users);
 }
 
 export async function getUserById(id: string): Promise<User | null> {
-    const user = await prisma.user.findUnique({
-        where: { id },
-        include: {
-            savedJobs: true,
-            applications: {
-                include: {
-                    job: true
-                }
-            }
-        }
-    });
-    return user;
+    const user = users.find(u => u.id === id);
+    return Promise.resolve(user || null);
 }
-
 
 export async function getUserByEmail(email: string): Promise<User | null> {
-    return await prisma.user.findUnique({
-        where: { email },
-    });
+    const user = users.find(u => u.email === email);
+    return Promise.resolve(user || null);
 }
 
-
 export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'phone' | 'location' | 'professionalSummary' | 'experience' | 'avatar' | 'savedJobIds' | 'status'> & { status?: string | null }): Promise<User> {
-    const newUser = await prisma.user.create({ 
-      data: {
+    const newUser: User = {
         ...data,
+        id: String(Date.now()),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        emailVerified: null,
+        phone: null,
+        location: null,
+        professionalSummary: null,
+        experience: null,
+        avatar: 'https://placehold.co/40x40.png',
+        savedJobIds: [],
         status: 'VERIFICADO', // Default status for new users
-      } 
-    });
-    return newUser;
+    };
+    users.push(newUser);
+    return Promise.resolve(newUser);
 }
 
 export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): Promise<User | null> {
-    const updatedUser = await prisma.user.update({
-        where: { id },
-        data: { ...data, updatedAt: new Date() },
-    });
-    return updatedUser;
+    const userIndex = users.findIndex(u => u.id === id);
+    if (userIndex === -1) return null;
+
+    const updatedUser = { ...users[userIndex], ...data, updatedAt: new Date() };
+    users[userIndex] = updatedUser as User;
+    return Promise.resolve(updatedUser as User);
 }
 
 export async function deleteUser(id: string): Promise<boolean> {
-     try {
-        await prisma.user.delete({ where: { id } });
-        return true;
-    } catch (error) {
-        console.error("Error deleting user:", error);
-        return false;
-    }
+    const initialLength = users.length;
+    users = users.filter(u => u.id !== id);
+    return Promise.resolve(users.length < initialLength);
 }
