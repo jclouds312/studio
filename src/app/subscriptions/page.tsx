@@ -26,8 +26,8 @@ import { useSession } from '@/hooks/use-session';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useToast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { allPlans } from '@/data';
 import type { SubscriptionPlan, PricingOption } from '@/lib/types';
+import { getAllPlans } from '@/services/planService';
 
 
 function PaymentModal({ planName, pricingOption, isPopular }: { planName: string, pricingOption: PricingOption, isPopular: boolean }) {
@@ -144,7 +144,11 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
 
 function AdminPlanView() {
     const { toast } = useToast();
-    const [plans, setPlans] = React.useState<SubscriptionPlan[]>(allPlans);
+    const [plans, setPlans] = React.useState<SubscriptionPlan[]>([]);
+    
+    React.useEffect(() => {
+        getAllPlans().then(setPlans);
+    }, []);
 
     const handleDelete = (planName: string) => {
         setPlans(plans.filter(p => p.name !== planName));
@@ -171,7 +175,11 @@ function AdminPlanView() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {plans.map((plan) => {
+            {plans.length === 0 ? (
+                <div className="col-span-full flex justify-center items-center h-64">
+                    <Loader2 className="h-8 w-8 animate-spin" />
+                </div>
+             ) : plans.map((plan) => {
                 const Icon = icons[plan.iconName] as LucideIcon;
                 return (
                     <Card key={plan.name} className={cn(
@@ -229,6 +237,11 @@ function AdminPlanView() {
 function CustomerPlanView() {
     const { session } = useSession();
     const userRole = session.user?.role || 'user';
+    const [allPlans, setAllPlans] = React.useState<SubscriptionPlan[]>([]);
+    
+    React.useEffect(() => {
+        getAllPlans().then(setAllPlans);
+    }, []);
 
     const visiblePlans = allPlans.filter(plan => {
         if (userRole === 'user') return plan.userType === 'worker';
@@ -250,94 +263,100 @@ function CustomerPlanView() {
           </p>
         </div>
 
-        <Carousel 
-            className="w-full max-w-sm md:max-w-4xl lg:max-w-6xl mx-auto"
-            opts={{
-                align: "start",
-                loop: false,
-            }}
-        >
-            <CarouselContent className="-ml-4">
-                {visiblePlans.map((plan, index) => {
-                    const Icon = icons[plan.iconName] as LucideIcon;
-                    return (
-                        <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                            <div className="p-1 h-full">
-                                <Card className={cn(
-                                    "flex flex-col h-full transition-all duration-300 dark",
-                                    plan.isPopular && "border-2 border-primary shadow-2xl",
-                                    plan.name.includes('Plus') && 'theme-premium'
-                                )}>
-                                    {plan.isPopular && (
-                                        <div className="w-full flex justify-center">
-                                            <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold -mt-3.5 flex items-center gap-1 z-10">
-                                                <Star className="h-4 w-4"/>
-                                                MÁS POPULAR
-                                            </Badge>
-                                        </div>
-                                    )}
-                                    <CardHeader className="text-center pt-8">
-                                        <div className="mx-auto bg-secondary p-4 rounded-full w-fit mb-4">
-                                            <Icon className="h-8 w-8 text-primary" />
-                                        </div>
-                                        <CardTitle className="text-3xl">{plan.name}</CardTitle>
-                                        <CardDescription className="text-base h-10">{plan.description}</CardDescription>
-                                    </CardHeader>
+         {allPlans.length === 0 ? (
+            <div className="col-span-full flex justify-center items-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+         ) : (
+            <Carousel 
+                className="w-full max-w-sm md:max-w-4xl lg:max-w-6xl mx-auto"
+                opts={{
+                    align: "start",
+                    loop: false,
+                }}
+            >
+                <CarouselContent className="-ml-4">
+                    {visiblePlans.map((plan, index) => {
+                        const Icon = icons[plan.iconName] as LucideIcon;
+                        return (
+                            <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                                <div className="p-1 h-full">
+                                    <Card className={cn(
+                                        "flex flex-col h-full transition-all duration-300 dark",
+                                        plan.isPopular && "border-2 border-primary shadow-2xl",
+                                        plan.name.includes('Plus') && 'theme-premium'
+                                    )}>
+                                        {plan.isPopular && (
+                                            <div className="w-full flex justify-center">
+                                                <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold -mt-3.5 flex items-center gap-1 z-10">
+                                                    <Star className="h-4 w-4"/>
+                                                    MÁS POPULAR
+                                                </Badge>
+                                            </div>
+                                        )}
+                                        <CardHeader className="text-center pt-8">
+                                            <div className="mx-auto bg-secondary p-4 rounded-full w-fit mb-4">
+                                                <Icon className="h-8 w-8 text-primary" />
+                                            </div>
+                                            <CardTitle className="text-3xl">{plan.name}</CardTitle>
+                                            <CardDescription className="text-base h-10">{plan.description}</CardDescription>
+                                        </CardHeader>
 
-                                    <Tabs defaultValue={plan.pricing[0].duration} className="w-full flex-grow flex flex-col">
-                                        <CardContent className="flex-grow flex flex-col space-y-6">
-                                            {plan.pricing.length > 1 && (
-                                                <TabsList className="grid w-full grid-cols-3 mx-auto max-w-[90%]">
-                                                    <TabsTrigger value="monthly">Mensual</TabsTrigger>
-                                                    <TabsTrigger value="quarterly">3 Meses</TabsTrigger>
-                                                    <TabsTrigger value="semi-annually">6 Meses</TabsTrigger>
-                                                </TabsList>
-                                            )}
+                                        <Tabs defaultValue={plan.pricing[0].duration} className="w-full flex-grow flex flex-col">
+                                            <CardContent className="flex-grow flex flex-col space-y-6">
+                                                {plan.pricing.length > 1 && (
+                                                    <TabsList className="grid w-full grid-cols-3 mx-auto max-w-[90%]">
+                                                        <TabsTrigger value="monthly">Mensual</TabsTrigger>
+                                                        <TabsTrigger value="quarterly">3 Meses</TabsTrigger>
+                                                        <TabsTrigger value="semi-annually">6 Meses</TabsTrigger>
+                                                    </TabsList>
+                                                )}
 
-                                            {plan.pricing.map((option) => (
-                                                <TabsContent key={option.duration} value={option.duration} className="m-0 flex-grow flex flex-col justify-between">
-                                                    <div>
-                                                        <div className="text-center relative my-4">
-                                                            {option.discount && (
-                                                                <Badge variant="destructive" className="absolute -top-2 right-0 rotate-12">
-                                                                    {option.discount}
-                                                                </Badge>
-                                                            )}
-                                                            <span className="text-5xl font-bold">{option.price}</span>
-                                                            <span className="text-muted-foreground text-lg"> {option.priceDetail}</span>
+                                                {plan.pricing.map((option) => (
+                                                    <TabsContent key={option.duration} value={option.duration} className="m-0 flex-grow flex flex-col justify-between">
+                                                        <div>
+                                                            <div className="text-center relative my-4">
+                                                                {option.discount && (
+                                                                    <Badge variant="destructive" className="absolute -top-2 right-0 rotate-12">
+                                                                        {option.discount}
+                                                                    </Badge>
+                                                                )}
+                                                                <span className="text-5xl font-bold">{option.price}</span>
+                                                                <span className="text-muted-foreground text-lg"> {option.priceDetail}</span>
+                                                            </div>
+                                                            <ul className="space-y-4 text-base mt-6">
+                                                                {option.features.map((feature, idx) => (
+                                                                    <li key={idx} className="flex items-start gap-3">
+                                                                        {feature.toLowerCase().startsWith('todo lo del') ? 
+                                                                            <Award className="h-6 w-6 text-amber-400 mt-0.5 shrink-0" /> :
+                                                                            <CheckCircle className="h-6 w-6 text-green-500 mt-0.5 shrink-0" />
+                                                                        }
+                                                                        <span>{feature}</span>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
                                                         </div>
-                                                        <ul className="space-y-4 text-base mt-6">
-                                                            {option.features.map((feature, idx) => (
-                                                                <li key={idx} className="flex items-start gap-3">
-                                                                    {feature.toLowerCase().startsWith('todo lo del') ? 
-                                                                        <Award className="h-6 w-6 text-amber-400 mt-0.5 shrink-0" /> :
-                                                                        <CheckCircle className="h-6 w-6 text-green-500 mt-0.5 shrink-0" />
-                                                                    }
-                                                                    <span>{feature}</span>
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    </div>
-                                                    <div className="pt-6 mt-auto">
-                                                        <PaymentModal 
-                                                            planName={plan.name} 
-                                                            pricingOption={option}
-                                                            isPopular={plan.isPopular || false}
-                                                        />
-                                                    </div>
-                                                </TabsContent>
-                                            ))}
-                                        </CardContent>
-                                    </Tabs>
-                                </Card>
-                            </div>
-                        </CarouselItem>
-                    );
-                })}
-            </CarouselContent>
-            <CarouselPrevious className="hidden lg:flex"/>
-            <CarouselNext className="hidden lg:flex"/>
-        </Carousel>
+                                                        <div className="pt-6 mt-auto">
+                                                            <PaymentModal 
+                                                                planName={plan.name} 
+                                                                pricingOption={option}
+                                                                isPopular={plan.isPopular || false}
+                                                            />
+                                                        </div>
+                                                    </TabsContent>
+                                                ))}
+                                            </CardContent>
+                                        </Tabs>
+                                    </Card>
+                                </div>
+                            </CarouselItem>
+                        );
+                    })}
+                </CarouselContent>
+                <CarouselPrevious className="hidden lg:flex"/>
+                <CarouselNext className="hidden lg:flex"/>
+            </Carousel>
+        )}
       </main>
     )
 }
@@ -368,3 +387,5 @@ export default function SubscriptionsPage() {
     </div>
   );
 }
+
+    
