@@ -1,9 +1,8 @@
 
 'use client';
 
-import React, { createContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useCallback, ReactNode } from 'react';
 import type { UserApplication, UserProfileData } from '@/lib/types';
-import { useSession } from '@/hooks/use-session';
 import type { Job as PrismaJob } from '@prisma/client';
 import { allJobs as staticJobs } from '@/data/jobs';
 
@@ -43,34 +42,29 @@ export const UserProfileContext = createContext<UserProfileContextType>({
 });
 
 export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
-    const { session } = useSession();
     const [profileData, setProfileData] = useState<UserProfileData | null>(initialProfileData);
-    const [savedJobs, setSavedJobs] = useState<PrismaJob[]>(initialProfileData.savedJobs as any);
 
     const handleSaveJob = useCallback((job: PrismaJob) => {
-        setSavedJobs(prevSavedJobs => {
-            const isAlreadySaved = prevSavedJobs.some(savedJob => savedJob.id === job.id);
-            let updatedSavedJobs;
+        setProfileData(prevProfileData => {
+            if (!prevProfileData) return null;
+
+            const isAlreadySaved = prevProfileData.savedJobs.some(savedJob => savedJob.id === job.id);
+            let updatedSavedJobs: PrismaJob[];
+
             if (isAlreadySaved) {
-                updatedSavedJobs = prevSavedJobs.filter(savedJob => savedJob.id !== job.id);
+                updatedSavedJobs = prevProfileData.savedJobs.filter(savedJob => savedJob.id !== job.id);
             } else {
-                updatedSavedJobs = [...prevSavedJobs, job];
+                updatedSavedJobs = [...prevProfileData.savedJobs, job];
             }
 
-            // Sincronizar profileData aquí directamente
-            setProfileData(prevProfileData => {
-                if (!prevProfileData) return null;
-                return {
-                    ...prevProfileData,
-                    savedJobs: updatedSavedJobs as any,
-                    stats: {
-                        ...prevProfileData.stats,
-                        savedJobs: updatedSavedJobs.length,
-                    },
-                };
-            });
-            
-            return updatedSavedJobs;
+            return {
+                ...prevProfileData,
+                savedJobs: updatedSavedJobs as any[], // Cast to any to satisfy type temporarily
+                stats: {
+                    ...prevProfileData.stats,
+                    savedJobs: updatedSavedJobs.length,
+                },
+            };
         });
     }, []);
 
@@ -97,7 +91,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     return (
-        <UserProfileContext.Provider value={{ profileData, savedJobs, handleSaveJob, handleApplyForJob }}>
+        <UserProfileContext.Provider value={{ profileData, savedJobs: profileData?.savedJobs as PrismaJob[] || [], handleSaveJob, handleApplyForJob }}>
             {children}
         </UserProfileContext.Provider>
     );
