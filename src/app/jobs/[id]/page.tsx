@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { Header } from '@/components/layout/header';
-import { allJobs } from '@/data';
+import { allJobs } from '@/data/db';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
