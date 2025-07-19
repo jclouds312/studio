@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { Header } from '@/components/layout/header';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,17 +16,22 @@ import { useToast } from "@/components/ui/use-toast";
 import { cn } from '@/lib/utils';
 import { useSession } from '@/hooks/use-session';
 import type { Job } from '@prisma/client';
+import { UserProfileContext } from '@/context/user-profile-context';
+import { allJobs } from '@/data/jobs';
 
 async function getJob(id: string): Promise<Job | null> {
     try {
-        const res = await fetch(`/api/jobs/${id}`);
+        // En una app real, podrías tener una URL base en una variable de entorno
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
+        const res = await fetch(`${baseUrl}/api/jobs/${id}`);
         if (!res.ok) {
-            return null;
+            console.error(`Failed to fetch job ${id}, returning static data`);
+            return allJobs.find(job => job.id === id) as Job | null;
         }
         return res.json();
     } catch (error) {
-        console.error("Failed to fetch job", error);
-        return null;
+        console.error(`API fetch failed for job ${id}, returning static data`, error);
+        return allJobs.find(job => job.id === id) as Job | null;
     }
 }
 
@@ -65,6 +70,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
 function JobDetailClient({ job }: { job: Job }) {
   const { toast } = useToast();
   const { session } = useSession();
+  const { handleApplyForJob } = useContext(UserProfileContext);
   const [isApplying, setIsApplying] = React.useState(false);
 
   const handleApply = async () => {
@@ -97,6 +103,7 @@ function JobDetailClient({ job }: { job: Job }) {
             throw new Error('Error al enviar la postulación.');
         }
 
+        handleApplyForJob(job);
         toast({
             title: "¡Postulación Enviada!",
             description: `Te has postulado exitosamente a la oferta de ${job.title}.`,

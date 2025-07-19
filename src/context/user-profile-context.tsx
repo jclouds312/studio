@@ -2,7 +2,7 @@
 'use client';
 
 import React, { createContext, useState, useCallback, ReactNode } from 'react';
-import type { Job, UserProfileData } from '@/lib/types';
+import type { UserApplication, UserProfileData } from '@/lib/types';
 import { useSession } from '@/hooks/use-session';
 import type { Job as PrismaJob } from '@prisma/client';
 import { allJobs as staticJobs } from '@/data/jobs';
@@ -32,12 +32,14 @@ interface UserProfileContextType {
     profileData: UserProfileData | null;
     savedJobs: PrismaJob[];
     handleSaveJob: (job: PrismaJob) => void;
+    handleApplyForJob: (job: PrismaJob) => void;
 }
 
 export const UserProfileContext = createContext<UserProfileContextType>({
     profileData: null,
     savedJobs: [],
     handleSaveJob: () => {},
+    handleApplyForJob: () => {},
 });
 
 export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
@@ -55,6 +57,28 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
             }
         });
     }, []);
+
+    const handleApplyForJob = useCallback((job: PrismaJob) => {
+        const newApplication: UserApplication = {
+            id: job.id,
+            title: job.title,
+            company: job.company,
+            status: 'En revisión'
+        };
+
+        setProfileData(prevData => {
+            if (!prevData) return null;
+
+            // Evitar duplicados
+            const alreadyApplied = prevData.applications.some(app => app.id === newApplication.id);
+            if (alreadyApplied) return prevData;
+
+            return {
+                ...prevData,
+                applications: [newApplication, ...prevData.applications],
+            };
+        });
+    }, []);
     
     // Sincronizar el estado del perfil con los trabajos guardados
     React.useEffect(() => {
@@ -68,7 +92,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
                 }
             }));
         }
-    }, [savedJobs]);
+    }, [savedJobs, profileData]);
 
     // En una aplicación real, aquí se haría un fetch de los datos del perfil del usuario
     // cuando la sesión se cargue.
@@ -82,7 +106,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
 
 
     return (
-        <UserProfileContext.Provider value={{ profileData, savedJobs, handleSaveJob }}>
+        <UserProfileContext.Provider value={{ profileData, savedJobs, handleSaveJob, handleApplyForJob }}>
             {children}
         </UserProfileContext.Provider>
     );

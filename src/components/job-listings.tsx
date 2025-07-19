@@ -18,7 +18,7 @@ import { useSession } from "@/hooks/use-session";
 
 function JobListingCard({ job }: { job: Job }) {
     const { toast } = useToast();
-    const { savedJobs, handleSaveJob } = useContext(UserProfileContext);
+    const { savedJobs, handleSaveJob, handleApplyForJob } = useContext(UserProfileContext);
     const { session } = useSession();
     const [isApplying, setIsApplying] = useState(false);
 
@@ -55,7 +55,8 @@ function JobListingCard({ job }: { job: Job }) {
             if (!response.ok) {
                 throw new Error('Error al enviar la postulación.');
             }
-
+            
+            handleApplyForJob(job);
             toast({
                 title: "¡Postulación Enviada!",
                 description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
