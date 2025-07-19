@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { createContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import type { UserApplication, UserProfileData } from '@/lib/types';
 import { useSession } from '@/hooks/use-session';
 import type { Job as PrismaJob } from '@prisma/client';
@@ -50,11 +50,27 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     const handleSaveJob = useCallback((job: PrismaJob) => {
         setSavedJobs(prevSavedJobs => {
             const isAlreadySaved = prevSavedJobs.some(savedJob => savedJob.id === job.id);
+            let updatedSavedJobs;
             if (isAlreadySaved) {
-                return prevSavedJobs.filter(savedJob => savedJob.id !== job.id);
+                updatedSavedJobs = prevSavedJobs.filter(savedJob => savedJob.id !== job.id);
             } else {
-                return [...prevSavedJobs, job];
+                updatedSavedJobs = [...prevSavedJobs, job];
             }
+
+            // Sincronizar profileData aquí directamente
+            setProfileData(prevProfileData => {
+                if (!prevProfileData) return null;
+                return {
+                    ...prevProfileData,
+                    savedJobs: updatedSavedJobs as any,
+                    stats: {
+                        ...prevProfileData.stats,
+                        savedJobs: updatedSavedJobs.length,
+                    },
+                };
+            });
+            
+            return updatedSavedJobs;
         });
     }, []);
 
@@ -79,31 +95,6 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
             };
         });
     }, []);
-    
-    // Sincronizar el estado del perfil con los trabajos guardados
-    React.useEffect(() => {
-        if(profileData){
-            setProfileData(prevData => ({
-                ...prevData!,
-                savedJobs: savedJobs as any,
-                stats: {
-                    ...prevData!.stats,
-                    savedJobs: savedJobs.length
-                }
-            }));
-        }
-    }, [savedJobs, profileData]);
-
-    // En una aplicación real, aquí se haría un fetch de los datos del perfil del usuario
-    // cuando la sesión se cargue.
-    // useEffect(() => {
-    //     if (session.isLoggedIn) {
-    //         // fetchProfileData(session.user.id).then(data => setProfileData(data));
-    //         setProfileData(initialProfileData);
-    //         setSavedJobs(initialProfileData.savedJobs);
-    //     }
-    // }, [session.isLoggedIn]);
-
 
     return (
         <UserProfileContext.Provider value={{ profileData, savedJobs, handleSaveJob, handleApplyForJob }}>
