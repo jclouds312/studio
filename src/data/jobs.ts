@@ -1,6 +1,6 @@
-import type { Job } from '@/lib/types';
+import type { Job } from '@prisma/client';
 
-export const allJobs: Job[] = [
+export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[] = [
   {
     id: '1',
     title: 'Frontend Developer (React)',
@@ -24,6 +24,7 @@ export const allJobs: Job[] = [
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'design',
     isNew: true,
+    whatsapp: null,
   },
   {
     id: '3',
@@ -35,6 +36,7 @@ export const allJobs: Job[] = [
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'tech',
     isNew: true,
+    whatsapp: null,
   },
    {
     id: '4',
@@ -44,7 +46,10 @@ export const allJobs: Job[] = [
     type: 'Part-time',
     description: 'Estamos contratando un Manager de Marketing Digital para desarrollar, implementar, rastrear y optimizar nuestras campañas de marketing digital en todos los canales digitales. Debes tener un fuerte conocimiento de las herramientas y estrategias de marketing actuales.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'marketing'
+    category: 'marketing',
+    isFeatured: false,
+    isNew: false,
+    whatsapp: null,
   },
   {
     id: '5',
@@ -56,6 +61,7 @@ export const allJobs: Job[] = [
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'sales',
     isFeatured: true,
+    isNew: false,
     whatsapp: '+5491123456789'
   },
    {
@@ -67,6 +73,8 @@ export const allJobs: Job[] = [
     description: 'Se necesita pintor con experiencia para pintar un departamento de 2 ambientes. Se proveen materiales. Trabajo por día, pago al finalizar la jornada. Enviar fotos de trabajos previos por WhatsApp.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'domestic',
+    isFeatured: false,
+    isNew: false,
     whatsapp: '+5492212345678'
   },
   {
@@ -77,7 +85,10 @@ export const allJobs: Job[] = [
     type: 'Full-time',
     description: 'Buscamos un Analista de RRHH para gestionar el ciclo completo de reclutamiento, la incorporación de empleados y las relaciones laborales. Se requiere experiencia en procesos de selección y conocimiento de la legislación laboral argentina.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'hr'
+    category: 'hr',
+    isFeatured: false,
+    isNew: false,
+    whatsapp: null,
   },
   {
     id: '8',
@@ -89,6 +100,7 @@ export const allJobs: Job[] = [
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'gastronomy',
     isNew: true,
+    isFeatured: false,
     whatsapp: '+5492231234567'
   },
   {
@@ -100,7 +112,9 @@ export const allJobs: Job[] = [
     description: 'Estudio contable busca Analista Jr. para tareas de conciliaciones bancarias, análisis de cuentas y asistencia en la preparación de balances. Ideal para estudiantes avanzados o recién recibidos de Contador Público.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'finance',
-    isFeatured: true
+    isFeatured: true,
+    isNew: false,
+    whatsapp: null,
   },
   {
     id: '10',
@@ -110,7 +124,10 @@ export const allJobs: Job[] = [
     type: 'Full-time',
     description: 'Buscamos repositores para nuestra sucursal de Quilmes. Las tareas incluyen la reposición de mercadería en góndolas, control de stock y atención al cliente. No se requiere experiencia previa.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'logistics'
+    category: 'logistics',
+    isFeatured: false,
+    isNew: false,
+    whatsapp: null,
   },
   {
     id: '11',
@@ -120,7 +137,10 @@ export const allJobs: Job[] = [
     type: 'Full-time',
     description: 'Importante estudio jurídico busca abogado/a con experiencia en derecho corporativo para asesoramiento a empresas, redacción de contratos y seguimiento de litigios. Se requiere matrícula activa.',
     companyLogo: 'https://placehold.co/56x56.png',
-    category: 'legal'
+    category: 'legal',
+    isFeatured: false,
+    isNew: false,
+    whatsapp: null,
   },
   {
     id: '12',
@@ -131,6 +151,8 @@ export const allJobs: Job[] = [
     description: 'Se necesita enfermero/a con matrícula para cubrir puesto en sala de internación. Se valorará experiencia en cuidados intensivos. Disponibilidad para turnos rotativos.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'health',
+    isFeatured: false,
+    isNew: false,
     whatsapp: '+5493811234567'
   },
   {
@@ -142,7 +164,9 @@ export const allJobs: Job[] = [
     description: 'Lidera la estrategia y la hoja de ruta de nuestros productos para América Latina. Trabajarás con equipos multifuncionales para lanzar nuevas funciones y optimizar la experiencia del usuario.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'tech',
-    isFeatured: true
+    isFeatured: true,
+    isNew: false,
+    whatsapp: null,
   },
   {
     id: '14',
@@ -153,5 +177,8 @@ export const allJobs: Job[] = [
     description: 'Diseña y construye pipelines de datos a gran escala para soportar nuestros productos y análisis. Se requiere experiencia con Spark, Hadoop y arquitecturas de datos en la nube.',
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'tech',
+    isFeatured: false,
+    isNew: false,
+    whatsapp: null,
   }
-];
+].map(job => ({ ...job, createdAt: new Date(), updatedAt: new Date() }));

@@ -1,5 +1,5 @@
 
-import type { User } from '@/lib/types';
+import type { User, UserProfileData } from '@/lib/types';
 
 // Datos de perfil de ejemplo para usuarios
 const userProfileJuan: any = {
@@ -34,7 +34,7 @@ export const allUsers: any[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'user',
         status: 'Verificado',
-        createdAt: '2023-10-27',
+        createdAt: new Date('2023-10-27'),
         profileData: userProfileJuan
     },
     {
@@ -45,7 +45,7 @@ export const allUsers: any[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'user',
         status: 'Pendiente',
-        createdAt: '2023-10-26',
+        createdAt: new Date('2023-10-26'),
         profileData: userProfileAna
     },
     {
@@ -56,7 +56,7 @@ export const allUsers: any[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'admin',
         status: 'Verificado',
-        createdAt: '2023-10-25'
+        createdAt: new Date('2023-10-25')
     },
      {
         id: '4',
@@ -66,7 +66,7 @@ export const allUsers: any[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'admin',
         status: 'Verificado',
-        createdAt: '2024-01-01'
+        createdAt: new Date('2024-01-01')
     },
     {
         id: '5',
@@ -76,7 +76,7 @@ export const allUsers: any[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'company',
         status: 'Verificado',
-        createdAt: '2024-02-15'
+        createdAt: new Date('2024-02-15')
     },
     {
         id: '6',
@@ -86,7 +86,7 @@ export const allUsers: any[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'company',
         status: 'Verificado',
-        createdAt: '2024-03-01'
+        createdAt: new Date('2024-03-01')
     },
     {
         id: '7',
@@ -96,39 +96,39 @@ export const allUsers: any[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'company',
         status: 'Verificado',
-        createdAt: '2024-04-10'
+        createdAt: new Date('2024-04-10')
     },
     {
         id: '8',
         name: 'Usuario de Google',
         email: 'user.google@example.com',
-        password: 'password123',
+        password: 'social-login',
         avatar: 'https://placehold.co/40x40.png',
         role: 'user',
         status: 'Verificado',
-        createdAt: '2024-05-20',
+        createdAt: new Date('2024-05-20'),
         profileData: userProfileJuan
     },
      {
         id: '9',
         name: 'Usuario de Facebook',
         email: 'user.facebook@example.com',
-        password: 'password123',
+        password: 'social-login',
         avatar: 'https://placehold.co/40x40.png',
         role: 'user',
         status: 'Verificado',
-        createdAt: '2024-05-21',
+        createdAt: new Date('2024-05-21'),
         profileData: userProfileAna
     },
     {
         id: '10',
         name: 'Usuario de Microsoft',
         email: 'user.microsoft@example.com',
-        password: 'password123',
+        password: 'social-login',
         avatar: 'https://placehold.co/40x40.png',
         role: 'user',
         status: 'Verificado',
-        createdAt: '2024-05-22',
+        createdAt: new Date('2024-05-22'),
         profileData: userProfileJuan
     },
     {
@@ -139,7 +139,7 @@ export const allUsers: any[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'company',
         status: 'Verificado',
-        createdAt: '2024-07-30'
+        createdAt: new Date('2024-07-30')
     },
     {
         id: '12',
@@ -149,6 +149,6 @@ export const allUsers: any[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'company',
         status: 'Verificado',
-        createdAt: '2024-07-30'
+        createdAt: new Date('2024-07-30')
     }
 ];

@@ -54,9 +54,9 @@ export default function LoginPage() {
 
   return (
       <main className="flex-1 flex items-center justify-center container mx-auto py-12 px-4">
-        <Card className="w-full max-w-2xl shadow-2xl">
+        <Card className="w-full max-w-md shadow-2xl">
           <CardHeader className="text-center p-8">
-            <CardTitle className="text-5xl font-bold text-amber-400">
+            <CardTitle className="text-3xl font-bold text-amber-400">
               LaburoYA
             </CardTitle>
             <CardDescription className="pt-2 text-base">
@@ -64,20 +64,18 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 px-8 pb-8">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-2">
                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('google', 'user')}>
-                  <GoogleIcon className="mr-2 h-7 w-7" />
+                  <GoogleIcon className="mr-2 h-6 w-6" />
                   Ingresar con Google
                 </Button>
                  <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('facebook', 'user')}>
-                  <FacebookIcon className="mr-2 h-7 w-7" />
+                  <FacebookIcon className="mr-2 h-6 w-6" />
                   Ingresar con Facebook
                 </Button>
-            </div>
-             <div className="grid grid-cols-1">
                  <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('microsoft', 'user')}>
-                  <MicrosoftIcon className="mr-2 h-7 w-7" />
-                  Ingresar con Outlook
+                  <MicrosoftIcon className="mr-2 h-6 w-6" />
+                  Ingresar con Outlook / Microsoft
                 </Button>
             </div>
              <div className="relative">
