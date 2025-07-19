@@ -41,6 +41,7 @@ export function useSession() {
                     if (currentUser) {
                         setSession({ isLoggedIn: true, user: currentUser, isMounted: true });
                     } else {
+                        // User in localStorage not found in our "DB", clear session
                         localStorage.removeItem('isLoggedIn');
                         localStorage.removeItem('userEmail');
                         setSession({ isLoggedIn: false, user: null, isMounted: true });

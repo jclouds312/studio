@@ -15,7 +15,7 @@ import { getAllJobs } from '@/services/jobService';
 
 
 async function JobCarousel() {
-    const allJobs = await getAllJobs();
+    const allJobs: Job[] = await getAllJobs();
     const featuredJobs: Job[] = allJobs.filter(
         (job) => job.isFeatured || job.isNew
     ).slice(0, 10);
@@ -92,7 +92,6 @@ export default async function Home() {
     if (scoreB !== scoreA) {
         return scoreB - scoreA;
     }
-    // Prisma returns Date objects, static data might be strings.
     const dateA = new Date(a.createdAt).getTime();
     const dateB = new Date(b.createdAt).getTime();
     return dateB - dateA;
