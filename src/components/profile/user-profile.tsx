@@ -15,7 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
 import { ChatPanel } from '../chat/chat-panel';
-import type { CompanyProfile, Job as PrismaJob } from '@/lib/types';
+import type { CompanyProfile } from '@/lib/types';
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
 import { UserProfileContext } from '@/context/user-profile-context';
@@ -23,6 +23,8 @@ import { cn } from '@/lib/utils';
 import { allCompanies } from '@/data';
 import { JobListings } from '../job-listings';
 import { allJobs as staticJobs } from '@/data';
+import type { Job as PrismaJob } from '@prisma/client';
+
 
 const roleDisplayMap = {
     user: 'Trabajador',
@@ -292,8 +294,17 @@ function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
 
 function SavedJobsTab() {
   const { savedJobs, handleSaveJob } = useContext(UserProfileContext);
+  const { toast } = useToast();
 
   if (!savedJobs) return null;
+
+  const onRemoveJob = (job: PrismaJob) => {
+    handleSaveJob(job);
+    toast({
+        title: "Oferta quitada de guardados",
+        description: `Has quitado la oferta de ${job.title}.`,
+    });
+  }
 
   return (
     <Card>
@@ -331,7 +342,7 @@ function SavedJobsTab() {
                             Ver
                         </Link>
                     </Button>
-                    <Button variant="destructive" size="sm" onClick={() => handleSaveJob(job)}>
+                    <Button variant="destructive" size="sm" onClick={() => onRemoveJob(job)}>
                         <Trash2 className="mr-2 h-4 w-4"/>
                         Quitar
                     </Button>

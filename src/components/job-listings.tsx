@@ -75,6 +75,14 @@ function JobListingCard({ job }: { job: Job }) {
     const onSaveClick = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!session.isLoggedIn) {
+            toast({
+                title: "Inicia Sesión",
+                description: "Debes iniciar sesión para guardar una oferta.",
+                variant: "destructive"
+            });
+            return;
+        }
         handleSaveJob(job);
         toast({
             title: isSaved ? "Oferta quitada de guardados" : "¡Oferta Guardada!",
@@ -122,10 +130,12 @@ function JobListingCard({ job }: { job: Job }) {
                         <div className="flex flex-row justify-between items-center pt-4 border-t border-border/50 mt-auto">
                             <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
                             <div className="flex items-center gap-2">
-                                <Button variant="ghost" size="sm" onClick={onSaveClick} className="hidden md:flex">
-                                    <Star className={cn("mr-2 h-4 w-4 text-amber-400", isSaved && "fill-amber-400")} />
-                                    {isSaved ? 'Guardado' : 'Guardar'}
-                                </Button>
+                                {session.isLoggedIn && session.user?.role === 'user' && (
+                                    <Button variant="ghost" size="sm" onClick={onSaveClick} className="hidden md:flex">
+                                        <Star className={cn("mr-2 h-4 w-4 text-amber-400 transition-all", isSaved && "fill-amber-400")} />
+                                        {isSaved ? 'Guardado' : 'Guardar'}
+                                    </Button>
+                                )}
                                 <Button size="sm" onClick={handleApply} disabled={isApplying}>
                                     {isApplying ? (
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
