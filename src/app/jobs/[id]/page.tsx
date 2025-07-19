@@ -17,21 +17,15 @@ import { cn } from '@/lib/utils';
 import { useSession } from '@/hooks/use-session';
 import type { Job } from '@prisma/client';
 import { UserProfileContext } from '@/context/user-profile-context';
-import { allJobs } from '@/data/jobs';
+import { getJobById } from '@/services/jobService';
 
 async function getJob(id: string): Promise<Job | null> {
     try {
-        // En una app real, podrías tener una URL base en una variable de entorno
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
-        const res = await fetch(`${baseUrl}/api/jobs/${id}`);
-        if (!res.ok) {
-            console.error(`Failed to fetch job ${id}, returning static data`);
-            return allJobs.find(job => job.id === id) as Job | null;
-        }
-        return res.json();
+        const job = await getJobById(id);
+        return job;
     } catch (error) {
-        console.error(`API fetch failed for job ${id}, returning static data`, error);
-        return allJobs.find(job => job.id === id) as Job | null;
+        console.error(`API fetch failed for job ${id}, returning null`, error);
+        return null;
     }
 }
 

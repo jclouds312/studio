@@ -16,30 +16,52 @@ import {
 import { JobFormModal } from "../modals/job-form-modal";
 import React from "react";
 import type { Job } from "@prisma/client";
-import { allJobs as staticJobs } from "@/data/jobs";
+import { getAllJobs, createJob, deleteJob, updateJob } from '@/services/jobService';
+import { useToast } from "@/components/ui/use-toast";
 
 export function JobsTab() {
-    const [jobs, setJobs] = React.useState<Job[]>(staticJobs);
+    const [jobs, setJobs] = React.useState<Job[]>([]);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [selectedJob, setSelectedJob] = React.useState<Job | null>(null);
+    const { toast } = useToast();
+
+    React.useEffect(() => {
+        getAllJobs().then(setJobs);
+    }, []);
 
     const handleOpenModal = (job: Job | null = null) => {
         setSelectedJob(job);
         setIsModalOpen(true);
     };
 
-    const handleSave = (jobData: Job) => {
-        if (selectedJob) {
-            // Edit
-            setJobs(jobs.map(j => j.id === jobData.id ? jobData : j));
-        } else {
-            // Create
-            setJobs([...jobs, { ...jobData, id: String(Date.now()), createdAt: new Date(), updatedAt: new Date() }]);
+    const handleSave = async (jobData: Job) => {
+        try {
+            if (selectedJob && selectedJob.id) {
+                // Edit
+                const updated = await updateJob(selectedJob.id, jobData);
+                if (updated) {
+                    setJobs(jobs.map(j => j.id === updated.id ? updated : j));
+                    toast({ title: "Publicación actualizada" });
+                }
+            } else {
+                // Create
+                const newJob = await createJob(jobData);
+                setJobs([...jobs, newJob]);
+                toast({ title: "Publicación creada" });
+            }
+        } catch (error) {
+            toast({ title: "Error al guardar", variant: "destructive" });
         }
     };
     
-    const handleDelete = (jobId: string) => {
-        setJobs(jobs.filter(j => j.id !== jobId));
+    const handleDelete = async (jobId: string) => {
+        const success = await deleteJob(jobId);
+        if (success) {
+            setJobs(jobs.filter(j => j.id !== jobId));
+            toast({ title: 'Publicación Eliminada', description: 'La publicación ha sido eliminada correctamente.' });
+        } else {
+             toast({ title: 'Error al eliminar', variant: 'destructive' });
+        }
     };
 
     return (

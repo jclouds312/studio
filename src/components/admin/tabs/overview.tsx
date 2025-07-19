@@ -4,7 +4,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, Code, KeyRound, FileText, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { allJobs } from "@/data/jobs";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -33,6 +32,8 @@ import type { Transaction, PaymentMetrics } from '@/lib/types';
 import Papa from 'papaparse';
 import { saveAs } from 'file-saver';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { allJobs as staticJobs } from '@/data/jobs';
+import type { Job } from "@prisma/client";
 
 
 // Datos simulados para el informe de pagos
@@ -177,7 +178,8 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
     }
   };
 
-   const handleDownloadBackup = (format: 'json' | 'csv' | 'word') => {
+   const handleDownloadBackup = async (format: 'json' | 'csv' | 'word') => {
+    const allJobs: Job[] = staticJobs as Job[];
     const backupData = allJobs.map(job => ({
       ID: job.id,
       Titulo: job.title,

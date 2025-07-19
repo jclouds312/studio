@@ -10,28 +10,12 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Briefcase, MapPin, Sparkles, Info, Send, Star, Loader2 } from 'lucide-react';
 import React from 'react';
-import { allJobs as staticJobs } from '@/data/jobs';
 import type { Job } from '@prisma/client';
-
-async function getJobs(): Promise<Job[]> {
-    // En una app real, podrías tener una URL base en una variable de entorno
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
-    try {
-        const res = await fetch(`${baseUrl}/api/jobs`, { cache: 'no-store' });
-        if (!res.ok) {
-            console.error("Failed to fetch jobs, returning static data");
-            return staticJobs;
-        }
-        return res.json();
-    } catch (error) {
-        console.error("API fetch failed, returning static data", error);
-        return staticJobs;
-    }
-}
+import { allJobs as staticJobs } from '@/data/jobs';
 
 
 async function JobCarousel() {
-    const allJobs = await getJobs();
+    const allJobs: Job[] = staticJobs as Job[];
     const featuredJobs: Job[] = allJobs.filter(
         (job) => job.isFeatured || job.isNew
     ).slice(0, 10);
@@ -100,7 +84,7 @@ async function JobCarousel() {
 }
 
 export default async function Home() {
-  const jobs: Job[] = await getJobs();
+  const jobs: Job[] = staticJobs as Job[];
 
   const sortedJobs = [...jobs].sort((a, b) => {
     const scoreA = (a.isFeatured ? 2 : 0) + (a.isNew ? 1 : 0);
@@ -108,8 +92,8 @@ export default async function Home() {
     if (scoreB !== scoreA) {
         return scoreB - scoreA;
     }
-    const dateA = a.createdAt instanceof Date ? a.createdAt.getTime() : new Date(a.createdAt).getTime();
-    const dateB = b.createdAt instanceof Date ? b.createdAt.getTime() : new Date(b.createdAt).getTime();
+    const dateA = new Date(a.createdAt).getTime();
+    const dateB = new Date(b.createdAt).getTime();
     return dateB - dateA;
   });
 

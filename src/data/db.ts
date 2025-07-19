@@ -1,14 +1,22 @@
 
-// This file serves as a temporary, in-memory "database" by exporting
-// the static data arrays. In a real application, these would be replaced
-// by database queries using an ORM like Prisma.
+import prisma from '@/lib/prisma';
 
-import { allJobs as staticJobs } from './jobs';
-import { allUsers as staticUsers } from './users';
-import { allCompanies as staticCompanies } from './companies';
+// This file now serves as a database access layer.
+// Functions here will use Prisma to interact with the database.
+
+// Example function, can be expanded for other models
+export const allJobs = async () => {
+  return await prisma.job.findMany();
+};
+
+export const allUsers = async () => {
+    return await prisma.user.findMany();
+};
+
+export const allCompanies = async () => {
+    return await prisma.companyProfile.findMany();
+}
+
+// Static data can still be exported for things not in the DB yet, like plans
 import { allPlans as staticPlans } from './plans';
-
-export const allJobs = () => staticJobs;
-export const allUsers = () => staticUsers;
-export const allCompanies = () => staticCompanies;
 export const allPlans = () => staticPlans;
