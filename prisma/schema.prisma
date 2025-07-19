@@ -1,10 +1,10 @@
-
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider        = "prisma-client-js"
-  binaryTargets   = ["native", "debian-openssl-3.0.x"]
+  // The following line is not needed for the chosen engine type.
+  // binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -13,29 +13,17 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String    @unique
-  emailVerified DateTime?
-  password      String?
-  avatar        String?
-  role          String
-  status        String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  profile       UserProfile?
-}
-
-model UserProfile {
-  id                  String   @id @default(cuid())
-  userId              String   @unique
-  user                User     @relation(fields: [userId], references: [id])
-  phone               String?
-  location            String?
-  professionalSummary String
-  experience          String
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  emailVerified   DateTime?
+  password        String?
+  avatar          String?
+  role            String    @default("user") // admin, user, company
+  status          String?   @default("Pendiente") // Verificado, Pendiente, Suspendido
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  companyProfile  CompanyProfile?
 }
 
 model Job {
@@ -45,54 +33,50 @@ model Job {
   companyLogo  String
   location     String
   type         String
-  description  String
   category     String
+  description  String
+  whatsapp     String?
   isFeatured   Boolean  @default(false)
   isNew        Boolean  @default(false)
-  whatsapp     String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  companyProfileId String?
   companyProfile   CompanyProfile? @relation(fields: [companyProfileId], references: [id])
+  companyProfileId String?
 }
 
 model CompanyProfile {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  cuit      String   @unique
-  address   String?
-  city      String
-  province  String?
-  phone     String?
-  logoUrl   String?
-  status    String?
-  jobs      Job[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id       String  @id @default(cuid())
+  name     String  @unique
+  cuit     String  @unique
+  address  String?
+  city     String
+  province String?
+  phone    String?
+  logoUrl  String?
+  status   String? @default("Pendiente") // Activa, Inactiva, Pendiente
+  userId   String? @unique
+  user     User?   @relation(fields: [userId], references: [id])
+  jobs     Job[]
 }
 
 model SubscriptionPlan {
-  id          String         @id @default(cuid())
-  name        String         @unique
-  userType    String
-  isPopular   Boolean        @default(false)
-  description String
-  iconName    String
+  id            String          @id @default(cuid())
+  name          String
+  userType      String // 'worker' or 'company'
+  isPopular     Boolean         @default(false)
+  description   String
+  iconName      String
   pricingOptions PricingOption[]
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
 }
 
 model PricingOption {
-  id               String            @id @default(cuid())
-  planId           String
-  plan             SubscriptionPlan  @relation(fields: [planId], references: [id])
-  duration         String
-  price            String
-  priceDetail      String
-  priceAmount      Float
-  discount         String?
-  featuresJson     String // Storing features as a JSON string
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  id                 String            @id @default(cuid())
+  duration           String // 'monthly', 'quarterly', 'semi-annually'
+  price              String
+  priceDetail        String
+  priceAmount        Float
+  discount           String?
+  features           String
+  subscriptionPlan   SubscriptionPlan? @relation(fields: [subscriptionPlanId], references: [id])
+  subscriptionPlanId String?
 }

@@ -1,3 +1,4 @@
+
 import { Header } from '@/components/layout/header';
 import { JobListings } from '@/components/job-listings';
 import { Footer } from '@/components/layout/footer';
@@ -9,21 +10,14 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Briefcase, MapPin, Sparkles, Info, Send, Star, Loader2 } from 'lucide-react';
 import React from 'react';
-import prisma from '@/lib/prisma';
+import { allJobs as staticJobs } from '@/data/jobs';
+import type { Job } from '@prisma/client';
 
 async function JobCarousel() {
-    const featuredJobs = await prisma.job.findMany({
-        where: {
-            OR: [
-                { isFeatured: true },
-                { isNew: true },
-            ],
-        },
-        take: 10,
-        orderBy: {
-            createdAt: 'desc'
-        }
-    });
+    const featuredJobs: Job[] = staticJobs.filter(
+        (job) => job.isFeatured || job.isNew
+    ).slice(0, 10);
+
 
     return (
         <div className="w-full">
@@ -88,12 +82,13 @@ async function JobCarousel() {
 }
 
 export default async function Home() {
-  const jobs = await prisma.job.findMany({
-    orderBy: [
-        { isFeatured: 'desc' },
-        { isNew: 'desc' },
-        { createdAt: 'desc' },
-    ]
+  const jobs: Job[] = [...staticJobs].sort((a, b) => {
+    const scoreA = (a.isFeatured ? 2 : 0) + (a.isNew ? 1 : 0);
+    const scoreB = (b.isFeatured ? 2 : 0) + (b.isNew ? 1 : 0);
+    if (scoreB !== scoreA) {
+        return scoreB - scoreA;
+    }
+    return b.createdAt.getTime() - a.createdAt.getTime();
   });
 
   return (

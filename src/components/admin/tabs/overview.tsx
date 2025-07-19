@@ -4,7 +4,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Briefcase, DollarSign, Star, Download, Sparkles, CreditCard, Loader2, Code, KeyRound, FileText, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { allJobs } from "@/data";
+import { allJobs } from "@/data/jobs";
 import {
   AlertDialog,
   AlertDialogCancel,

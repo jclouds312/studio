@@ -16,19 +16,37 @@ import { useToast } from "@/components/ui/use-toast";
 import { cn } from '@/lib/utils';
 import { useSession } from '@/hooks/use-session';
 import type { Job } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import { allJobs as staticJobs } from '@/data/jobs';
 
 
 async function getJob(id: string): Promise<Job | null> {
-    const job = await prisma.job.findUnique({
-        where: { id },
-    });
+    const job = staticJobs.find(j => j.id === id) || null;
     return job;
 }
 
-export default async function JobDetailPage({ params }: { params: { id: string } }) {
+export default function JobDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
-  const job = await getJob(id);
+  const [job, setJob] = React.useState<Job | null>(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    getJob(id).then(data => {
+      setJob(data);
+      setLoading(false);
+    });
+  }, [id]);
+
+  if (loading) {
+    return (
+        <div className="flex flex-col min-h-screen bg-transparent">
+          <Header />
+          <main className="flex-1 flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </main>
+          <Footer />
+        </div>
+    );
+  }
 
   if (!job) {
     notFound();
