@@ -16,12 +16,18 @@ import { useToast } from "@/components/ui/use-toast";
 import { cn } from '@/lib/utils';
 import { useSession } from '@/hooks/use-session';
 import type { Job } from '@prisma/client';
-import { allJobs as staticJobs } from '@/data/jobs';
-
 
 async function getJob(id: string): Promise<Job | null> {
-    const job = staticJobs.find(j => j.id === id) || null;
-    return job;
+    try {
+        const res = await fetch(`/api/jobs/${id}`);
+        if (!res.ok) {
+            return null;
+        }
+        return res.json();
+    } catch (error) {
+        console.error("Failed to fetch job", error);
+        return null;
+    }
 }
 
 export default function JobDetailPage({ params }: { params: { id: string } }) {
