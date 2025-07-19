@@ -91,7 +91,6 @@ export function useSession() {
             email: data.email,
             password: data.password, // In a real app, hash this password!
             role: data.role,
-            status: 'VERIFICADO',
         });
         
         toast({
@@ -114,7 +113,6 @@ export function useSession() {
                 name: simulatedName,
                 email: simulatedEmail,
                 role: role,
-                status: 'VERIFICADO',
                 password: 'social-login',
             });
             performLogin(newUser);

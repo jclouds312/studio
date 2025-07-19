@@ -65,15 +65,15 @@ export default function LoginPage() {
           </CardHeader>
           <CardContent className="space-y-6 px-8 pb-8">
             <div className="grid grid-cols-1 gap-2">
-                <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('google', 'user')}>
+                <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('google')}>
                   <GoogleIcon className="mr-2 h-6 w-6" />
                   Ingresar con Google
                 </Button>
-                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('facebook', 'user')}>
+                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('facebook')}>
                   <FacebookIcon className="mr-2 h-6 w-6" />
                   Ingresar con Facebook
                 </Button>
-                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('microsoft', 'user')}>
+                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithSocial('microsoft')}>
                   <MicrosoftIcon className="mr-2 h-6 w-6" />
                   Ingresar con Outlook / Microsoft
                 </Button>

@@ -36,8 +36,13 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 }
 
 
-export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'phone' | 'location' | 'professionalSummary' | 'experience' | 'avatar' | 'savedJobIds'>): Promise<User> {
-    const newUser = await prisma.user.create({ data });
+export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'phone' | 'location' | 'professionalSummary' | 'experience' | 'avatar' | 'savedJobIds' | 'status'> & { status?: string | null }): Promise<User> {
+    const newUser = await prisma.user.create({ 
+      data: {
+        ...data,
+        status: 'VERIFICADO', // Default status for new users
+      } 
+    });
     return newUser;
 }
 
