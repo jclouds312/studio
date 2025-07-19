@@ -34,21 +34,20 @@ export function JobsTab() {
         setIsModalOpen(true);
     };
 
-    const handleSave = async (jobData: Job) => {
+    const handleSave = async (jobData: any) => {
         try {
             if (selectedJob && selectedJob.id) {
-                // Edit
                 const updated = await updateJob(selectedJob.id, jobData);
                 if (updated) {
                     setJobs(jobs.map(j => j.id === updated.id ? updated : j));
                     toast({ title: "Publicación actualizada" });
                 }
             } else {
-                // Create
                 const newJob = await createJob(jobData);
                 setJobs([...jobs, newJob]);
                 toast({ title: "Publicación creada" });
             }
+            setIsModalOpen(false);
         } catch (error) {
             toast({ title: "Error al guardar", variant: "destructive" });
         }

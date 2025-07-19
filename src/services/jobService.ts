@@ -4,11 +4,11 @@
 import type { Job } from '@prisma/client';
 import { allJobs as staticJobs } from '@/data/jobs';
 
-// Simulate a database connection by using static data
-let jobs: Job[] = staticJobs.map(job => ({ ...job, companyProfileId: 'clz7s1m2n000018mjdlgqdt7g' })) as Job[];
+// Simulate a database connection by using static data from a file
+// In a real scenario, this would be: await prisma.job.findMany(...)
+let jobs: Job[] = staticJobs as Job[];
 
 export async function getAllJobs(): Promise<Job[]> {
-    // In a real scenario, this would be: await prisma.job.findMany(...)
     return Promise.resolve(jobs);
 }
 

@@ -64,8 +64,9 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
 function JobDetailClient({ job }: { job: Job }) {
   const { toast } = useToast();
   const { session } = useSession();
-  const { handleApplyForJob } = useContext(UserProfileContext);
+  const { handleApplyForJob, savedJobs, handleSaveJob } = useContext(UserProfileContext);
   const [isApplying, setIsApplying] = React.useState(false);
+  const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
 
   const handleApply = async () => {
     setIsApplying(true);
@@ -81,7 +82,7 @@ function JobDetailClient({ job }: { job: Job }) {
     }
 
     try {
-        const response = await fetch('/api/send-application-email', {
+        await fetch('/api/send-application-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -92,11 +93,7 @@ function JobDetailClient({ job }: { job: Job }) {
                 userEmail: session.user.email,
             }),
         });
-
-        if (!response.ok) {
-            throw new Error('Error al enviar la postulación.');
-        }
-
+        
         handleApplyForJob(job);
         toast({
             title: "¡Postulación Enviada!",
@@ -113,6 +110,24 @@ function JobDetailClient({ job }: { job: Job }) {
         setIsApplying(false);
     }
   };
+
+  const onSaveClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!session.isLoggedIn) {
+        toast({
+            title: "Inicia Sesión",
+            description: "Debes iniciar sesión para guardar una oferta.",
+            variant: "destructive"
+        });
+        return;
+    }
+    handleSaveJob(job);
+    toast({
+        title: isSaved ? "Oferta quitada de guardados" : "¡Oferta Guardada!",
+        description: isSaved ? `Has quitado la oferta de ${job.title}.` : `Has guardado la oferta de ${job.title}.`,
+    });
+}
 
   const getThemeClass = () => {
     if (job.isFeatured) return 'theme-premium';
@@ -196,9 +211,9 @@ function JobDetailClient({ job }: { job: Job }) {
                              </a>
                         </Button>
                     )}
-                     <Button size="lg" variant="secondary" className="w-full">
-                        <Star className="mr-2 h-4 w-4" />
-                        Guardar oferta
+                     <Button size="lg" variant="secondary" className="w-full" onClick={onSaveClick}>
+                        <Star className={cn("mr-2 h-4 w-4 text-amber-400 transition-all", isSaved && "fill-amber-400")} />
+                        {isSaved ? 'Guardado' : 'Guardar oferta'}
                     </Button>
                 </CardContent>
              </Card>

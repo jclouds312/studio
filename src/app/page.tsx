@@ -92,6 +92,7 @@ export default async function Home() {
     if (scoreB !== scoreA) {
         return scoreB - scoreA;
     }
+    // Prisma returns Date objects, static data might be strings.
     const dateA = new Date(a.createdAt).getTime();
     const dateB = new Date(b.createdAt).getTime();
     return dateB - dateA;
