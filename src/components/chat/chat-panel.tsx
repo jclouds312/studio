@@ -93,110 +93,107 @@ export function ChatPanel({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent className="w-full sm:max-w-md p-0" side="right">
-         <div className="flex flex-col h-full">
-            <SheetHeader className="p-4 border-b flex flex-row items-center gap-4 space-y-0">
-               {activeConversation && (
-                 <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleBack}>
-                    <ArrowLeft className="h-5 w-5"/>
-                 </Button>
-               )}
-               <div>
-                  <SheetTitle>{activeConversation ? activeConversation.name : 'Mensajes'}</SheetTitle>
-                  <SheetDescription>{activeConversation ? 'En línea' : 'Tus conversaciones activas.'}</SheetDescription>
-               </div>
-               <SheetClose asChild>
-                  <Button
-                    aria-label="Cerrar"
-                    className="absolute right-4 top-4 rounded-full"
-                    size="icon"
-                    variant="ghost"
-                     onClick={() => setIsOpen(false)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </SheetClose>
-            </SheetHeader>
-            <div className="flex flex-1 overflow-hidden">
-                {activeConversation ? (
-                    <div className="w-full flex flex-col">
-                        <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-                            <div className="space-y-4">
-                                {messages.map((message) => (
-                                    <div key={message.id} className={`flex items-end gap-2 ${message.sender === 'me' ? 'justify-end' : ''}`}>
-                                        {message.sender === 'other' && (
-                                            <Avatar className="h-6 w-6">
-                                                <AvatarImage src={activeConversation.avatar} data-ai-hint="company logo"/>
-                                                <AvatarFallback>{activeConversation.name.charAt(0)}</AvatarFallback>
-                                            </Avatar>
-                                        )}
-                                        <div className={`rounded-lg px-3 py-2 max-w-xs lg:max-w-md ${
-                                            message.sender === 'me'
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'bg-secondary'
-                                        }`}>
-                                            <p className="text-sm">{message.text}</p>
-                                            <p className={`text-xs mt-1 ${
-                                                message.sender === 'me'
-                                                ? 'text-primary-foreground/70'
-                                                : 'text-muted-foreground'
-                                            } text-right`}>{message.time}</p>
-                                        </div>
+      <SheetContent className="w-full sm:max-w-md p-0 flex flex-col" side="right">
+         <SheetHeader className="p-4 border-b flex flex-row items-center gap-4 space-y-0 shrink-0">
+           {activeConversation && (
+             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleBack}>
+                <ArrowLeft className="h-5 w-5"/>
+             </Button>
+           )}
+           <div className='flex-1'>
+              <SheetTitle>{activeConversation ? activeConversation.name : 'Mensajes'}</SheetTitle>
+              <SheetDescription>{activeConversation ? 'En línea' : 'Tus conversaciones activas.'}</SheetDescription>
+           </div>
+           <SheetClose asChild>
+              <Button
+                aria-label="Cerrar"
+                className="rounded-full"
+                size="icon"
+                variant="ghost"
+                 onClick={() => setIsOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </SheetClose>
+        </SheetHeader>
+        <div className="flex-1 flex flex-col overflow-hidden">
+            <div className={cn("flex-1 transition-all duration-300", !activeConversation ? "translate-x-0" : "-translate-x-full")}>
+                <ScrollArea className="h-full">
+                    <div className="divide-y">
+                        {conversationsData.map(convo => (
+                            <div 
+                                key={convo.id} 
+                                className="p-4 flex items-center gap-4 cursor-pointer hover:bg-secondary"
+                                onClick={() => handleSelectConversation(convo)}
+                            >
+                                <Avatar className="h-12 w-12">
+                                    <AvatarImage src={convo.avatar} data-ai-hint="company logo person user" />
+                                    <AvatarFallback>{convo.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1">
+                                    <div className="flex justify-between items-center">
+                                        <p className="font-semibold">{convo.name}</p>
+                                        <p className="text-xs text-muted-foreground">{convo.time}</p>
                                     </div>
-                                ))}
-                            </div>
-                        </ScrollArea>
-
-                        <form onSubmit={handleSendMessage} className="p-4 border-t bg-background">
-                            <div className="relative">
-                                <Input 
-                                    placeholder="Escribe un mensaje..." 
-                                    className="pr-12"
-                                    value={newMessage}
-                                    onChange={(e) => setNewMessage(e.target.value)}
-                                />
-                                <Button type="submit" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8">
-                                    <SendHorizonal className="h-4 w-4" />
-                                </Button>
-                            </div>
-                        </form>
-                    </div>
-                ) : (
-                    <ScrollArea className="flex-1">
-                        <div className="divide-y">
-                            {conversationsData.map(convo => (
-                                <div 
-                                    key={convo.id} 
-                                    className="p-4 flex items-center gap-4 cursor-pointer hover:bg-secondary"
-                                    onClick={() => handleSelectConversation(convo)}
-                                >
-                                    <Avatar className="h-12 w-12">
-                                        <AvatarImage src={convo.avatar} data-ai-hint="company logo person user" />
-                                        <AvatarFallback>{convo.name.charAt(0)}</AvatarFallback>
-                                    </Avatar>
-                                    <div className="flex-1">
-                                        <div className="flex justify-between items-center">
-                                            <p className="font-semibold">{convo.name}</p>
-                                            <p className="text-xs text-muted-foreground">{convo.time}</p>
-                                        </div>
-                                        <div className="flex justify-between items-center mt-1">
-                                            <p className={cn("text-sm text-muted-foreground truncate", convo.unread > 0 && "font-bold text-foreground")}>
-                                                {convo.lastMessage}
-                                            </p>
-                                            {convo.unread > 0 && (
-                                                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
-                                                    {convo.unread}
-                                                </span>
-                                            )}
-                                        </div>
+                                    <div className="flex justify-between items-center mt-1">
+                                        <p className={cn("text-sm text-muted-foreground truncate", convo.unread > 0 && "font-bold text-foreground")}>
+                                            {convo.lastMessage}
+                                        </p>
+                                        {convo.unread > 0 && (
+                                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
+                                                {convo.unread}
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    </ScrollArea>
-                )}
+                            </div>
+                        ))}
+                    </div>
+                </ScrollArea>
             </div>
-         </div>
+            <div className={cn("absolute inset-0 flex flex-col transition-all duration-300", activeConversation ? "translate-x-0" : "translate-x-full")}>
+                <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+                    <div className="space-y-4">
+                        {messages.map((message) => (
+                            <div key={message.id} className={`flex items-end gap-2 ${message.sender === 'me' ? 'justify-end' : ''}`}>
+                                {message.sender === 'other' && (
+                                    <Avatar className="h-6 w-6">
+                                        <AvatarImage src={activeConversation?.avatar} data-ai-hint="company logo"/>
+                                        <AvatarFallback>{activeConversation?.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                )}
+                                <div className={`rounded-lg px-3 py-2 max-w-xs lg:max-w-md ${
+                                    message.sender === 'me'
+                                    ? 'bg-primary text-primary-foreground'
+                                    : 'bg-secondary'
+                                }`}>
+                                    <p className="text-sm">{message.text}</p>
+                                    <p className={`text-xs mt-1 ${
+                                        message.sender === 'me'
+                                        ? 'text-primary-foreground/70'
+                                        : 'text-muted-foreground'
+                                    } text-right`}>{message.time}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </ScrollArea>
+
+                <form onSubmit={handleSendMessage} className="p-4 border-t bg-background shrink-0">
+                    <div className="relative">
+                        <Input 
+                            placeholder="Escribe un mensaje..." 
+                            className="pr-12"
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                        />
+                        <Button type="submit" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8">
+                            <SendHorizonal className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </form>
+            </div>
+        </div>
       </SheetContent>
     </Sheet>
   );

@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle, Building, Award, LucideIcon, icons, Gem } from 'lucide-react';
+import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle, Building, Award, LucideIcon, icons, Gem, ArrowLeft } from 'lucide-react';
 import React, { useContext } from 'react';
 import {
   AlertDialog,
@@ -30,6 +30,7 @@ import type { SubscriptionPlan, PricingOption } from '@/lib/types';
 import { getAllPlans } from '@/services/planService';
 import { UserProfileContext } from '@/context/user-profile-context';
 import { updateUser } from '@/services/userService';
+import { useRouter } from 'next/navigation';
 
 
 function PaymentModal({ planName, pricingOption, isPopular }: { planName: string, pricingOption: PricingOption, isPopular: boolean }) {
@@ -175,6 +176,7 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
 
 function AdminPlanView() {
     const { toast } = useToast();
+    const router = useRouter();
     const [plans, setPlans] = React.useState<SubscriptionPlan[]>([]);
     
     React.useEffect(() => {
@@ -192,14 +194,18 @@ function AdminPlanView() {
     
     return (
         <main className="flex-1 container mx-auto py-12 px-4">
-        <div className="flex items-center justify-between mb-12">
-            <div className='flex-1'>
+        <div className="flex items-start justify-between mb-12 gap-4">
+            <div>
+                 <Button variant="outline" onClick={() => router.back()} className="flex items-center gap-2 mb-4">
+                    <ArrowLeft className="h-4 w-4" />
+                    Volver al Panel
+                </Button>
                 <h1 className="text-4xl font-bold tracking-tight">Administrar Planes</h1>
                 <p className="text-lg text-muted-foreground mt-2">
                 Crea, edita o elimina los planes de suscripción de la plataforma.
                 </p>
             </div>
-            <Button size="lg">
+            <Button size="lg" className='mt-10'>
                 <PlusCircle className="mr-2 h-5 w-5"/>
                 Crear Nuevo Plan
             </Button>
@@ -267,6 +273,7 @@ function AdminPlanView() {
 
 function CustomerPlanView() {
     const { session } = useSession();
+    const router = useRouter();
     const userRole = session.user?.role || 'user';
     const [allPlans, setAllPlans] = React.useState<SubscriptionPlan[]>([]);
     
@@ -286,6 +293,12 @@ function CustomerPlanView() {
 
     return (
       <main className="flex-1 container mx-auto py-12 px-4">
+         <div className="mb-6">
+            <Button variant="outline" onClick={() => router.back()} className="flex items-center gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Volver
+            </Button>
+        </div>
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold tracking-tight md:text-5xl">{title}</h1>
           <p className="text-lg text-muted-foreground mt-4 max-w-2xl mx-auto">

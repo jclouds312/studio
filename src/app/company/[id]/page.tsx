@@ -2,13 +2,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { getCompanyById } from '@/services/companyService';
 import { getAllJobs } from '@/services/jobService';
 import type { CompanyProfile, Job } from '@/lib/types';
-import { Loader2, Building, MapPin, Phone, Mail } from 'lucide-react';
+import { Loader2, Building, MapPin, Phone, Mail, ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
@@ -18,6 +18,7 @@ import { JobListings } from '@/components/job-listings';
 
 export default function CompanyPublicProfilePage({ params }: { params: { id: string } }) {
   const { id } = params;
+  const router = useRouter();
   const [company, setCompany] = useState<CompanyProfile | null>(null);
   const [companyJobs, setCompanyJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,6 +72,13 @@ export default function CompanyPublicProfilePage({ params }: { params: { id: str
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1 container mx-auto py-12 px-4 space-y-12">
+        <div className="mb-6">
+            <Button variant="outline" onClick={() => router.back()} className="flex items-center gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Volver
+            </Button>
+        </div>
+
         <Card className="overflow-hidden">
           <div className="bg-secondary/50 h-32 w-full" />
           <CardContent className="p-6 relative">
