@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building, Settings } from 'lucide-react';
+import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building, Settings, Star, Gem } from 'lucide-react';
 import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
@@ -156,16 +156,18 @@ export function Header() {
                             </Link>
                         </Button>
                         {isWorker && (
-                          <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleLinkClick}>
-                            <Link href="/profile"><Briefcase />Mis Postulaciones</Link>
-                          </Button>
+                            <>
+                                <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleLinkClick}>
+                                    <Link href="/profile"><Briefcase />Mis Postulaciones</Link>
+                                </Button>
+                                <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleChatClick}>
+                                <div className='flex items-center gap-3'>
+                                    <MessageSquare />Mensajes
+                                </div>
+                                </Button>
+                           </>
                         )}
-                         <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleChatClick}>
-                           <div className='flex items-center gap-3'>
-                               <MessageSquare />Mensajes
-                           </div>
-                          </Button>
-                       {isAdmin && (
+                        {isAdmin && (
                           <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleLinkClick}>
                             <Link href="/admin"><Shield />Panel de Admin</Link>
                           </Button>
@@ -175,6 +177,17 @@ export function Header() {
                             <Link href="/company/dashboard"><Building />Panel de Empresa</Link>
                           </Button>
                         )}
+                        <Separator className="my-2" />
+                        <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleLinkClick}>
+                           <Link href={isCompany ? "/company/dashboard" : "/subscriptions"}>
+                               <Star className="text-amber-400"/>
+                               {isCompany ? 'Publicación Premium' : 'Postulación Premium'}
+                           </Link>
+                        </Button>
+                        <Button variant="ghost" asChild size="lg" className="justify-start gap-4" onClick={handleLinkClick}>
+                            <Link href="/subscriptions"><Gem className="text-primary"/>Planes Premium</Link>
+                        </Button>
+                        <Separator className="my-2" />
                         <Button variant="destructive" size="lg" className="justify-start gap-4" onClick={handleLogoutClick}>
                           <LogOut />Cerrar Sesión
                         </Button>
