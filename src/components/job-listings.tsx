@@ -98,8 +98,8 @@ function JobListingCard({ job }: { job: Job }) {
 
     return (
         <Link href={`/jobs/${job.id}`} className="block h-full group">
-            <div className={cn("h-full card-neon-border rounded-lg", getThemeClass())}>
-                <Card className="hover:shadow-xl transition-all duration-300 transform group-hover:scale-[1.02] relative overflow-hidden flex flex-col h-full bg-transparent border-0">
+            <div className={cn("h-full card-neon-border rounded-lg")}>
+                <Card className={cn("hover:shadow-xl transition-all duration-300 transform group-hover:scale-[1.02] relative overflow-hidden flex flex-col h-full bg-transparent border-0", getThemeClass())}>
                     <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                         {job.isFeatured && (
                              <Badge variant="default" className="bg-amber-400 text-amber-900 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-amber-900/20">
