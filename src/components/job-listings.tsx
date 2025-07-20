@@ -27,8 +27,8 @@ function JobListingCard({ job }: { job: Job }) {
     const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
 
     const handleApply = async (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
+        // e.preventDefault(); // Removed to allow navigation
+        // e.stopPropagation(); // Removed to allow navigation
         setIsApplying(true);
 
         if (!session.isLoggedIn || !session.user) {
@@ -80,8 +80,8 @@ function JobListingCard({ job }: { job: Job }) {
     };
 
     const onSaveClick = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
+        // e.preventDefault(); // Removed to allow navigation
+        // e.stopPropagation(); // Removed to allow navigation
         if (!session.isLoggedIn) {
             toast({
                 title: "Inicia Sesión",
