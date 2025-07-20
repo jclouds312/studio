@@ -9,7 +9,7 @@ import { AdminSidebar } from '@/components/admin/sidebar';
 import { Footer } from '@/components/layout/footer';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { OverviewTab } from '@/components/admin/tabs/overview';
-import { JobsTab } from '@/components/admin/tabs/jobs';
+import { JobsTab } from '@/admin/tabs/jobs';
 import { UsersTab } from '@/components/admin/tabs/users';
 import { CompaniesTab } from '@/components/admin/tabs/companies';
 import { CategoriesTab } from '@/components/admin/tabs/categories';

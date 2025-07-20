@@ -18,7 +18,6 @@ import React from "react";
 import type { Job } from "@prisma/client";
 import { getAllJobs, createJob, deleteJob, updateJob } from '@/services/jobService';
 import { useToast } from "@/components/ui/use-toast";
-import Image from "next/image";
 
 export function JobsTab() {
     const [jobs, setJobs] = React.useState<Job[]>([]);
@@ -83,7 +82,6 @@ export function JobsTab() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[64px] hidden sm:table-cell">Imagen</TableHead>
                             <TableHead>Título</TableHead>
                             <TableHead>Empresa</TableHead>
                             <TableHead>Categoría</TableHead>
@@ -97,16 +95,6 @@ export function JobsTab() {
                     <TableBody>
                         {jobs.map(job => (
                             <TableRow key={job.id}>
-                                <TableCell className="hidden sm:table-cell">
-                                    <Image
-                                        alt={job.title}
-                                        className="aspect-square rounded-md object-cover"
-                                        height="64"
-                                        src={job.imageUrl || 'https://placehold.co/64x64.png'}
-                                        width="64"
-                                        data-ai-hint="job vacancy"
-                                    />
-                                </TableCell>
                                 <TableCell className="font-medium">{job.title}</TableCell>
                                 <TableCell>{job.company}</TableCell>
                                 <TableCell className="capitalize">{job.category}</TableCell>
