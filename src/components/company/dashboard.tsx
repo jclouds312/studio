@@ -30,12 +30,22 @@ import type { Candidate, Job } from '@/lib/types';
 import { CandidateProfileModal } from './modals/candidate-profile-modal';
 import { ChatPanel } from '../chat/chat-panel';
 import { getAllJobs } from '@/services/jobService';
+import { getApplicationsByUserId } from '@/services/applicationService';
+import { getUserById } from '@/services/userService';
 
 const companyApplicants: Candidate[] = allUsers
-    .filter(u => u.role === 'user' && ['juan.perez@example.com', 'ana.garcia@example.com'].includes(u.email))
+    .filter(u => u.role === 'user' && ['trabajador@test.com', 'ana.garcia@example.com'].includes(u.email))
     .map((user, index) => ({
         ...user,
-        appliedFor: index === 0 ? 'Frontend Developer (React)' : 'Diseñador/a UX/UI Sr.'
+        id: user.id!,
+        appliedFor: index === 0 ? 'Frontend Developer (React)' : 'Diseñador/a UX/UI Sr.',
+        customAnswers: index === 0 ? [
+            { question: '¿Cuál es tu experiencia con Next.js App Router?', answer: 'Tengo más de 1 año de experiencia trabajando con el App Router en proyectos profesionales.' },
+            { question: 'Describe un proyecto complejo en el que hayas trabajado.', answer: 'Desarrollé una plataforma de e-commerce con un dashboard de analíticas en tiempo real.' }
+        ] : [
+            { question: 'Por favor, comparte un enlace a tu portafolio.', answer: 'Claro, mi portafolio está en mi.sitio.com/portfolio' },
+            { question: '¿Cuál es tu proceso de diseño habitual?', answer: 'Comienzo con investigación de usuario, luego wireframing, prototipado en Figma y finalmente pruebas de usabilidad.' }
+        ]
     }));
 
 export function CompanyDashboard() {

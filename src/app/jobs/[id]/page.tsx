@@ -1,12 +1,12 @@
 
 'use client';
 
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Header } from '@/components/layout/header';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink, Loader2, DollarSign } from 'lucide-react';
+import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink, Loader2, DollarSign, Tag } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -18,13 +18,16 @@ import { useSession } from '@/hooks/use-session';
 import type { Job } from '@prisma/client';
 import { UserProfileContext } from '@/context/user-profile-context';
 import { getJobById } from '@/services/jobService';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 async function getJob(id: string): Promise<Job | null> {
     try {
         const job = await getJobById(id);
         return job;
     } catch (error) {
-        console.error(`API fetch failed for job ${id}, returning null`, error);
+        console.error(`API fetch failed for job ${id}, return null`, error);
         return null;
     }
 }
@@ -64,22 +67,34 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
 function JobDetailClient({ job }: { job: Job }) {
   const { toast } = useToast();
   const { session } = useSession();
-  const { handleApplyForJob, savedJobs, handleSaveJob } = useContext(UserProfileContext);
+  const { handleApplyForJob, savedJobs, handleSaveJob, applications } = useContext(UserProfileContext);
   const [isApplying, setIsApplying] = React.useState(false);
+  const [isQuestionsModalOpen, setIsQuestionsModalOpen] = useState(false);
+  const [customAnswers, setCustomAnswers] = useState<Record<string, string>>({});
+  
   const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
-
-  const handleApply = async () => {
-    setIsApplying(true);
-
+  const hasApplied = applications.some(app => app.jobId === job.id);
+  
+  const startApplicationProcess = () => {
     if (!session.isLoggedIn || !session.user) {
         toast({
             title: "Inicia Sesión",
             description: "Debes iniciar sesión para postularte a una oferta.",
             variant: "destructive"
         });
-        setIsApplying(false);
         return;
     }
+
+    if (job.customQuestions && job.customQuestions.length > 0) {
+      setIsQuestionsModalOpen(true);
+    } else {
+      handleApply();
+    }
+  };
+
+  const handleApply = async (answers?: { question: string; answer: string; }[]) => {
+    setIsApplying(true);
+    if(isQuestionsModalOpen) setIsQuestionsModalOpen(false);
 
     try {
         await fetch('/api/send-application-email', {
@@ -89,12 +104,12 @@ function JobDetailClient({ job }: { job: Job }) {
                 jobTitle: job.title,
                 companyName: job.company,
                 companyEmail: 'hr@example.com', // En una app real, esto vendría del perfil de la empresa
-                userName: session.user.name,
-                userEmail: session.user.email,
+                userName: session.user!.name,
+                userEmail: session.user!.email,
             }),
         });
         
-        handleApplyForJob(job);
+        handleApplyForJob(job, answers);
         toast({
             title: "¡Postulación Enviada!",
             description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
@@ -109,6 +124,14 @@ function JobDetailClient({ job }: { job: Job }) {
     } finally {
         setIsApplying(false);
     }
+  };
+
+  const handleSubmitQuestions = () => {
+    const answers = job.customQuestions!.map(q => ({
+      question: q,
+      answer: customAnswers[q] || 'No respondida'
+    }));
+    handleApply(answers);
   };
 
   const onSaveClick = (e: React.MouseEvent) => {
@@ -188,6 +211,20 @@ function JobDetailClient({ job }: { job: Job }) {
                 <Separator className="my-4"/>
                 <h3 className="text-lg font-semibold mb-2 text-primary">Descripción del trabajo</h3>
                 <p className="text-card-foreground whitespace-pre-wrap">{job.description}</p>
+                 {job.skills && job.skills.length > 0 && (
+                  <>
+                    <Separator className="my-4"/>
+                    <h3 className="text-lg font-semibold mb-2 text-primary">Habilidades Requeridas</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {job.skills.map(skill => (
+                        <Badge key={skill} variant="secondary" className="flex items-center gap-1.5">
+                          <Tag className="h-3 w-3" />
+                          {skill}
+                        </Badge>
+                      ))}
+                    </div>
+                  </>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -198,13 +235,13 @@ function JobDetailClient({ job }: { job: Job }) {
                     <CardTitle>Acciones</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                    <Button size="lg" className="w-full" onClick={handleApply} disabled={isApplying}>
+                    <Button size="lg" className="w-full" onClick={startApplicationProcess} disabled={isApplying || hasApplied}>
                         {isApplying ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         ) : (
                             <Send className="mr-2 h-4 w-4" />
                         )}
-                        Postularse ahora
+                        {hasApplied ? 'Ya Postulaste' : 'Postularse ahora'}
                     </Button>
                     {job.whatsapp && (
                         <Button asChild size="lg" variant="outline" className="w-full bg-green-500/10 border-green-500/30 hover:bg-green-500/20 text-green-400 hover:text-green-300">
@@ -250,6 +287,40 @@ function JobDetailClient({ job }: { job: Job }) {
         </div>
       </main>
       <Footer />
+        <Dialog open={isQuestionsModalOpen} onOpenChange={setIsQuestionsModalOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Preguntas Adicionales</DialogTitle>
+                    <DialogDescription>
+                        La empresa solicita que respondas a las siguientes preguntas para completar tu postulación.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-4">
+                    {job.customQuestions?.map((question, index) => (
+                        <div key={index} className="space-y-2">
+                            <Label htmlFor={`question-${index}`}>{question}</Label>
+                            <Textarea 
+                                id={`question-${index}`} 
+                                value={customAnswers[question] || ''}
+                                onChange={(e) => setCustomAnswers(prev => ({...prev, [question]: e.target.value}))}
+                                required
+                            />
+                        </div>
+                    ))}
+                </div>
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsQuestionsModalOpen(false)}>Cancelar</Button>
+                    <Button onClick={handleSubmitQuestions} disabled={isApplying}>
+                         {isApplying ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Send className="mr-2 h-4 w-4" />
+                          )}
+                        Enviar Postulación
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </div>
   );
 }

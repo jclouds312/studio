@@ -12,7 +12,9 @@ let jobs: Job[] = staticJobs.map(job => {
         ...job,
         createdAt: new Date(),
         updatedAt: new Date(),
-        companyProfileId: company?.id ?? null
+        companyProfileId: company?.id ?? null,
+        skills: job.skills || [],
+        customQuestions: job.customQuestions || []
     } as Job
 });
 
@@ -32,6 +34,8 @@ export async function createJob(data: Omit<Job, 'id' | 'createdAt' | 'updatedAt'
         id: String(Date.now()),
         createdAt: new Date(),
         updatedAt: new Date(),
+        skills: data.skills || [],
+        customQuestions: data.customQuestions || []
     };
     jobs.push(newJob);
     return Promise.resolve(newJob);

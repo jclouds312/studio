@@ -1,18 +1,19 @@
 
 'use server';
 
-import type { Application, Job } from '@prisma/client';
+import type { Application, Job, User } from '@prisma/client';
 import { getAllJobs } from './jobService';
+import type { CustomAnswer } from '@/lib/types';
 
 // Simulate a database connection by using static data
-let applications: (Application & { job: Job })[] = [];
+let applications: (Application & { job: Job, customAnswers?: CustomAnswer[] })[] = [];
 
 export async function getApplicationsByUserId(userId: string): Promise<(Application & { job: Job })[]> {
     const userApplications = applications.filter(app => app.userId === userId);
     return Promise.resolve(userApplications);
 }
 
-export async function createApplication(applicationData: {userId: string, jobId: string}): Promise<Application & { job: Job }> {
+export async function createApplication(applicationData: {userId: string, jobId: string, customAnswers?: CustomAnswer[]}): Promise<Application & { job: Job }> {
     const allJobs = await getAllJobs();
     const job = allJobs.find(j => j.id === applicationData.jobId);
     if (!job) {
@@ -31,6 +32,7 @@ export async function createApplication(applicationData: {userId: string, jobId:
         status: 'EN_REVISION',
         userId: applicationData.userId,
         jobId: applicationData.jobId,
+        customAnswers: applicationData.customAnswers,
         job: job,
     };
     applications.push(newApplication);

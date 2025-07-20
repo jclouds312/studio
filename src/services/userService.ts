@@ -28,7 +28,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
     return Promise.resolve(user || null);
 }
 
-export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'phone' | 'location' | 'professionalSummary' | 'experience' | 'avatar' | 'savedJobIds' | 'status' | 'companyProfileId'> & { status?: string | null }): Promise<User> {
+export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'phone' | 'location' | 'professionalSummary' | 'experience' | 'avatar' | 'savedJobIds' | 'status' | 'companyProfileId' | 'skills' | 'customQuestions' | 'subscriptionPlan' | 'subscriptionUntil'> & { status?: string | null, subscriptionPlan?: string | null, subscriptionUntil?: string | null }): Promise<User> {
     const newUser: User = {
         ...data,
         id: String(Date.now()),
@@ -43,6 +43,10 @@ export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedA
         savedJobIds: [],
         status: 'VERIFICADO', // Default status for new users
         companyProfileId: null,
+        skills: [],
+        customQuestions: [],
+        subscriptionPlan: null,
+        subscriptionUntil: null,
     };
     users.push(newUser);
     return Promise.resolve(newUser);

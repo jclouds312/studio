@@ -1,3 +1,4 @@
+
 import type { Job } from '@prisma/client';
 
 export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[] = [
@@ -14,6 +15,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: '+5491123456789',
     salary: '$850.000 - $1.200.000 ARS',
+    skills: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS'],
+    customQuestions: ['¿Cuál es tu experiencia con Next.js App Router?', 'Describe un proyecto complejo en el que hayas trabajado.'],
   },
   {
     id: '2',
@@ -28,6 +31,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isFeatured: false,
     whatsapp: null,
     salary: '$900.000 ARS mensual',
+    skills: ['Figma', 'Adobe XD', 'User Research', 'Prototyping'],
+    customQuestions: ['Por favor, comparte un enlace a tu portafolio.', '¿Cuál es tu proceso de diseño habitual?'],
   },
   {
     id: '3',
@@ -42,6 +47,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isFeatured: false,
     whatsapp: null,
     salary: 'A convenir',
+    skills: ['Node.js', 'Express', 'PostgreSQL', 'Docker'],
+    customQuestions: [],
   },
    {
     id: '4',
@@ -56,6 +63,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: null,
     salary: null,
+    skills: ['SEO', 'SEM', 'Google Analytics', 'Email Marketing'],
+    customQuestions: [],
   },
   {
     id: '5',
@@ -70,6 +79,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: '+5491123456789',
     salary: '$450.000 ARS + Comisiones',
+    skills: ['Negociación', 'CRM', 'Prospección', 'Cierre de ventas'],
+    customQuestions: ['Describe tu mayor éxito en ventas.'],
   },
    {
     id: '6',
@@ -84,6 +95,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: '+5492212345678',
     salary: '$35.000 por día',
+    skills: [],
+    customQuestions: [],
   },
   {
     id: '7',
@@ -98,6 +111,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: null,
     salary: null,
+    skills: [],
+    customQuestions: [],
   },
   {
     id: '8',
@@ -112,6 +127,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isFeatured: false,
     whatsapp: '+5492231234567',
     salary: 'Sueldo + propinas',
+    skills: [],
+    customQuestions: [],
   },
   {
     id: '9',
@@ -126,6 +143,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: null,
     salary: '$600.000 ARS',
+    skills: [],
+    customQuestions: [],
   },
   {
     id: '10',
@@ -140,6 +159,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: null,
     salary: null,
+    skills: [],
+    customQuestions: [],
   },
   {
     id: '11',
@@ -154,6 +175,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: null,
     salary: 'A convenir',
+    skills: [],
+    customQuestions: [],
   },
   {
     id: '12',
@@ -168,6 +191,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: '+5493811234567',
     salary: '$750.000 ARS',
+    skills: [],
+    customQuestions: [],
   },
   {
     id: '13',
@@ -182,6 +207,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: null,
     salary: 'Competitivo',
+    skills: [],
+    customQuestions: [],
   },
   {
     id: '14',
@@ -196,6 +223,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: null,
     salary: 'Excelente remuneración',
+    skills: [],
+    customQuestions: [],
   },
   {
     id: '15',
@@ -210,5 +239,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isFeatured: false,
     whatsapp: '+5492991234567',
     salary: 'A convenir',
+    skills: [],
+    customQuestions: [],
   }
 ].map(job => ({ ...job, createdAt: new Date(), updatedAt: new Date() }));

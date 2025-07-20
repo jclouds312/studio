@@ -4,6 +4,7 @@
 import React, { createContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import type { UserProfileData } from '@/lib/types';
 import type { Job, User, Application } from '@prisma/client';
+import type { CustomAnswer } from '@/lib/types';
 import { useSession } from '@/hooks/use-session';
 import { getUserById, updateUser } from '@/services/userService';
 import { createApplication, getApplicationsByUserId } from '@/services/applicationService';
@@ -17,7 +18,7 @@ interface UserProfileContextType {
     setProfileData: React.Dispatch<React.SetStateAction<User | null>>;
     savedJobs: Job[];
     handleSaveJob: (job: Job) => void;
-    handleApplyForJob: (job: Job) => void;
+    handleApplyForJob: (job: Job, answers?: CustomAnswer[]) => void;
     applications: ExtendedApplication[];
     hasActiveSubscription: boolean;
     activePlan: string | null;
@@ -125,7 +126,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [profileData]);
 
-    const handleApplyForJob = useCallback(async (job: Job) => {
+    const handleApplyForJob = useCallback(async (job: Job, answers?: CustomAnswer[]) => {
         if (!profileData) return;
 
         const alreadyApplied = applications.some(app => app.jobId === job.id);
@@ -135,6 +136,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
             const newApplication = await createApplication({
                 userId: profileData.id,
                 jobId: job.id,
+                customAnswers: answers
             });
 
             if (newApplication) {

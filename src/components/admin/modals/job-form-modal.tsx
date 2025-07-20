@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import type { CompanyProfile, Job } from "@/lib/types";
 import { getAllCompanies } from "@/services/companyService";
+import { X } from "lucide-react";
 
 interface JobFormModalProps {
   isOpen: boolean;
@@ -24,6 +25,9 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
   const { toast } = useToast();
   const [formData, setFormData] = useState<Partial<Job>>({});
   const [companies, setCompanies] = useState<CompanyProfile[]>([]);
+  const [currentSkill, setCurrentSkill] = useState('');
+  const [currentQuestion, setCurrentQuestion] = useState('');
+
   const title = job ? 'Editar Publicación' : 'Crear Nueva Publicación';
   const description = job ? 'Modifica los detalles de la publicación.' : 'Completa el formulario para crear una nueva oferta de trabajo.';
 
@@ -45,6 +49,8 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
         isFeatured: false,
         salary: null,
         companyProfileId: null,
+        skills: [],
+        customQuestions: [],
       });
     }
   }, [job, isOpen]);
@@ -74,6 +80,24 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
     setFormData(prev => ({...prev, [id]: checked}));
   };
 
+  const handleAddItem = (type: 'skills' | 'customQuestions') => {
+    if (type === 'skills' && currentSkill) {
+      setFormData(prev => ({ ...prev, skills: [...(prev.skills || []), currentSkill] }));
+      setCurrentSkill('');
+    } else if (type === 'customQuestions' && currentQuestion) {
+      setFormData(prev => ({ ...prev, customQuestions: [...(prev.customQuestions || []), currentQuestion] }));
+      setCurrentQuestion('');
+    }
+  };
+
+  const handleRemoveItem = (type: 'skills' | 'customQuestions', index: number) => {
+    if (type === 'skills') {
+      setFormData(prev => ({ ...prev, skills: prev.skills?.filter((_, i) => i !== index) }));
+    } else if (type === 'customQuestions') {
+      setFormData(prev => ({ ...prev, customQuestions: prev.customQuestions?.filter((_, i) => i !== index) }));
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.companyProfileId) {
@@ -101,7 +125,7 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-4">
             <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="title" className="text-right">
                 Título
@@ -184,6 +208,44 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
                 </Label>
                 <Textarea id="description" value={formData.description || ''} onChange={handleInputChange} className="col-span-3" rows={5} required/>
             </div>
+             <div className="grid grid-cols-4 items-start gap-4">
+                <Label className="text-right pt-2">Habilidades</Label>
+                <div className="col-span-3 space-y-2">
+                    <div className="flex gap-2">
+                        <Input value={currentSkill} onChange={(e) => setCurrentSkill(e.target.value)} placeholder="Ej: React, Node.js..."/>
+                        <Button type="button" onClick={() => handleAddItem('skills')}>Añadir</Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {formData.skills?.map((skill, index) => (
+                            <div key={index} className="flex items-center gap-1 bg-secondary text-secondary-foreground rounded-full px-3 py-1 text-sm">
+                                {skill}
+                                <button type="button" onClick={() => handleRemoveItem('skills', index)} className="ml-1 text-muted-foreground hover:text-foreground">
+                                    <X className="h-3 w-3" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+                <Label className="text-right pt-2">Preguntas</Label>
+                 <div className="col-span-3 space-y-2">
+                    <div className="flex gap-2">
+                        <Input value={currentQuestion} onChange={(e) => setCurrentQuestion(e.target.value)} placeholder="Ej: ¿Años de experiencia con...?"/>
+                        <Button type="button" onClick={() => handleAddItem('customQuestions')}>Añadir</Button>
+                    </div>
+                    <div className="space-y-2">
+                        {formData.customQuestions?.map((q, index) => (
+                            <div key={index} className="flex items-center gap-2 bg-secondary/50 rounded-md p-2 text-sm">
+                                <span className="flex-grow">{q}</span>
+                                <button type="button" onClick={() => handleRemoveItem('customQuestions', index)} className="text-muted-foreground hover:text-foreground">
+                                    <X className="h-4 w-4" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
             <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="whatsapp" className="text-right">
                 WhatsApp
@@ -208,5 +270,3 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
     </Dialog>
   );
 }
-
-    

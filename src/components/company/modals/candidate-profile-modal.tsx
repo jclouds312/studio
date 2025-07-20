@@ -4,7 +4,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FileDown, MessageSquare, Briefcase, Info } from "lucide-react";
+import { FileDown, MessageSquare, Briefcase, Info, HelpCircle } from "lucide-react";
 import type { Candidate } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -25,7 +25,7 @@ export function CandidateProfileModal({ isOpen, setIsOpen, candidate, onContact 
         <DialogHeader>
             <div className="flex items-start gap-4">
                 <Avatar className="w-16 h-16 border-2 border-primary">
-                    <AvatarImage src={candidate.avatar} data-ai-hint="person user"/>
+                    <AvatarImage src={candidate.avatar!} data-ai-hint="person user"/>
                     <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="pt-1">
@@ -44,15 +44,28 @@ export function CandidateProfileModal({ isOpen, setIsOpen, candidate, onContact 
             <div className="space-y-2">
                 <h3 className="font-semibold flex items-center gap-2"><Info className="h-4 w-4"/> Resumen Profesional</h3>
                 <p className="text-sm text-muted-foreground">
-                    {candidate.profileData?.professionalSummary || 'No se ha proporcionado un resumen profesional.'}
+                    {candidate.professionalSummary || 'No se ha proporcionado un resumen profesional.'}
                 </p>
             </div>
             <div className="space-y-2">
                 <h3 className="font-semibold flex items-center gap-2"><Briefcase className="h-4 w-4"/> Experiencia Laboral</h3>
                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                     {candidate.profileData?.experience || 'No se ha proporcionado experiencia laboral.'}
+                     {candidate.experience || 'No se ha proporcionado experiencia laboral.'}
                 </p>
             </div>
+            {candidate.customAnswers && candidate.customAnswers.length > 0 && (
+                <div className="space-y-2">
+                    <h3 className="font-semibold flex items-center gap-2"><HelpCircle className="h-4 w-4"/> Respuestas del Candidato</h3>
+                     <div className="space-y-3">
+                        {candidate.customAnswers.map((item, index) => (
+                            <div key={index} className="text-sm">
+                                <p className="font-medium text-foreground">{item.question}</p>
+                                <p className="text-muted-foreground pl-2 border-l-2 ml-2 mt-1">{item.answer}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
         <Separator />
         <DialogFooter className="sm:justify-between w-full">

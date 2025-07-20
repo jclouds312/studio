@@ -2,12 +2,23 @@
 import type { LucideIcon } from "lucide-react";
 import type { User as PrismaUser, Job as PrismaJob, Application as PrismaApplication, CompanyProfile as PrismaCompanyProfile } from '@prisma/client';
 
-export type Job = PrismaJob;
+export type Job = PrismaJob & {
+    skills?: string[];
+    customQuestions?: string[];
+};
 export type User = PrismaUser & {
     subscriptionPlan?: string | null;
     subscriptionUntil?: string | null;
 };
-export type Application = PrismaApplication;
+
+export type CustomAnswer = {
+    question: string;
+    answer: string;
+};
+
+export type Application = PrismaApplication & {
+    customAnswers?: CustomAnswer[];
+};
 export type CompanyProfile = PrismaCompanyProfile;
 
 
@@ -33,6 +44,7 @@ export type UserProfileData = {
 
 export type Candidate = User & {
     appliedFor: string;
+    customAnswers?: CustomAnswer[];
 };
 
 export type Transaction = {
@@ -74,4 +86,3 @@ export type SubscriptionPlan = {
   iconName: keyof typeof import('lucide-react').icons;
   pricing: PricingOption[];
 };
-
