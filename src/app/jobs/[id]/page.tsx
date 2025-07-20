@@ -22,19 +22,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-// --- Server Component to fetch data ---
-async function JobPage({ params }: { params: { id: string } }) {
-  const job = await getJobById(params.id);
-
-  if (!job) {
-    notFound();
-  }
-
-  return <JobDetailClient job={job} />;
-}
-
-export default JobPage;
-
 // --- Client Component for UI and interactivity ---
 function JobDetailClient({ job }: { job: Job }) {
   const { toast } = useToast();
@@ -331,4 +318,15 @@ function JobDetailClient({ job }: { job: Job }) {
         </Dialog>
     </div>
   );
+}
+
+// --- Server Component to fetch data ---
+export default async function JobPage({ params }: { params: { id: string } }) {
+  const job = await getJobById(params.id);
+
+  if (!job) {
+    notFound();
+  }
+
+  return <JobDetailClient job={job} />;
 }
