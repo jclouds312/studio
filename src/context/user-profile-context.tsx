@@ -7,6 +7,7 @@ import type { Job, User, Application } from '@prisma/client';
 import { useSession } from '@/hooks/use-session';
 import { getUserById, updateUser } from '@/services/userService';
 import { createApplication, getApplicationsByUserId } from '@/services/applicationService';
+import { getJobById } from '@/services/jobService';
 
 type ExtendedApplication = Application & { job: Job };
 
@@ -40,6 +41,7 @@ export const UserProfileContext = createContext<UserProfileContextType>({
 export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     const { session } = useSession();
     const [profileData, setProfileData] = useState<User | null>(null);
+    const [savedJobs, setSavedJobs] = useState<Job[]>([]);
     const [applications, setApplications] = useState<ExtendedApplication[]>([]);
     const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
     const [activePlan, setActivePlan] = useState<string | null>(null);
@@ -51,10 +53,22 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
                 try {
                     const userProfile = await getUserById(session.user.id);
                     if (userProfile) {
-                        const userApplications = await getApplicationsByUserId(session.user.id);
                         setProfileData(userProfile);
-                        setApplications(userApplications as ExtendedApplication[]);
+                        
+                        // Fetch saved jobs details
+                        if (userProfile.savedJobIds && userProfile.savedJobIds.length > 0) {
+                            const jobPromises = userProfile.savedJobIds.map(id => getJobById(id));
+                            const resolvedJobs = (await Promise.all(jobPromises)).filter((job): job is Job => job !== null);
+                            setSavedJobs(resolvedJobs);
+                        } else {
+                            setSavedJobs([]);
+                        }
 
+                        // Fetch applications
+                        const userApplications = await getApplicationsByUserId(session.user.id);
+                        setApplications(userApplications);
+
+                        // Check subscription status
                         if (userProfile.subscriptionPlan && userProfile.subscriptionUntil) {
                             const endDate = new Date(userProfile.subscriptionUntil);
                             if (endDate > new Date()) {
@@ -62,7 +76,6 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
                                 setActivePlan(userProfile.subscriptionPlan);
                                 setSubscriptionEndDate(endDate.toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' }));
                             } else {
-                                // Subscription expired
                                 setHasActiveSubscription(false);
                                 setActivePlan(null);
                                 setSubscriptionEndDate(null);
@@ -72,15 +85,16 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
                              setActivePlan(null);
                              setSubscriptionEndDate(null);
                         }
-
                     }
                 } catch(e){
                    console.error("Failed to fetch user profile", e);
                    setProfileData(null);
+                   setSavedJobs([]);
                    setApplications([]);
                 }
             } else {
                 setProfileData(null);
+                setSavedJobs([]);
                 setApplications([]);
                 setHasActiveSubscription(false);
                 setActivePlan(null);
@@ -88,7 +102,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
             }
         };
         fetchProfileData();
-    }, [session.isLoggedIn, session.user, profileData?.subscriptionPlan]);
+    }, [session.isLoggedIn, session.user]);
 
     const handleSaveJob = useCallback(async (job: Job) => {
         if (!profileData) return;
@@ -104,6 +118,10 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
 
         if (updatedUser) {
             setProfileData(updatedUser);
+            // Re-fetch job details
+            const jobPromises = updatedSavedJobIds.map(id => getJobById(id));
+            const resolvedJobs = (await Promise.all(jobPromises)).filter((j): j is Job => j !== null);
+            setSavedJobs(resolvedJobs);
         }
     }, [profileData]);
 
@@ -120,15 +138,12 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
             });
 
             if (newApplication) {
-                const userApplications = await getApplicationsByUserId(profileData.id);
-                setApplications(userApplications as ExtendedApplication[]);
+                setApplications(prev => [...prev, newApplication]);
             }
         } catch(e){
             console.error("Failed to create application", e);
         }
     }, [profileData, applications]);
-
-    const savedJobs = (profileData as any)?.savedJobs || [];
 
     return (
         <UserProfileContext.Provider value={{ profileData, setProfileData, savedJobs, handleSaveJob, handleApplyForJob, applications, hasActiveSubscription, activePlan, subscriptionEndDate }}>
