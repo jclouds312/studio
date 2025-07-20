@@ -5,26 +5,62 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFo
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SendHorizonal, X } from "lucide-react";
+import { SendHorizonal, X, ArrowLeft } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import React from 'react';
+import { cn } from "@/lib/utils";
 
-const initialMessages = [
-  { id: 1, sender: 'other', text: 'Hola, estamos interesados en tu perfil para la vacante de Frontend Developer.', time: '10:30' },
-  { id: 2, sender: 'me', text: '¡Hola! Muchas gracias por contactarme. ¿Podrían darme más detalles sobre el puesto?', time: '10:31' },
-  { id: 3, sender: 'other', text: 'Claro, buscamos a alguien con experiencia en React y Next.js. El trabajo es remoto.', time: '10:32' },
+const conversationsData = [
+  { 
+    id: 1, 
+    name: 'Tech Solutions Inc.', 
+    avatar: 'https://placehold.co/40x40.png', 
+    lastMessage: 'Claro, buscamos a alguien con...', 
+    time: '10:32',
+    unread: 1,
+    messages: [
+      { id: 1, sender: 'other', text: 'Hola, estamos interesados en tu perfil para la vacante de Frontend Developer.', time: '10:30' },
+      { id: 2, sender: 'me', text: '¡Hola! Muchas gracias por contactarme. ¿Podrían darme más detalles sobre el puesto?', time: '10:31' },
+      { id: 3, sender: 'other', text: 'Claro, buscamos a alguien con experiencia en React y Next.js. El trabajo es remoto.', time: '10:32' },
+    ]
+  },
+  {
+    id: 2,
+    name: 'Creative Minds',
+    avatar: 'https://placehold.co/40x40.png',
+    lastMessage: 'Perfecto, CV recibido. Lo revisamos y te...',
+    time: 'Ayer',
+    unread: 0,
+    messages: [
+        { id: 1, sender: 'me', text: 'Hola, buenas tardes. Acabo de postularme a la oferta de Diseñador UX/UI.', time: '14:50' },
+        { id: 2, sender: 'other', text: 'Perfecto, CV recibido. Lo revisamos y te contactamos. ¡Gracias!', time: '14:55' }
+    ]
+  },
+  {
+    id: 3,
+    name: 'Recursos Humanos ABC',
+    avatar: 'https://placehold.co/40x40.png',
+    lastMessage: '¿Tendrías disponibilidad para una entrevista mañana?',
+    time: '11/07',
+    unread: 2,
+    messages: [
+        { id: 1, sender: 'other', text: 'Hola, hemos visto tu perfil y nos parece muy interesante.', time: '11:00' },
+        { id: 2, sender: 'other', text: '¿Tendrías disponibilidad para una entrevista mañana?', time: '11:01' }
+    ]
+  }
 ];
 
+
 export function ChatPanel({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (isOpen: boolean) => void }) {
-  const activeConversation = {
-    id: 1,
-    name: 'Tech Solutions Inc.',
-    avatar: 'https://placehold.co/40x40.png',
-  };
-  
-  const [messages, setMessages] = React.useState(initialMessages);
+  const [activeConversation, setActiveConversation] = React.useState<any | null>(null);
+  const [messages, setMessages] = React.useState<any[]>([]);
   const [newMessage, setNewMessage] = React.useState('');
   const scrollAreaRef = React.useRef<HTMLDivElement>(null);
+
+  const handleSelectConversation = (conversation: any) => {
+    setActiveConversation(conversation);
+    setMessages(conversation.messages);
+  }
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +78,6 @@ export function ChatPanel({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (
   };
 
   React.useEffect(() => {
-    // Scroll to bottom when new messages are added
     if (scrollAreaRef.current) {
         const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
         if (viewport) {
@@ -50,15 +85,26 @@ export function ChatPanel({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (
         }
     }
   }, [messages]);
-
+  
+  const handleBack = () => {
+    setActiveConversation(null);
+    setMessages([]);
+  }
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent className="w-full sm:max-w-md p-0" side="right">
          <div className="flex flex-col h-full">
-            <SheetHeader className="p-4 border-b">
-              <SheetTitle>Mensajes</SheetTitle>
-              <SheetDescription>Conversaciones activas.</SheetDescription>
+            <SheetHeader className="p-4 border-b flex flex-row items-center gap-4 space-y-0">
+               {activeConversation && (
+                 <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleBack}>
+                    <ArrowLeft className="h-5 w-5"/>
+                 </Button>
+               )}
+               <div>
+                  <SheetTitle>{activeConversation ? activeConversation.name : 'Mensajes'}</SheetTitle>
+                  <SheetDescription>{activeConversation ? 'En línea' : 'Tus conversaciones activas.'}</SheetDescription>
+               </div>
                <SheetClose asChild>
                   <Button
                     aria-label="Cerrar"
@@ -72,59 +118,83 @@ export function ChatPanel({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (
                 </SheetClose>
             </SheetHeader>
             <div className="flex flex-1 overflow-hidden">
-                <div className="w-full flex flex-col">
-                    <div className="flex items-center gap-3 p-3 border-b">
-                        <Avatar>
-                            <AvatarImage src={activeConversation.avatar} data-ai-hint="company logo" />
-                            <AvatarFallback>{activeConversation.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                            <p className="font-semibold">{activeConversation.name}</p>
-                            <p className="text-xs text-muted-foreground">En línea</p>
-                        </div>
-                    </div>
-                    
-                    <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-                        <div className="space-y-4">
-                            {messages.map((message) => (
-                                <div key={message.id} className={`flex items-end gap-2 ${message.sender === 'me' ? 'justify-end' : ''}`}>
-                                     {message.sender === 'other' && (
-                                        <Avatar className="h-6 w-6">
-                                            <AvatarImage src={activeConversation.avatar} data-ai-hint="company logo"/>
-                                            <AvatarFallback>{activeConversation.name.charAt(0)}</AvatarFallback>
-                                        </Avatar>
-                                     )}
-                                    <div className={`rounded-lg px-3 py-2 max-w-xs lg:max-w-md ${
-                                        message.sender === 'me'
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-secondary'
-                                    }`}>
-                                        <p className="text-sm">{message.text}</p>
-                                        <p className={`text-xs mt-1 ${
+                {activeConversation ? (
+                    <div className="w-full flex flex-col">
+                        <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+                            <div className="space-y-4">
+                                {messages.map((message) => (
+                                    <div key={message.id} className={`flex items-end gap-2 ${message.sender === 'me' ? 'justify-end' : ''}`}>
+                                        {message.sender === 'other' && (
+                                            <Avatar className="h-6 w-6">
+                                                <AvatarImage src={activeConversation.avatar} data-ai-hint="company logo"/>
+                                                <AvatarFallback>{activeConversation.name.charAt(0)}</AvatarFallback>
+                                            </Avatar>
+                                        )}
+                                        <div className={`rounded-lg px-3 py-2 max-w-xs lg:max-w-md ${
                                             message.sender === 'me'
-                                            ? 'text-primary-foreground/70'
-                                            : 'text-muted-foreground'
-                                        } text-right`}>{message.time}</p>
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-secondary'
+                                        }`}>
+                                            <p className="text-sm">{message.text}</p>
+                                            <p className={`text-xs mt-1 ${
+                                                message.sender === 'me'
+                                                ? 'text-primary-foreground/70'
+                                                : 'text-muted-foreground'
+                                            } text-right`}>{message.time}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </ScrollArea>
+
+                        <form onSubmit={handleSendMessage} className="p-4 border-t bg-background">
+                            <div className="relative">
+                                <Input 
+                                    placeholder="Escribe un mensaje..." 
+                                    className="pr-12"
+                                    value={newMessage}
+                                    onChange={(e) => setNewMessage(e.target.value)}
+                                />
+                                <Button type="submit" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8">
+                                    <SendHorizonal className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                ) : (
+                    <ScrollArea className="flex-1">
+                        <div className="divide-y">
+                            {conversationsData.map(convo => (
+                                <div 
+                                    key={convo.id} 
+                                    className="p-4 flex items-center gap-4 cursor-pointer hover:bg-secondary"
+                                    onClick={() => handleSelectConversation(convo)}
+                                >
+                                    <Avatar className="h-12 w-12">
+                                        <AvatarImage src={convo.avatar} data-ai-hint="company logo person user" />
+                                        <AvatarFallback>{convo.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-center">
+                                            <p className="font-semibold">{convo.name}</p>
+                                            <p className="text-xs text-muted-foreground">{convo.time}</p>
+                                        </div>
+                                        <div className="flex justify-between items-center mt-1">
+                                            <p className={cn("text-sm text-muted-foreground truncate", convo.unread > 0 && "font-bold text-foreground")}>
+                                                {convo.lastMessage}
+                                            </p>
+                                            {convo.unread > 0 && (
+                                                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
+                                                    {convo.unread}
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </ScrollArea>
-
-                    <form onSubmit={handleSendMessage} className="p-4 border-t bg-background">
-                        <div className="relative">
-                            <Input 
-                                placeholder="Escribe un mensaje..." 
-                                className="pr-12"
-                                value={newMessage}
-                                onChange={(e) => setNewMessage(e.target.value)}
-                             />
-                            <Button type="submit" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8">
-                                <SendHorizonal className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    </form>
-                </div>
+                )}
             </div>
          </div>
       </SheetContent>
