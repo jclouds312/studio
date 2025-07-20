@@ -321,6 +321,7 @@ function JobDetailClient({ job }: { job: Job }) {
 }
 
 // --- Server Component to fetch data ---
+// This is the main export for the page. It's an async Server Component.
 export default async function JobPage({ params }: { params: { id: string } }) {
   const job = await getJobById(params.id);
 
@@ -328,5 +329,6 @@ export default async function JobPage({ params }: { params: { id: string } }) {
     notFound();
   }
 
+  // The Server Component fetches the data and then passes it to the Client Component.
   return <JobDetailClient job={job} />;
 }
