@@ -6,7 +6,7 @@ import { Header } from '@/components/layout/header';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink, Loader2, DollarSign, Tag, UserCheck } from 'lucide-react';
+import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink, Loader2, DollarSign, Tag, UserCheck, Calendar, Home, Users } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -33,8 +33,7 @@ async function getJob(id: string): Promise<Job | null> {
 }
 
 export default async function JobDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const job = await getJob(id);
+  const job = await getJob(params.id);
 
   if (!job) {
     notFound();
@@ -139,8 +138,8 @@ function JobDetailClient({ job }: { job: Job }) {
     return '';
   }
 
-  const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(job.location + ', Argentina')}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
-  const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(job.location + ', Argentina')}`;
+  const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(job.direccionCompleta || (job.location + ', Argentina'))}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+  const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(job.direccionCompleta || (job.location + ', Argentina'))}`;
 
   const skills = Array.isArray(job.skills) ? job.skills : [];
   const customQuestions = Array.isArray(job.customQuestions) ? job.customQuestions : [];
@@ -193,12 +192,33 @@ function JobDetailClient({ job }: { job: Job }) {
               </CardHeader>
               <CardContent>
                 <Separator className="my-4"/>
-                <h3 className="text-lg font-semibold mb-2 text-primary">Descripción del trabajo</h3>
+                <div className="grid md:grid-cols-3 gap-6 text-sm">
+                  {job.modalidad && (
+                    <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
+                      {job.modalidad === 'Híbrido' ? <Users className="h-5 w-5 text-muted-foreground" /> : <Home className="h-5 w-5 text-muted-foreground" />}
+                      <div>
+                        <p className="font-semibold">Modalidad</p>
+                        <p className="text-muted-foreground">{job.modalidad}</p>
+                      </div>
+                    </div>
+                  )}
+                  {job.horario && (
+                    <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg md:col-span-2">
+                       <Calendar className="h-5 w-5 text-muted-foreground" />
+                       <div>
+                         <p className="font-semibold">Horario y Jornada</p>
+                         <p className="text-muted-foreground">{job.horario}</p>
+                       </div>
+                    </div>
+                  )}
+                </div>
+                <Separator className="my-4"/>
+                <h3 className={cn("text-lg font-semibold mb-2", job.isFeatured ? "text-primary" : "text-card-foreground")}>Descripción del trabajo</h3>
                 <p className="text-card-foreground whitespace-pre-wrap">{job.description}</p>
                  {job.desiredProfile && (
                     <>
                         <Separator className="my-4"/>
-                        <h3 className="text-lg font-semibold mb-2 text-primary flex items-center gap-2">
+                        <h3 className={cn("text-lg font-semibold mb-2 flex items-center gap-2", job.isFeatured ? "text-primary" : "text-card-foreground")}>
                             <UserCheck className="h-5 w-5"/>
                             Perfil Deseado
                         </h3>
@@ -208,7 +228,7 @@ function JobDetailClient({ job }: { job: Job }) {
                  {skills.length > 0 && (
                   <>
                     <Separator className="my-4"/>
-                    <h3 className="text-lg font-semibold mb-2 text-primary">Habilidades Requeridas</h3>
+                    <h3 className={cn("text-lg font-semibold mb-2", job.isFeatured ? "text-primary" : "text-card-foreground")}>Habilidades Requeridas</h3>
                     <div className="flex flex-wrap gap-2">
                       {skills.map(skill => (
                         <Badge key={skill} variant="secondary" className="flex items-center gap-1.5">
@@ -255,6 +275,7 @@ function JobDetailClient({ job }: { job: Job }) {
              <Card>
                 <CardHeader>
                     <CardTitle>Ubicación</CardTitle>
+                    {job.direccionCompleta && <CardDescription>{job.direccionCompleta}</CardDescription>}
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="aspect-video w-full overflow-hidden rounded-lg border">
@@ -318,4 +339,3 @@ function JobDetailClient({ job }: { job: Job }) {
     </div>
   );
 }
-

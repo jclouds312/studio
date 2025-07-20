@@ -52,6 +52,9 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
         companyProfileId: null,
         skills: [],
         customQuestions: [],
+        horario: '',
+        modalidad: 'Presencial',
+        direccionCompleta: '',
       });
     }
   }, [job, isOpen]);
@@ -152,7 +155,13 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
                 <Label htmlFor="location" className="text-right">
                 Ubicación
                 </Label>
-                <Input id="location" value={formData.location || ''} onChange={handleInputChange} className="col-span-3" required/>
+                <Input id="location" value={formData.location || ''} onChange={handleInputChange} className="col-span-3" required placeholder="Ciudad principal (para filtros)"/>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="direccionCompleta" className="text-right">
+                Dirección
+                </Label>
+                <Input id="direccionCompleta" value={formData.direccionCompleta || ''} onChange={handleInputChange} className="col-span-3" placeholder="Calle, número, barrio (opcional)"/>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="type" className="text-right">
@@ -169,6 +178,27 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
                     <SelectItem value="Changa">Changa</SelectItem>
                 </SelectContent>
                 </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="modalidad" className="text-right">
+                Modalidad
+                </Label>
+                <Select value={formData.modalidad} onValueChange={(value) => handleSelectChange('modalidad', value)}>
+                <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Seleccionar modalidad" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="Presencial">Presencial</SelectItem>
+                    <SelectItem value="Híbrido">Híbrido</SelectItem>
+                    <SelectItem value="Remoto">Remoto</SelectItem>
+                </SelectContent>
+                </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="horario" className="text-right">
+                Horario
+                </Label>
+                <Input id="horario" value={formData.horario || ''} onChange={handleInputChange} className="col-span-3" placeholder="Ej: Lunes a Viernes de 9 a 18 hs."/>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="salary" className="text-right">

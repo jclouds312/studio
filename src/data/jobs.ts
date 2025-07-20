@@ -18,6 +18,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: '$850.000 - $1.200.000 ARS',
     skills: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS'],
     customQuestions: ['¿Cuál es tu experiencia con Next.js App Router?', 'Describe un proyecto complejo en el que hayas trabajado.'],
+    horario: 'Lunes a Viernes de 9 a 18 hs.',
+    modalidad: 'Híbrido',
+    direccionCompleta: 'Av. Corrientes 1234, CABA',
   },
   {
     id: '2',
@@ -35,6 +38,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: '$900.000 ARS mensual',
     skills: ['Figma', 'Adobe XD', 'User Research', 'Prototyping'],
     customQuestions: ['Por favor, comparte un enlace a tu portafolio.', '¿Cuál es tu proceso de diseño habitual?'],
+    horario: 'Flexible, por objetivos.',
+    modalidad: 'Remoto',
+    direccionCompleta: 'Trabajo remoto desde cualquier parte de Argentina.',
   },
   {
     id: '3',
@@ -52,6 +58,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: 'A convenir',
     skills: ['Node.js', 'Express', 'PostgreSQL', 'Docker'],
     customQuestions: [],
+    horario: 'Full-time, horario flexible.',
+    modalidad: 'Remoto',
+    direccionCompleta: 'Trabajo remoto 100%.',
   },
    {
     id: '4',
@@ -69,6 +78,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: null,
     skills: ['SEO', 'SEM', 'Google Analytics', 'Email Marketing'],
     customQuestions: [],
+    horario: '20 horas semanales, horario a convenir.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'San Martín 123, Rosario, Santa Fe',
   },
   {
     id: '5',
@@ -86,6 +98,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: '$450.000 ARS + Comisiones',
     skills: ['Negociación', 'CRM', 'Prospección', 'Cierre de ventas'],
     customQuestions: ['Describe tu mayor éxito en ventas.'],
+    horario: 'Lunes a Viernes de 9 a 18 hs.',
+    modalidad: 'Híbrido (3 días oficina, 2 remoto)',
+    direccionCompleta: 'Defensa 456, San Telmo, CABA',
   },
    {
     id: '6',
@@ -103,6 +118,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: '$35.000 por día',
     skills: [],
     customQuestions: [],
+    horario: 'A coordinar, aprox. 2-3 días de trabajo.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'Zona centro, La Plata, Buenos Aires',
   },
   {
     id: '7',
@@ -120,6 +138,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: '$700.000 ARS',
     skills: [],
     customQuestions: [],
+    horario: 'Lunes a Viernes, 9 a 17 hs.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'Las Heras 234, Mendoza Capital',
   },
   {
     id: '8',
@@ -137,6 +158,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: 'Sueldo + propinas',
     skills: [],
     customQuestions: [],
+    horario: 'Turnos rotativos, principalmente nocturno.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'Belgrano 2345, Mar del Plata, Buenos Aires',
   },
   {
     id: '9',
@@ -154,6 +178,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: '$600.000 ARS',
     skills: [],
     customQuestions: [],
+    horario: 'Lunes a Viernes, 9 a 18 hs.',
+    modalidad: 'Remoto',
+    direccionCompleta: 'Trabajo remoto.',
   },
   {
     id: '10',
@@ -171,6 +198,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: '$480.000 ARS',
     skills: [],
     customQuestions: [],
+    horario: 'Turnos rotativos, 6 días a la semana.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'Av. Mitre 1234, Quilmes, Buenos Aires',
   },
   {
     id: '11',
@@ -188,6 +218,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: 'A convenir',
     skills: [],
     customQuestions: [],
+    horario: 'Lunes a Viernes de 9 a 18 hs.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'Talcahuano 550, CABA',
   },
   {
     id: '12',
@@ -205,6 +238,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: '$750.000 ARS',
     skills: [],
     customQuestions: [],
+    horario: 'Turnos rotativos (mañana, tarde, noche).',
+    modalidad: 'Presencial',
+    direccionCompleta: '24 de Septiembre 900, San Miguel de Tucumán',
   },
   {
     id: '13',
@@ -222,6 +258,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: 'Competitivo',
     skills: [],
     customQuestions: [],
+    horario: 'Full-time, horario flexible por objetivos.',
+    modalidad: 'Remoto',
+    direccionCompleta: 'Trabajo remoto.',
   },
   {
     id: '14',
@@ -239,6 +278,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: 'Excelente remuneración',
     skills: [],
     customQuestions: [],
+    horario: 'Lunes a Viernes de 10 a 19 hs.',
+    modalidad: 'Híbrido',
+    direccionCompleta: 'Juana Manso 999, Puerto Madero, CABA',
   },
   {
     id: '15',
@@ -256,6 +298,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: 'A convenir',
     skills: [],
     customQuestions: [],
+    horario: 'Lunes a Sábado, jornada completa.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'Ruta 22 km 123, Neuquén',
   },
   {
     id: '16',
@@ -273,6 +318,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: 'Por hora',
     skills: ['Enseñanza', 'Inglés avanzado', 'Manejo de grupos'],
     customQuestions: ['¿Qué metodologías de enseñanza prefieres?', '¿Tienes experiencia con preparación de exámenes internacionales?'],
+    horario: 'Horarios de tarde, a convenir.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'Caseros 456, Salta',
   },
   {
     id: '17',
@@ -290,6 +338,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: '$800.000 ARS + Alojamiento',
     skills: ['Cocina regional', 'Manejo de fuegos', 'Control de stock'],
     customQuestions: [],
+    horario: 'Turno noche, con un franco semanal.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'Mitre 321, Bariloche, Río Negro',
   },
   {
     id: '18',
@@ -307,6 +358,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: 'Según convenio + viáticos',
     skills: ['LINTI', 'Conducción defensiva'],
     customQuestions: ['¿Qué tipo de camiones ha manejado?', '¿Está dispuesto a viajar por períodos prolongados?'],
+    horario: 'Jornadas extendidas según viaje.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'Base en Hipólito Yrigoyen 9000, Lomas de Zamora',
   },
   {
     id: '19',
@@ -324,6 +378,9 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: '$550.000 ARS',
     skills: ['Microsoft Office', 'Atención al cliente', 'Organización'],
     customQuestions: [],
+    horario: 'Lunes a Viernes de 9 a 17 hs.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'San Martín 2345, Santa Fe',
   },
   {
     id: '20',
@@ -341,5 +398,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     salary: 'Por excursión',
     skills: ['Inglés fluido', 'Oratoria', 'Historia regional'],
     customQuestions: ['¿Posee certificaciones de guía de turismo?', 'Describa su experiencia liderando grupos.'],
+    horario: 'Según arribo de cruceros.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'Puerto de Ushuaia, Tierra del Fuego',
   }
 ].map(job => ({ ...job, createdAt: new Date(), updatedAt: new Date() }));
