@@ -27,8 +27,8 @@ function JobListingCard({ job }: { job: Job }) {
     const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
 
     const handleApply = async (e: React.MouseEvent) => {
-        // e.preventDefault(); // Removed to allow navigation
-        // e.stopPropagation(); // Removed to allow navigation
+        e.preventDefault();
+        e.stopPropagation();
         setIsApplying(true);
 
         if (!session.isLoggedIn || !session.user) {
@@ -40,48 +40,14 @@ function JobListingCard({ job }: { job: Job }) {
             setIsApplying(false);
             return;
         }
-
-        try {
-            const response = await fetch('/api/send-application-email', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jobTitle: job.title,
-                    companyName: job.company,
-                    companyEmail: 'hr@example.com', // En una app real, esto vendría del perfil de la empresa
-                    userName: session.user.name,
-                    userEmail: session.user.email,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Error al enviar la postulación.');
-            }
-            
-            handleApplyForJob(job);
-            toast({
-                title: "¡Postulación Enviada!",
-                description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
-            });
-            
-            // Redirigir al detalle del trabajo después de aplicar
-            router.push(`/jobs/${job.id}`);
-
-        } catch (error) {
-            console.error(error);
-            toast({
-                title: "Error",
-                description: "No se pudo completar la postulación. Intenta de nuevo.",
-                variant: "destructive",
-            });
-        } finally {
-            setIsApplying(false);
-        }
+        
+        // Navigate to the job page to see details and apply from there
+        router.push(`/jobs/${job.id}`);
     };
 
     const onSaveClick = (e: React.MouseEvent) => {
-        // e.preventDefault(); // Removed to allow navigation
-        // e.stopPropagation(); // Removed to allow navigation
+        e.preventDefault();
+        e.stopPropagation();
         if (!session.isLoggedIn) {
             toast({
                 title: "Inicia Sesión",
@@ -104,7 +70,7 @@ function JobListingCard({ job }: { job: Job }) {
 
     return (
         <Link href={`/jobs/${job.id}`} className="block h-full group">
-            <div className={cn("h-full card-neon-border rounded-lg")}>
+            <div className={cn("h-full card-neon-border rounded-lg", job.isNew && !job.isFeatured && "border-2 border-sky-400")}>
                 <Card className={cn("hover:shadow-xl transition-all duration-300 transform group-hover:scale-[1.02] relative overflow-hidden flex flex-col h-full bg-transparent border-0", getThemeClass())}>
                     <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                         {job.isFeatured && (
@@ -114,7 +80,7 @@ function JobListingCard({ job }: { job: Job }) {
                             </Badge>
                         )}
                          {job.isNew && !job.isFeatured && (
-                            <Badge variant="secondary" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary/20 bg-blue-500/10 text-blue-400">
+                            <Badge variant="outline" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-sky-400 bg-sky-500/10 text-sky-400">
                                 <Info className="h-4 w-4" />
                                 NUEVO
                             </Badge>
