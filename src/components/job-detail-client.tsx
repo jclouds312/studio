@@ -19,10 +19,12 @@ import { UserProfileContext } from '@/context/user-profile-context';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useRouter } from 'next/navigation';
 
 // --- This is the Client Component for UI and interactivity ---
 export function JobDetailClient({ job: initialJob }: { job: Job }) {
   const { toast } = useToast();
+  const router = useRouter();
   const { session } = useSession();
   const { handleApplyForJob, savedJobs, handleSaveJob, applications } = useContext(UserProfileContext);
   const [currentJob, setCurrentJob] = useState(initialJob);
@@ -133,11 +135,9 @@ export function JobDetailClient({ job: initialJob }: { job: Job }) {
       <Header />
       <main className="flex-1 container mx-auto py-8 px-4">
         <div className="mb-6">
-            <Button variant="outline" asChild>
-                <Link href="/" className="flex items-center gap-2">
-                    <ArrowLeft className="h-4 w-4" />
-                    Volver a las ofertas
-                </Link>
+            <Button variant="outline" onClick={() => router.back()} className="flex items-center gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Volver
             </Button>
         </div>
         
