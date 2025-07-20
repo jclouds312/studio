@@ -184,7 +184,7 @@ export function Header() {
                           )}
                           <Separator className="my-2 bg-white/10" />
                           <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
-                            <Link href={isCompany ? "/company/dashboard" : "/subscriptions"}>
+                            <Link href={isCompany ? "/premium-post" : "/subscriptions"}>
                                 <Star className={menuIconClass}/>
                                 {isCompany ? 'Publicación Premium' : 'Postulación Premium'}
                             </Link>
