@@ -17,37 +17,47 @@ import Image from "next/image";
 import React from "react";
 import { UserFormModal } from "../modals/user-form-modal";
 import type { User } from "@prisma/client";
-import { allUsers as staticUsers } from '@/data/users';
+import { getAllUsers, createUser, deleteUser, updateUser } from '@/services/userService';
+import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 
 export function UsersTab() {
-    const [users, setUsers] = React.useState<User[]>(staticUsers);
+    const [users, setUsers] = React.useState<User[]>([]);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
+    const { toast } = useToast();
+
+    React.useEffect(() => {
+        getAllUsers().then(setUsers);
+    }, []);
 
     const handleOpenModal = (user: User | null = null) => {
         setSelectedUser(user);
         setIsModalOpen(true);
     };
 
-    const handleSaveUser = (userData: User) => {
+    const handleSaveUser = async (userData: User) => {
         if (selectedUser) {
-            setUsers(users.map(u => u.id === userData.id ? userData : u));
+            const updated = await updateUser(selectedUser.id, userData);
+            if (updated) {
+                setUsers(users.map(u => u.id === updated.id ? updated : u));
+            }
         } else {
-            const newUser: User = {
-                ...userData,
-                id: String(Date.now()),
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                avatar: 'https://placehold.co/40x40.png',
-                emailVerified: null,
-            };
+            // @ts-ignore
+            const newUser = await createUser(userData);
             setUsers([...users, newUser]);
         }
+        setIsModalOpen(false);
     };
     
-    const handleDeleteUser = (userId: string) => {
-        setUsers(users.filter(u => u.id !== userId));
+    const handleDeleteUser = async (userId: string) => {
+        const success = await deleteUser(userId);
+        if (success) {
+            setUsers(users.filter(u => u.id !== userId));
+            toast({ title: 'Usuario Eliminado', variant: 'destructive' });
+        } else {
+            toast({ title: 'Error al eliminar', variant: 'destructive' });
+        }
     };
 
 
@@ -105,10 +115,10 @@ export function UsersTab() {
                                     <TableCell className="capitalize">{user.role}</TableCell>
                                     <TableCell>
                                         <Badge variant={user.status === 'Verificado' ? 'default' : 'secondary'} className={user.status === 'Verificado' ? 'bg-green-500/80 text-white' : ''}>
-                                            {user.status}
+                                            {user.status || 'Pendiente'}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell>{user.createdAt.toLocaleDateString()}</TableCell>
+                                    <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
                                     <TableCell>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
@@ -123,7 +133,6 @@ export function UsersTab() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                                            <DropdownMenuItem>Ver Perfil</DropdownMenuItem>
                                             <DropdownMenuItem onClick={() => handleOpenModal(user)}>Editar</DropdownMenuItem>
                                             <DropdownMenuItem className="text-destructive" onClick={() => handleDeleteUser(user.id)}>Suspender</DropdownMenuItem>
                                             </DropdownMenuContent>

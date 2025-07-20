@@ -17,28 +17,45 @@ import Image from "next/image";
 import React from "react";
 import { CompanyFormModal } from "../modals/company-form-modal";
 import type { CompanyProfile } from "@/lib/types";
-import { allCompanies as staticCompanies } from "@/data/companies";
+import { getAllCompanies, createCompany, deleteCompany, updateCompany } from '@/services/companyService';
+import { useToast } from "@/components/ui/use-toast";
 
 export function CompaniesTab() {
-    const [companies, setCompanies] = React.useState<CompanyProfile[]>(staticCompanies);
+    const [companies, setCompanies] = React.useState<CompanyProfile[]>([]);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [selectedCompany, setSelectedCompany] = React.useState<CompanyProfile | null>(null);
+    const { toast } = useToast();
+
+    React.useEffect(() => {
+        getAllCompanies().then(setCompanies);
+    }, []);
 
     const handleOpenModal = (company: CompanyProfile | null = null) => {
         setSelectedCompany(company);
         setIsModalOpen(true);
     };
 
-    const handleSave = (companyData: CompanyProfile) => {
+    const handleSave = async (companyData: CompanyProfile) => {
         if (selectedCompany) {
-            setCompanies(companies.map(c => c.id === companyData.id ? companyData : c));
+            const updated = await updateCompany(selectedCompany.id, companyData);
+            if (updated) {
+                setCompanies(companies.map(c => c.id === updated.id ? updated : c));
+            }
         } else {
-            setCompanies([...companies, { ...companyData, id: String(Date.now()) }]);
+            const newCompany = await createCompany(companyData);
+            setCompanies([...companies, newCompany]);
         }
+        setIsModalOpen(false);
     };
     
-    const handleDelete = (companyId: string) => {
-        setCompanies(companies.filter(c => c.id !== companyId));
+    const handleDelete = async (companyId: string) => {
+        const success = await deleteCompany(companyId);
+        if (success) {
+            setCompanies(companies.filter(c => c.id !== companyId));
+            toast({ title: 'Empresa Eliminada', variant: 'destructive' });
+        } else {
+            toast({ title: 'Error al eliminar', variant: 'destructive' });
+        }
     };
 
     return (
@@ -100,9 +117,8 @@ export function CompaniesTab() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                                            <DropdownMenuItem>Ver Perfil</DropdownMenuItem>
                                             <DropdownMenuItem onClick={() => handleOpenModal(company)}>Editar</DropdownMenuItem>
-                                            <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(company.id)}>Suspender</DropdownMenuItem>
+                                            <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(company.id)}>Eliminar</DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>
