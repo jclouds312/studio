@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare, Trash2, Link as LinkIcon, Star, Settings, Building, Mail, Globe, Search, UserCircle, Key } from "lucide-react";
+import { Upload, Edit, Loader2, User, Phone, FileText, Briefcase, Eye, Calendar, Bookmark, Shield, MapPin, MessageSquare, Trash2, Link as LinkIcon, Star, Settings, Building, Mail, Globe, Search, UserCircle, Key, Crown } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from '../ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,7 +22,7 @@ import { UserProfileContext } from '@/context/user-profile-context';
 import { cn } from '@/lib/utils';
 import { allCompanies } from '@/data';
 import { JobListings } from '../job-listings';
-import { getAllJobs } from '@/services/jobService';
+import { getAllJobs, getJobById } from '@/services/jobService';
 import { updateUser } from '@/services/userService';
 import type { Job as PrismaJob, Application as PrismaApplication } from '@prisma/client';
 
@@ -136,7 +136,7 @@ function EditProfileTab() {
             setProfileData(prev => prev ? { ...prev, ...updatedUser } : null);
             toast({
                 title: "Perfil Actualizado",
-                description: "Tus cambios se han guardado correctamente en la base de datos.",
+                description: "Tus cambios se han guardado correctamente.",
             });
         }
     } catch (error) {
@@ -266,8 +266,8 @@ function EditProfileTab() {
 }
 
 function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
-    const { profileData } = useContext(UserProfileContext);
-    if (!profileData?.applications) return null;
+    const { applications } = useContext(UserProfileContext);
+    if (!applications) return null;
 
     return (
         <Card>
@@ -276,6 +276,13 @@ function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
                 <CardDescription>Un historial de todas tus postulaciones.</CardDescription>
             </CardHeader>
             <CardContent>
+                 {applications.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                        <Briefcase className="mx-auto h-12 w-12 mb-4" />
+                        <p>Aún no te has postulado a ninguna oferta.</p>
+                        <p className="text-sm">¡Empieza a buscar tu próximo trabajo ahora!</p>
+                    </div>
+                ) : (
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -287,7 +294,7 @@ function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {profileData.applications.map(app => (
+                        {applications.map(app => (
                             <TableRow key={app.id}>
                                 <TableCell className="font-medium">{app.job.title}</TableCell>
                                 <TableCell>{app.job.company}</TableCell>
@@ -307,6 +314,7 @@ function ApplicationsTab({ onChatOpen }: { onChatOpen: () => void }) {
                         ))}
                     </TableBody>
                 </Table>
+                )}
             </CardContent>
         </Card>
     )
@@ -394,7 +402,7 @@ function OffersTab() {
 
 export function UserProfile() {
   const { session } = useSession();
-  const { profileData } = useContext(UserProfileContext);
+  const { profileData, hasActiveSubscription, activePlan } = useContext(UserProfileContext);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   const [companyProfile, setCompanyProfile] = useState<CompanyProfile | null>(null);
   const [initialJobs, setInitialJobs] = useState<PrismaJob[]>([]);
@@ -459,41 +467,59 @@ export function UserProfile() {
         </div>
       </div>
 
-       {isAdmin ? (
-         <Card className="bg-secondary text-secondary-foreground text-center p-6 rounded-lg shadow-lg">
-            <CardHeader className="p-0 mb-2">
-                <CardTitle>Gestión de Planes</CardTitle>
-                <CardDescription className="text-secondary-foreground/80">
-                    Desde aquí puedes administrar los planes de suscripción de la plataforma.
+        {isAdmin ? (
+            <Card className="bg-secondary text-secondary-foreground text-center p-6 rounded-lg shadow-lg">
+                <CardHeader className="p-0 mb-2">
+                    <CardTitle>Gestión de Planes</CardTitle>
+                    <CardDescription className="text-secondary-foreground/80">
+                        Desde aquí puedes administrar los planes de suscripción de la plataforma.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <Button asChild variant="outline" className="bg-transparent hover:bg-secondary-foreground/10">
+                        <Link href="/subscriptions">
+                            <Settings className="mr-2 h-4 w-4" />
+                            Administrar Planes
+                        </Link>
+                    </Button>
+                </CardContent>
+            </Card>
+        ) : hasActiveSubscription ? (
+             <Card className="theme-premium text-center p-6 rounded-lg shadow-lg">
+                <CardHeader className="p-0 mb-2">
+                    <div className="flex justify-center items-center gap-2 text-amber-300">
+                        <Crown className="h-6 w-6"/>
+                        <CardTitle className="text-2xl text-white">Miembro Premium</CardTitle>
+                    </div>
+                    <CardDescription className="text-amber-100/80">
+                        ¡Estás disfrutando de los beneficios de un plan premium!
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <p className="text-lg font-semibold text-white">Plan Actual: {activePlan}</p>
+                    <Button asChild variant="link" className="text-amber-200 hover:text-white mt-1">
+                        <Link href="/subscriptions">Administrar mi suscripción</Link>
+                    </Button>
+                </CardContent>
+            </Card>
+        ) : (
+            <Card className="bg-gradient-to-r from-primary/80 to-primary/60 text-primary-foreground text-center p-6 rounded-lg shadow-lg">
+                <CardHeader className="p-0 mb-2">
+                <CardTitle>¡Potencia tu Búsqueda!</CardTitle>
+                <CardDescription className="text-primary-foreground/80">
+                    Con nuestros planes premium, accede a funciones exclusivas y destaca sobre los demás.
                 </CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
-                <Button asChild variant="outline" className="bg-transparent hover:bg-secondary-foreground/10">
+                </CardHeader>
+                <CardContent className="p-0">
+                <Button asChild className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
                     <Link href="/subscriptions">
-                        <Settings className="mr-2 h-4 w-4" />
-                        Administrar Planes
+                        <Star className="mr-2 h-4 w-4" />
+                        Ver Planes Premium
                     </Link>
                 </Button>
-            </CardContent>
-        </Card>
-       ) : (
-         <Card className="bg-gradient-to-r from-primary/80 to-primary/60 text-primary-foreground text-center p-6 rounded-lg shadow-lg">
-            <CardHeader className="p-0 mb-2">
-              <CardTitle>¡Potencia tu Búsqueda!</CardTitle>
-              <CardDescription className="text-primary-foreground/80">
-                Con nuestros planes premium, accede a funciones exclusivas y destaca sobre los demás.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
-              <Button asChild className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
-                  <Link href="/subscriptions">
-                      <Star className="mr-2 h-4 w-4" />
-                      Ver Planes Premium
-                  </Link>
-              </Button>
-            </CardContent>
-          </Card>
-       )}
+                </CardContent>
+            </Card>
+        )}
       
       {isAdmin ? (
         <Tabs defaultValue="edit-profile" className="w-full">
