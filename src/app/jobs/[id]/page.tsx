@@ -32,29 +32,9 @@ async function getJob(id: string): Promise<Job | null> {
     }
 }
 
-export default function JobDetailPage({ params }: { params: { id: string } }) {
+export default async function JobDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
-  const [job, setJob] = React.useState<Job | null>(null);
-  const [loading, setLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    getJob(id).then(data => {
-      setJob(data);
-      setLoading(false);
-    });
-  }, [id]);
-
-  if (loading) {
-    return (
-        <div className="flex flex-col min-h-screen bg-transparent">
-          <Header />
-          <main className="flex-1 flex items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </main>
-          <Footer />
-        </div>
-    );
-  }
+  const job = await getJob(id);
 
   if (!job) {
     notFound();
@@ -85,7 +65,8 @@ function JobDetailClient({ job }: { job: Job }) {
         return;
     }
 
-    if (job.customQuestions && job.customQuestions.length > 0) {
+    const customQuestions = Array.isArray(job.customQuestions) ? job.customQuestions : [];
+    if (customQuestions.length > 0) {
       setIsQuestionsModalOpen(true);
     } else {
       handleApply();
@@ -127,7 +108,8 @@ function JobDetailClient({ job }: { job: Job }) {
   };
 
   const handleSubmitQuestions = () => {
-    const answers = job.customQuestions!.map(q => ({
+    const customQuestions = Array.isArray(job.customQuestions) ? job.customQuestions : [];
+    const answers = customQuestions.map(q => ({
       question: q,
       answer: customAnswers[q] || 'No respondida'
     }));
@@ -160,6 +142,8 @@ function JobDetailClient({ job }: { job: Job }) {
   const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(job.location + ', Argentina')}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
   const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(job.location + ', Argentina')}`;
 
+  const skills = Array.isArray(job.skills) ? job.skills : [];
+  const customQuestions = Array.isArray(job.customQuestions) ? job.customQuestions : [];
 
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
@@ -221,12 +205,12 @@ function JobDetailClient({ job }: { job: Job }) {
                         <p className="text-card-foreground whitespace-pre-wrap">{job.desiredProfile}</p>
                     </>
                  )}
-                 {job.skills && job.skills.length > 0 && (
+                 {skills.length > 0 && (
                   <>
                     <Separator className="my-4"/>
                     <h3 className="text-lg font-semibold mb-2 text-primary">Habilidades Requeridas</h3>
                     <div className="flex flex-wrap gap-2">
-                      {job.skills.map(skill => (
+                      {skills.map(skill => (
                         <Badge key={skill} variant="secondary" className="flex items-center gap-1.5">
                           <Tag className="h-3 w-3" />
                           {skill}
@@ -306,7 +290,7 @@ function JobDetailClient({ job }: { job: Job }) {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-4">
-                    {job.customQuestions?.map((question, index) => (
+                    {customQuestions.map((question, index) => (
                         <div key={index} className="space-y-2">
                             <Label htmlFor={`question-${index}`}>{question}</Label>
                             <Textarea 
@@ -334,3 +318,4 @@ function JobDetailClient({ job }: { job: Job }) {
     </div>
   );
 }
+
