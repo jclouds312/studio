@@ -22,20 +22,61 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-// --- Server Component para obtener datos ---
-export default async function JobDetailPage({ params }: { params: { id: string } }) {
-  const job = await getJobById(params.id);
+// --- Server Component to fetch data ---
+export default function JobDetailPageWrapper({ params }: { params: { id: string } }) {
+  // This wrapper remains a server component to fetch data.
+  // We will pass the fetched job to the client component.
+  return <JobDetailClientLoader params={params} />;
+}
 
+// --- Client Component Loader to handle state ---
+function JobDetailClientLoader({ params }: { params: { id: string } }) {
+  'use client';
+  
+  const [job, setJob] = useState<Job | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    async function fetchJob() {
+      try {
+        const fetchedJob = await getJobById(params.id);
+        if (fetchedJob) {
+          setJob(fetchedJob);
+        } else {
+          notFound();
+        }
+      } catch (error) {
+        console.error("Failed to fetch job", error);
+        notFound();
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchJob();
+  }, [params.id]);
+
+  if (loading) {
+    return (
+        <div className="flex flex-col min-h-screen bg-transparent">
+          <Header />
+          <main className="flex-1 flex items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin" />
+          </main>
+          <Footer />
+        </div>
+    );
+  }
+  
   if (!job) {
-    notFound();
+    // This will likely be handled by notFound() inside useEffect, but as a fallback.
+    return notFound();
   }
 
-  // Pasamos los datos del trabajo al componente del cliente
   return <JobDetailClient job={job} />;
 }
 
 
-// --- Client Component para la UI y la interactividad ---
+// --- Client Component for UI and interactivity ---
 function JobDetailClient({ job }: { job: Job }) {
   const { toast } = useToast();
   const { session } = useSession();
@@ -332,3 +373,5 @@ function JobDetailClient({ job }: { job: Job }) {
     </div>
   );
 }
+
+    
