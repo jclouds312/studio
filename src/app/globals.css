@@ -133,7 +133,7 @@ body {
   .theme-premium {
     --card: 346.8 77.2% 20%; /* Vino tinto oscuro */
     --card-foreground: 0 0% 100%; /* Blanco puro */
-    --primary: 346.8 85% 60%; /* Un rojo más brillante para acentos */
+    --primary: 270 85% 65%;   /* Púrpura metálico */
     --primary-foreground: 0 0% 100%;
     --muted-foreground: 0 0% 85%; /* Un gris claro para texto secundario */
     --border: 346.8 77.2% 30%;
