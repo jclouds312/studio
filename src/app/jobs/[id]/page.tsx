@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Footer } from '@/components/layout/footer';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from '@/lib/utils';
 import { useSession } from '@/hooks/use-session';
 import type { Job } from '@prisma/client';
