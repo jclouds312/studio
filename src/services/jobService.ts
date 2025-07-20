@@ -43,8 +43,12 @@ let jobs: Job[] = staticJobs.map(job => {
 });
 
 
-export async function getAllJobs(): Promise<Job[]> {
-    return Promise.resolve(jobs.map(toJobArray));
+export async function getAllJobs(filters?: { companyId?: string }): Promise<Job[]> {
+    let filteredJobs = jobs;
+    if (filters?.companyId) {
+        filteredJobs = jobs.filter(job => job.companyProfileId === filters.companyId);
+    }
+    return Promise.resolve(filteredJobs.map(toJobArray));
 }
 
 export async function getJobById(id: string): Promise<Job | null> {

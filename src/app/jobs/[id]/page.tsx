@@ -6,7 +6,7 @@ import { Header } from '@/components/layout/header';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink, Loader2, DollarSign, Tag } from 'lucide-react';
+import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink, Loader2, DollarSign, Tag, UserCheck } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -197,7 +197,7 @@ function JobDetailClient({ job }: { job: Job }) {
                   <div>
                     <CardTitle className="text-2xl lg:text-3xl mb-1">{job.title}</CardTitle>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground">
-                        <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4" /> {job.company}</span>
+                        <Link href={`/company/${job.companyProfileId}`} className="flex items-center gap-1.5 hover:text-primary transition-colors"><Briefcase className="h-4 w-4" /> {job.company}</Link>
                         <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {job.location}</span>
                         <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" /> <span className="capitalize">{job.type}</span></span>
                         {job.salary && (
@@ -211,6 +211,16 @@ function JobDetailClient({ job }: { job: Job }) {
                 <Separator className="my-4"/>
                 <h3 className="text-lg font-semibold mb-2 text-primary">Descripción del trabajo</h3>
                 <p className="text-card-foreground whitespace-pre-wrap">{job.description}</p>
+                 {job.desiredProfile && (
+                    <>
+                        <Separator className="my-4"/>
+                        <h3 className="text-lg font-semibold mb-2 text-primary flex items-center gap-2">
+                            <UserCheck className="h-5 w-5"/>
+                            Perfil Deseado
+                        </h3>
+                        <p className="text-card-foreground whitespace-pre-wrap">{job.desiredProfile}</p>
+                    </>
+                 )}
                  {job.skills && job.skills.length > 0 && (
                   <>
                     <Separator className="my-4"/>

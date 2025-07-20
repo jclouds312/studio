@@ -45,6 +45,7 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
         type: 'Full-time',
         category: 'tech',
         description: '',
+        desiredProfile: '',
         whatsapp: '',
         isFeatured: false,
         salary: null,
@@ -207,6 +208,12 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
                 Descripción
                 </Label>
                 <Textarea id="description" value={formData.description || ''} onChange={handleInputChange} className="col-span-3" rows={5} required/>
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+                <Label htmlFor="desiredProfile" className="text-right pt-2">
+                Perfil Deseado
+                </Label>
+                <Textarea id="desiredProfile" value={formData.desiredProfile || ''} onChange={handleInputChange} className="col-span-3" rows={3} placeholder="Describe el perfil ideal del candidato..."/>
             </div>
              <div className="grid grid-cols-4 items-start gap-4">
                 <Label className="text-right pt-2">Habilidades</Label>

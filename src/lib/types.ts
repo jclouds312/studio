@@ -6,6 +6,7 @@ import type { User as PrismaUser, Job as PrismaJob, Application as PrismaApplica
 export type Job = Omit<PrismaJob, 'skills' | 'customQuestions'> & {
     skills: string[];
     customQuestions: string[];
+    desiredProfile: string | null;
 };
 
 export type User = PrismaUser & {
