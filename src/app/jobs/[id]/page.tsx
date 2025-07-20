@@ -23,7 +23,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 // --- Server Component to fetch data ---
-export default async function JobDetailPage({ params }: { params: { id: string } }) {
+async function JobPage({ params }: { params: { id: string } }) {
   const job = await getJobById(params.id);
 
   if (!job) {
@@ -32,6 +32,8 @@ export default async function JobDetailPage({ params }: { params: { id: string }
 
   return <JobDetailClient job={job} />;
 }
+
+export default JobPage;
 
 // --- Client Component for UI and interactivity ---
 function JobDetailClient({ job }: { job: Job }) {
