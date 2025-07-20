@@ -22,27 +22,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-async function getJob(id: string): Promise<Job | null> {
-    try {
-        const job = await getJobById(id);
-        return job;
-    } catch (error) {
-        console.error(`API fetch failed for job ${id}, return null`, error);
-        return null;
-    }
-}
-
+// --- Server Component para obtener datos ---
 export default async function JobDetailPage({ params }: { params: { id: string } }) {
-  const job = await getJob(params.id);
+  const job = await getJobById(params.id);
 
   if (!job) {
     notFound();
   }
 
+  // Pasamos los datos del trabajo al componente del cliente
   return <JobDetailClient job={job} />;
 }
 
 
+// --- Client Component para la UI y la interactividad ---
 function JobDetailClient({ job }: { job: Job }) {
   const { toast } = useToast();
   const { session } = useSession();
