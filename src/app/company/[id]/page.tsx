@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, use } from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -16,7 +16,8 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { JobListings } from '@/components/job-listings';
 
-export default function CompanyPublicProfilePage({ params }: { params: { id: string } }) {
+export default function CompanyPublicProfilePage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
+  const params = use(paramsPromise);
   const { id } = params;
   const router = useRouter();
   const [company, setCompany] = useState<CompanyProfile | null>(null);
