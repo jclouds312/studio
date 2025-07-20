@@ -320,6 +320,7 @@ function JobDetailClient({ job }: { job: Job }) {
   );
 }
 
+
 // --- Server Component to fetch data ---
 // This is the main export for the page. It's an async Server Component.
 export default async function JobPage({ params }: { params: { id: string } }) {
