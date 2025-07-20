@@ -134,10 +134,11 @@ export function JobDetailClient({ job }: { job: Job }) {
                 </Link>
             </Button>
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <Card className={cn("relative overflow-hidden", getThemeClass())}>
+        
+        <Card className={cn("overflow-hidden mb-8", getThemeClass())}>
+            <div className="relative aspect-[2.5/1] w-full bg-secondary">
+                <Image src={job.imageUrl || 'https://placehold.co/800x320.png'} alt={job.title} layout="fill" objectFit="cover" data-ai-hint="job vacancy" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                  <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                     {job.isFeatured && (
                          <Badge variant="default" className="bg-amber-400 text-amber-900 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-amber-900/20">
@@ -152,25 +153,23 @@ export function JobDetailClient({ job }: { job: Job }) {
                         </Badge>
                     )}
                 </div>
-              <CardHeader>
-                <div className="flex items-start gap-4">
-                  <Image src={job.companyLogo} alt={`${job.company} logo`} width={64} height={64} className="rounded-lg border bg-secondary p-1" data-ai-hint="company logo"/>
-                  <div>
-                    <CardTitle className="text-2xl lg:text-3xl mb-1">{job.title}</CardTitle>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground">
+                <div className="absolute bottom-6 left-6 text-white">
+                    <CardTitle className="text-3xl lg:text-4xl mb-1 drop-shadow-lg">{job.title}</CardTitle>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-white/90">
                         <Link href={`/company/${job.companyProfileId}`} className="flex items-center gap-1.5 hover:text-primary transition-colors"><Briefcase className="h-4 w-4" /> {job.company}</Link>
                         <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {job.location}</span>
                         <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" /> <span className="capitalize">{job.type}</span></span>
-                        {job.salary && (
-                            <span className="flex items-center gap-1.5 text-green-400"><DollarSign className="h-4 w-4" /> {job.salary}</span>
-                        )}
                     </div>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <Separator className="my-4"/>
-                <div className="grid md:grid-cols-3 gap-6 text-sm">
+                 </div>
+            </div>
+        </Card>
+
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <Card className={cn("relative overflow-hidden", getThemeClass())}>
+              <CardContent className="p-6">
+                <div className="grid md:grid-cols-3 gap-6 text-sm mb-6">
                   {job.modalidad && (
                     <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
                       {job.modalidad === 'Híbrido' ? <Users className="h-5 w-5 text-muted-foreground" /> : <Home className="h-5 w-5 text-muted-foreground" />}
@@ -180,11 +179,20 @@ export function JobDetailClient({ job }: { job: Job }) {
                       </div>
                     </div>
                   )}
+                   {job.salary && (
+                    <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
+                      <DollarSign className="h-5 w-5 text-muted-foreground" />
+                      <div>
+                        <p className="font-semibold">Salario</p>
+                        <p className="text-muted-foreground">{job.salary}</p>
+                      </div>
+                    </div>
+                  )}
                   {job.horario && (
-                    <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg md:col-span-2">
+                    <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
                        <Calendar className="h-5 w-5 text-muted-foreground" />
                        <div>
-                         <p className="font-semibold">Horario y Jornada</p>
+                         <p className="font-semibold">Horario</p>
                          <p className="text-muted-foreground">{job.horario}</p>
                        </div>
                     </div>

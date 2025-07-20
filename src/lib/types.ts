@@ -10,6 +10,7 @@ export type Job = Omit<PrismaJob, 'skills' | 'customQuestions'> & {
     horario: string | null;
     modalidad: string | null;
     direccionCompleta: string | null;
+    imageUrl: string | null;
 };
 
 export type User = PrismaUser & {

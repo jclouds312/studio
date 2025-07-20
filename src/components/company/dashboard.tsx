@@ -29,9 +29,8 @@ import Image from "next/image";
 import type { Candidate, Job } from '@/lib/types';
 import { CandidateProfileModal } from './modals/candidate-profile-modal';
 import { ChatPanel } from '../chat/chat-panel';
-import { getAllJobs } from '@/services/jobService';
-import { getApplicationsByUserId } from '@/services/applicationService';
-import { getUserById } from '@/services/userService';
+import { getAllJobs, createJob, updateJob, deleteJob } from '@/services/jobService';
+import { JobFormModal } from '../admin/modals/job-form-modal';
 
 const companyApplicants: Candidate[] = allUsers
     .filter(u => u.role === 'user' && ['trabajador@test.com', 'ana.garcia@example.com'].includes(u.email))
@@ -58,15 +57,18 @@ export function CompanyDashboard() {
   const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   const [companyJobs, setCompanyJobs] = useState<Job[]>([]);
+  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+
+  const fetchCompanyJobs = async () => {
+    if (session.user?.companyProfileId) {
+      const allJobs = await getAllJobs();
+      const jobs = allJobs.filter(job => job.companyProfileId === session.user?.companyProfileId);
+      setCompanyJobs(jobs);
+    }
+  };
 
   useEffect(() => {
-    const fetchCompanyJobs = async () => {
-      if (session.user?.companyProfileId) {
-        const allJobs = await getAllJobs();
-        const jobs = allJobs.filter(job => job.companyProfileId === session.user?.companyProfileId);
-        setCompanyJobs(jobs);
-      }
-    };
     if (session.isMounted) {
       fetchCompanyJobs();
     }
@@ -80,6 +82,39 @@ export function CompanyDashboard() {
   const handleContact = () => {
     setIsProfileModalOpen(false);
     setIsChatOpen(true);
+  };
+
+  const handleOpenJobModal = (job: Job | null = null) => {
+    setSelectedJob(job);
+    setIsJobModalOpen(true);
+  };
+
+  const handleSaveJob = async (jobData: Job) => {
+    if (!session.user?.companyProfileId) {
+        toast({ title: "Error", description: "No se encontró el perfil de la empresa.", variant: "destructive" });
+        return;
+    }
+    
+    const dataToSave = {
+        ...jobData,
+        companyProfileId: session.user.companyProfileId,
+        company: session.user.name,
+    };
+
+    if (selectedJob) {
+        await updateJob(selectedJob.id, dataToSave);
+        toast({ title: "Publicación actualizada" });
+    } else {
+        await createJob(dataToSave);
+        toast({ title: "Publicación creada" });
+    }
+    fetchCompanyJobs();
+  };
+
+  const handleDeleteJob = async (jobId: string) => {
+    await deleteJob(jobId);
+    toast({ title: 'Publicación Eliminada', variant: 'destructive' });
+    fetchCompanyJobs();
   };
 
   const handleConnectMp = () => {
@@ -144,6 +179,12 @@ export function CompanyDashboard() {
       candidate={selectedCandidate}
       onContact={handleContact}
     />
+    <JobFormModal 
+        isOpen={isJobModalOpen}
+        setIsOpen={setIsJobModalOpen}
+        job={selectedJob}
+        onSave={handleSaveJob}
+    />
     <div className="company-dashboard-theme max-w-7xl mx-auto space-y-8">
       <div className="space-y-2">
         <h1 className="text-4xl font-bold tracking-tight">Panel de Empresa</h1>
@@ -158,7 +199,7 @@ export function CompanyDashboard() {
                         <CardTitle>Mis Publicaciones de Trabajo</CardTitle>
                         <CardDescription>Aquí puedes ver y gestionar todas tus ofertas de empleo.</CardDescription>
                     </div>
-                    <Button size="sm" className="gap-1">
+                    <Button size="sm" className="gap-1" onClick={() => handleOpenJobModal()}>
                         <PlusCircle className="h-4 w-4" />
                         <span>Nueva Publicación</span>
                     </Button>
@@ -167,15 +208,19 @@ export function CompanyDashboard() {
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead className='w-[80px]'>Imagen</TableHead>
                                 <TableHead>Título</TableHead>
                                 <TableHead>Estado</TableHead>
                                 <TableHead>Candidatos</TableHead>
-                                <TableHead><span className="sr-only">Acciones</span></TableHead>
+                                <TableHead className="text-right">Acciones</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {companyJobs.length > 0 ? companyJobs.map((job) => (
                                 <TableRow key={job.id}>
+                                    <TableCell>
+                                        <Image src={job.imageUrl || 'https://placehold.co/100x100.png'} alt={job.title} width={64} height={64} className="rounded-md object-cover aspect-square" data-ai-hint="job vacancy"/>
+                                    </TableCell>
                                     <TableCell className="font-medium">
                                         <Link href={`/jobs/${job.id}`} className="hover:underline">{job.title}</Link>
                                     </TableCell>
@@ -187,10 +232,10 @@ export function CompanyDashboard() {
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex gap-2 justify-end">
-                                            <Button variant="outline" size="icon">
+                                            <Button variant="outline" size="icon" onClick={() => handleOpenJobModal(job)}>
                                                 <Edit className="h-4 w-4" />
                                             </Button>
-                                            <Button variant="destructive" size="icon">
+                                            <Button variant="destructive" size="icon" onClick={() => handleDeleteJob(job.id)}>
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>
@@ -198,7 +243,7 @@ export function CompanyDashboard() {
                                 </TableRow>
                             )) : (
                                 <TableRow>
-                                    <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                                    <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                                         No tienes ninguna publicación de trabajo activa.
                                     </TableCell>
                                 </TableRow>

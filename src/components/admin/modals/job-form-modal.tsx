@@ -12,7 +12,8 @@ import React, { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import type { CompanyProfile, Job } from "@/lib/types";
 import { getAllCompanies } from "@/services/companyService";
-import { X } from "lucide-react";
+import { X, UploadCloud } from "lucide-react";
+import Image from "next/image";
 
 interface JobFormModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
   const [companies, setCompanies] = useState<CompanyProfile[]>([]);
   const [currentSkill, setCurrentSkill] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState('');
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const title = job ? 'Editar Publicación' : 'Crear Nueva Publicación';
   const description = job ? 'Modifica los detalles de la publicación.' : 'Completa el formulario para crear una nueva oferta de trabajo.';
@@ -41,6 +43,7 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
         title: '',
         company: '',
         companyLogo: 'https://placehold.co/56x56.png',
+        imageUrl: 'https://placehold.co/400x200.png',
         location: '',
         type: 'Full-time',
         category: 'tech',
@@ -102,16 +105,19 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
     }
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({...prev, imageUrl: reader.result as string}));
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.companyProfileId) {
-      toast({
-        title: "Error de validación",
-        description: "Debes seleccionar una empresa para la publicación.",
-        variant: "destructive"
-      });
-      return;
-    }
     onSave(formData as Job);
     toast({
         title: "¡Éxito!",
@@ -130,6 +136,23 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
         </DialogHeader>
         <form onSubmit={handleSubmit}>
             <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-4">
+            
+            <div className="space-y-2">
+              <Label>Imagen de la Vacante</Label>
+              <div className="aspect-[2/1] w-full rounded-md border-2 border-dashed border-muted-foreground/30 flex items-center justify-center relative cursor-pointer hover:bg-muted/50" onClick={() => fileInputRef.current?.click()}>
+                {formData.imageUrl ? (
+                  <Image src={formData.imageUrl} alt="Previsualización" layout="fill" objectFit="cover" className="rounded-md" data-ai-hint="job vacancy" />
+                ) : (
+                  <div className="text-center text-muted-foreground">
+                    <UploadCloud className="mx-auto h-8 w-8" />
+                    <p>Subir una imagen</p>
+                    <p className="text-xs">Recomendado: 800x400px</p>
+                  </div>
+                )}
+                <Input ref={fileInputRef} type="file" className="hidden" accept="image/*" onChange={handleImageUpload}/>
+              </div>
+            </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="title" className="text-right">
                 Título

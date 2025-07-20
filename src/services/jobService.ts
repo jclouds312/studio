@@ -59,7 +59,7 @@ export async function getJobById(id: string): Promise<Job | null> {
     return Promise.resolve(toJobArray(job));
 }
 
-export async function createJob(data: Omit<Job, 'id' | 'createdAt' | 'updatedAt'>): Promise<Job> {
+export async function createJob(data: Partial<Omit<Job, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Job> {
     const newJobData = fromJobArray(data);
     const newJob: Job = {
         ...newJobData,

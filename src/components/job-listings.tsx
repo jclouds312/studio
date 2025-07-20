@@ -27,11 +27,9 @@ function JobListingCard({ job }: { job: Job }) {
     const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
 
     const handleApply = (e: React.MouseEvent) => {
-        e.preventDefault(); // Evita que el Link se active inmediatamente.
-        e.stopPropagation(); // Detiene la propagación para no activar otros clics.
         setIsApplying(true);
-
         if (!session.isLoggedIn) {
+            e.preventDefault();
             toast({
                 title: "Inicia Sesión",
                 description: "Debes iniciar sesión para postularte a una oferta.",
@@ -40,9 +38,7 @@ function JobListingCard({ job }: { job: Job }) {
             setIsApplying(false);
             return;
         }
-        
-        // Redirección manual a la página de detalle del trabajo
-        router.push(`/jobs/${job.id}`);
+        // No prevenimos el default, la navegación del Link se ejecutará
     };
 
     const onSaveClick = (e: React.MouseEvent) => {
@@ -86,27 +82,27 @@ function JobListingCard({ job }: { job: Job }) {
                             </Badge>
                         )}
                     </div>
-                    <CardHeader className="p-6 pb-2">
-                        <div className="flex gap-4">
-                            <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-white p-1 shrink-0" data-ai-hint={`${job.company} logo`} />
-                            <div className="flex-grow">
-                                <CardTitle className="text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors">{job.title}</CardTitle>
-                                <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
-                                    <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
-                                    <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
-                                </CardDescription>
-                                {job.salary && (
-                                     <div className="flex items-center gap-1.5 text-sm text-green-400 pt-1">
-                                        <DollarSign className="h-4 w-4" />
-                                        <span>{job.salary}</span>
-                                    </div>
-                                )}
-                            </div>
+                     <CardHeader className="p-0">
+                        <div className="aspect-video w-full relative">
+                            <Image src={job.imageUrl || 'https://placehold.co/400x200.png'} alt={job.title} layout="fill" objectFit="cover" className="rounded-t-lg" data-ai-hint="job vacancy" />
                         </div>
                     </CardHeader>
                     <CardContent className="p-6 pt-4 flex-grow flex flex-col justify-between">
-                        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{job.description}</p>
-                        <div className="flex flex-row justify-between items-center pt-4 border-t border-border/50 mt-auto">
+                        <div>
+                             <CardTitle className="text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors">{job.title}</CardTitle>
+                            <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
+                                <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
+                                <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
+                            </CardDescription>
+                            {job.salary && (
+                                 <div className="flex items-center gap-1.5 text-sm text-green-400 pt-1">
+                                    <DollarSign className="h-4 w-4" />
+                                    <span>{job.salary}</span>
+                                </div>
+                            )}
+                            <p className="text-sm text-muted-foreground line-clamp-2 mt-4">{job.description}</p>
+                        </div>
+                        <div className="flex flex-row justify-between items-center pt-4 border-t border-border/50 mt-4">
                             <Badge variant="outline" className="text-xs capitalize border-amber-400/50 bg-amber-400/10 text-amber-400">{job.type}</Badge>
                             <div className="flex items-center gap-2">
                                 {session.isLoggedIn && session.user?.role === 'user' && (
