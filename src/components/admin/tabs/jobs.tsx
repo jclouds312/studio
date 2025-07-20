@@ -34,7 +34,7 @@ export function JobsTab() {
         setIsModalOpen(true);
     };
 
-    const handleSave = async (jobData: Job) => {
+    const handleSave = async (jobData: any) => {
         try {
             if (selectedJob && selectedJob.id) {
                 const updated = await updateJob(selectedJob.id, jobData);
@@ -47,7 +47,6 @@ export function JobsTab() {
                 setJobs([...jobs, newJob]);
                 toast({ title: "Publicación creada" });
             }
-            setIsModalOpen(false);
         } catch (error) {
             toast({ title: "Error al guardar", variant: "destructive" });
         }

@@ -46,9 +46,8 @@ export async function getUserByEmail(email: string): Promise<User | null> {
     return Promise.resolve(convertSavedJobsToArray(JSON.parse(JSON.stringify(user))));
 }
 
-export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'phone' | 'location' | 'professionalSummary' | 'experience' | 'avatar' | 'savedJobIds' | 'status' | 'companyProfileId' | 'skills' | 'customQuestions' | 'subscriptionPlan' | 'subscriptionUntil'> & { status?: string | null, subscriptionPlan?: string | null, subscriptionUntil?: string | null }): Promise<User> {
+export async function createUser(data: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>>): Promise<User> {
     const newUser: User = {
-        ...data,
         id: String(Date.now()),
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -58,14 +57,15 @@ export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedA
         professionalSummary: null,
         experience: null,
         avatar: 'https://placehold.co/40x40.png',
-        // @ts-ignore
-        savedJobIds: '',
+        savedJobIds: [],
         status: 'VERIFICADO', // Default status for new users
         companyProfileId: null,
-        skills: [],
-        customQuestions: [],
         subscriptionPlan: null,
         subscriptionUntil: null,
+        name: data.name || '',
+        email: data.email || '',
+        password: data.password || '',
+        role: data.role || 'user',
     };
     users.push(newUser);
     return Promise.resolve(convertSavedJobsToArray(JSON.parse(JSON.stringify(newUser))));
