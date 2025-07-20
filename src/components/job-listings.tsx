@@ -27,8 +27,8 @@ function JobListingCard({ job }: { job: Job }) {
     const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
 
     const handleApply = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault(); // Evita que el Link se active inmediatamente.
+        e.stopPropagation(); // Detiene la propagación para no activar otros clics.
         setIsApplying(true);
 
         if (!session.isLoggedIn) {
@@ -41,12 +41,13 @@ function JobListingCard({ job }: { job: Job }) {
             return;
         }
         
+        // Redirección manual a la página de detalle del trabajo
         router.push(`/jobs/${job.id}`);
     };
 
     const onSaveClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        e.stopPropagation(); // Stop propagation to prevent navigation
+        e.stopPropagation(); // Detiene la propagación para que solo se guarde sin navegar.
         if (!session.isLoggedIn) {
             toast({
                 title: "Inicia Sesión",
@@ -254,5 +255,3 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
         </div>
     );
 }
-
-    
