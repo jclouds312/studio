@@ -1,5 +1,4 @@
 
-
 import type { LucideIcon } from "lucide-react";
 import type { User as PrismaUser, Job as PrismaJob, Application as PrismaApplication, CompanyProfile as PrismaCompanyProfile } from '@prisma/client';
 
@@ -28,7 +27,9 @@ export type Application = Omit<PrismaApplication, 'customAnswers'> & {
     customAnswers?: CustomAnswer[];
 };
 
-export type CompanyProfile = PrismaCompanyProfile;
+export type CompanyProfile = PrismaCompanyProfile & {
+    description?: string;
+};
 
 
 export type UserApplication = {

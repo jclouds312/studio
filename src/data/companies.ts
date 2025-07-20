@@ -10,8 +10,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'CABA',
         province: 'Buenos Aires',
         phone: '11-4321-9876',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1974&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Líderes en el desarrollo de software a medida, transformando ideas en soluciones tecnológicas robustas y escalables para el mercado global.'
     },
     {
         id: '2',
@@ -21,8 +22,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Córdoba',
         province: 'Córdoba',
         phone: '351-123-4567',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1522125670776-3c7abb882bc2?q=80&w=2070&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Agencia de diseño y creatividad que impulsa marcas a través de experiencias de usuario memorables y un branding innovador.'
     },
      {
         id: '3',
@@ -32,8 +34,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Remoto',
         province: 'N/A',
         phone: 'N/A',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1580894908361-967195033215?q=80&w=2070&auto=format&fit=crop',
         status: 'Inactiva',
+        description: 'Especialistas en infraestructura de TI y soluciones en la nube, garantizando la continuidad y seguridad de las operaciones de nuestros clientes.'
     },
      {
         id: '4',
@@ -43,8 +46,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'CABA',
         province: 'Buenos Aires',
         phone: '11-5555-5555',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1611162616805-669c3fa0de13?q=80&w=1974&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Conectando a miles de millones de personas en todo el mundo y construyendo comunidades para acercar a las personas. Unimos talento para crear el futuro de la tecnología social.'
     },
     {
         id: '5',
@@ -54,8 +58,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'CABA',
         province: 'Buenos Aires',
         phone: '11-1234-5678',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=2071&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Consultora de negocios que ofrece soluciones estratégicas para optimizar procesos y potenciar el crecimiento empresarial.'
     },
     {
         id: '6',
@@ -65,8 +70,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Rosario',
         province: 'Santa Fe',
         phone: '341-123-4567',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Startup innovadora enfocada en el desarrollo de aplicaciones móviles con inteligencia artificial para el sector agrícola.'
     },
     {
         id: '7',
@@ -76,8 +82,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Rosario',
         province: 'Santa Fe',
         phone: '341-987-6543',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Agencia de marketing digital especializada en estrategias de crecimiento acelerado para startups y empresas de tecnología.'
     },
     {
         id: '8',
@@ -87,8 +94,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'CABA',
         province: 'Buenos Aires',
         phone: '11-8765-4321',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Expertos en generación de leads B2B, ayudando a las empresas a conectar con sus clientes potenciales a través de estrategias de ventas inbound.'
     },
     {
         id: '9',
@@ -98,8 +106,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'La Plata',
         province: 'Buenos Aires',
         phone: '221-765-4321',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=2070&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Plataforma que conecta a profesionales de oficios y servicios con clientes que necesitan soluciones rápidas y confiables para el hogar y la oficina.'
     },
     {
         id: '10',
@@ -109,8 +118,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Mendoza',
         province: 'Mendoza',
         phone: '261-654-3210',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Consultora de Recursos Humanos dedicada a la selección y desarrollo del talento, construyendo equipos de alto rendimiento.'
     },
     {
         id: '11',
@@ -120,8 +130,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Mar del Plata',
         province: 'Buenos Aires',
         phone: '223-543-2109',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=2070&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Tradición y sabor en el corazón de Mar del Plata. Ofrecemos una experiencia gastronómica única con los mejores productos del mar.'
     },
     {
         id: '12',
@@ -131,8 +142,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Remoto',
         province: 'N/A',
         phone: 'N/A',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=2070&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Estudio contable digital que brinda asesoramiento a freelancers y pymes de todo el país, simplificando la gestión financiera.'
     },
     {
         id: '13',
@@ -142,8 +154,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Quilmes',
         province: 'Buenos Aires',
         phone: '11-4321-5678',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?q=80&w=1974&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Cadena de supermercados comprometida con ofrecer la mejor calidad y variedad de productos al mejor precio para las familias argentinas.'
     },
     {
         id: '14',
@@ -153,8 +166,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'CABA',
         province: 'Buenos Aires',
         phone: '11-3210-9876',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1599249300675-c39f1dd2d6be?q=80&w=1974&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Brindamos soluciones legales integrales para empresas y particulares, con especialización en derecho corporativo, laboral y civil.'
     },
     {
         id: '15',
@@ -164,8 +178,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'San Miguel de Tucumán',
         province: 'Tucumán',
         phone: '381-210-9876',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1629425733761-caae3b5f2e50?q=80&w=1974&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Centro de salud de alta complejidad comprometido con el bienestar de la comunidad, ofreciendo atención médica de calidad y calidez humana.'
     },
     {
         id: '16',
@@ -175,8 +190,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Neuquén',
         province: 'Neuquén',
         phone: '299-109-8765',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1581092580497-c3a42da15322?q=80&w=2070&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Empresa constructora con amplia experiencia en obras civiles e industriales en la región patagónica.'
     },
     {
         id: '17',
@@ -186,8 +202,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Salta',
         province: 'Salta',
         phone: '387-098-7654',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Enseñanza de idiomas con un enfoque comunicativo y cultural. Cursos para todas las edades y niveles.'
     },
     {
         id: '18',
@@ -197,8 +214,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Bariloche',
         province: 'Río Negro',
         phone: '294-987-6543',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?q=80&w=1974&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Cocina de autor con productos regionales en un entorno único. Una experiencia culinaria que celebra los sabores del sur argentino.'
     },
     {
         id: '19',
@@ -208,8 +226,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Lomas de Zamora',
         province: 'Buenos Aires',
         phone: '11-8765-4321',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1586528116311-08dd6c78a22c?q=80&w=2070&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Soluciones integrales de transporte y logística para todo el territorio nacional, conectando tu negocio con todo el país.'
     },
     {
         id: '20',
@@ -219,8 +238,9 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Santa Fe',
         province: 'Santa Fe',
         phone: '342-765-4321',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Brindamos espacios de trabajo flexibles y servicios administrativos para profesionales y empresas, fomentando la colaboración y la productividad.'
     },
     {
         id: '21',
@@ -230,7 +250,8 @@ export const allCompanies: CompanyProfile[] = [
         city: 'Ushuaia',
         province: 'Tierra del Fuego',
         phone: '2901-654-321',
-        logoUrl: 'https://placehold.co/128x128.png',
+        logoUrl: 'https://images.unsplash.com/photo-1501555088652-021faa106b9b?q=80&w=2073&auto=format&fit=crop',
         status: 'Activa',
+        description: 'Operador turístico líder en el Fin del Mundo. Ofrecemos excursiones inolvidables para explorar la naturaleza y la historia de la Patagonia.'
     }
 ];

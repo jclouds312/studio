@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useEffect, useState, use } from 'react';
+import React, { useEffect, useState } from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -16,8 +16,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { JobListings } from '@/components/job-listings';
 
-export default function CompanyPublicProfilePage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
-  const params = use(paramsPromise);
+export default function CompanyPublicProfilePage({ params }: { params: { id: string } }) {
   const { id } = params;
   const router = useRouter();
   const [company, setCompany] = useState<CompanyProfile | null>(null);
@@ -30,7 +29,8 @@ export default function CompanyPublicProfilePage({ params: paramsPromise }: { pa
         const companyData = await getCompanyById(id);
         if (companyData) {
           setCompany(companyData);
-          const jobsData = await getAllJobs({ companyId: id });
+          const allJobs = await getAllJobs();
+          const jobsData = allJobs.filter(job => job.companyProfileId === id);
           setCompanyJobs(jobsData);
         }
       } catch (error) {
@@ -89,7 +89,7 @@ export default function CompanyPublicProfilePage({ params: paramsPromise }: { pa
                 alt={`${company.name} logo`}
                 width={128}
                 height={128}
-                className="w-32 h-32 rounded-lg border-4 border-background bg-background shrink-0"
+                className="w-32 h-32 rounded-lg border-4 border-background bg-background shrink-0 object-cover"
                 data-ai-hint="company logo"
               />
               <div className="pt-4 md:pt-16">
@@ -105,7 +105,7 @@ export default function CompanyPublicProfilePage({ params: paramsPromise }: { pa
              <div className="mt-6">
                 <h3 className="text-lg font-semibold text-primary">Acerca de la Empresa</h3>
                 <p className="mt-2 text-muted-foreground">
-                    Información sobre la empresa. Este es un texto de ejemplo. En una aplicación real, aquí iría una descripción detallada de la compañía, su misión, visión y valores.
+                    {company.description || 'No se ha proporcionado una descripción de la empresa.'}
                 </p>
             </div>
           </CardContent>
