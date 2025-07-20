@@ -43,6 +43,7 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
         description: '',
         whatsapp: '',
         isFeatured: false,
+        salary: null,
         companyProfileId: null,
       });
     }
@@ -145,6 +146,12 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
                 </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="salary" className="text-right">
+                Salario
+                </Label>
+                <Input id="salary" value={formData.salary || ''} onChange={handleInputChange} className="col-span-3" placeholder="Ej: $150.000 ARS mensual (Opcional)" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="category" className="text-right">
                 Categoría
                 </Label>
@@ -201,3 +208,5 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
     </Dialog>
   );
 }
+
+    

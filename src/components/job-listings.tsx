@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase, Sparkles, Star, Send, Info, Loader2 } from "lucide-react";
+import { MapPin, Search, Briefcase, Sparkles, Star, Send, Info, Loader2, DollarSign } from "lucide-react";
 import type { Job } from "@prisma/client";
 import Image from "next/image";
 import React, { useState, useMemo, useContext } from "react";
@@ -123,13 +123,19 @@ function JobListingCard({ job }: { job: Job }) {
                                     <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
                                     <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
                                 </CardDescription>
+                                {job.salary && (
+                                     <div className="flex items-center gap-1.5 text-sm text-green-400 pt-1">
+                                        <DollarSign className="h-4 w-4" />
+                                        <span>{job.salary}</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </CardHeader>
                     <CardContent className="p-6 pt-4 flex-grow flex flex-col justify-between">
                         <p className="text-sm text-card-foreground line-clamp-2 mb-4">{job.description}</p>
                         <div className="flex flex-row justify-between items-center pt-4 border-t border-border/50 mt-auto">
-                            <Badge variant="outline" className="text-xs capitalize">{job.type}</Badge>
+                            <Badge variant="outline" className="text-xs capitalize text-amber-400 border-amber-400/50 bg-amber-400/10">{job.type}</Badge>
                             <div className="flex items-center gap-2">
                                 {session.isLoggedIn && session.user?.role === 'user' && (
                                     <Button variant="ghost" size="sm" onClick={onSaveClick} className="hidden md:flex">
@@ -277,3 +283,5 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
         </div>
     );
 }
+
+    

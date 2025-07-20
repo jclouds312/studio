@@ -12,7 +12,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     category: 'tech',
     isFeatured: true,
     isNew: false,
-    whatsapp: '+5491123456789'
+    whatsapp: '+5491123456789',
+    salary: '$850.000 - $1.200.000 ARS',
   },
   {
     id: '2',
@@ -25,6 +26,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     category: 'design',
     isNew: true,
     whatsapp: null,
+    salary: '$900.000 ARS mensual',
   },
   {
     id: '3',
@@ -37,6 +39,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     category: 'tech',
     isNew: true,
     whatsapp: null,
+    salary: 'A convenir',
   },
    {
     id: '4',
@@ -50,6 +53,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isFeatured: false,
     isNew: false,
     whatsapp: null,
+    salary: null,
   },
   {
     id: '5',
@@ -62,7 +66,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     category: 'sales',
     isFeatured: true,
     isNew: false,
-    whatsapp: '+5491123456789'
+    whatsapp: '+5491123456789',
+    salary: '$450.000 ARS + Comisiones',
   },
    {
     id: '6',
@@ -75,7 +80,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     category: 'domestic',
     isFeatured: false,
     isNew: false,
-    whatsapp: '+5492212345678'
+    whatsapp: '+5492212345678',
+    salary: '$35.000 por día',
   },
   {
     id: '7',
@@ -89,6 +95,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isFeatured: false,
     isNew: false,
     whatsapp: null,
+    salary: null,
   },
   {
     id: '8',
@@ -101,7 +108,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     category: 'gastronomy',
     isNew: true,
     isFeatured: false,
-    whatsapp: '+5492231234567'
+    whatsapp: '+5492231234567',
+    salary: 'Sueldo + propinas',
   },
   {
     id: '9',
@@ -115,6 +123,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isFeatured: true,
     isNew: false,
     whatsapp: null,
+    salary: '$600.000 ARS',
   },
   {
     id: '10',
@@ -128,6 +137,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isFeatured: false,
     isNew: false,
     whatsapp: null,
+    salary: null,
   },
   {
     id: '11',
@@ -141,6 +151,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isFeatured: false,
     isNew: false,
     whatsapp: null,
+    salary: 'A convenir',
   },
   {
     id: '12',
@@ -153,7 +164,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     category: 'health',
     isFeatured: false,
     isNew: false,
-    whatsapp: '+5493811234567'
+    whatsapp: '+5493811234567',
+    salary: '$750.000 ARS',
   },
   {
     id: '13',
@@ -167,6 +179,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isFeatured: true,
     isNew: false,
     whatsapp: null,
+    salary: 'Competitivo',
   },
   {
     id: '14',
@@ -180,5 +193,8 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isFeatured: false,
     isNew: false,
     whatsapp: null,
+    salary: 'Excelente remuneración',
   }
 ].map(job => ({ ...job, createdAt: new Date(), updatedAt: new Date() }));
+
+    

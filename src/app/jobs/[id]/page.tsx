@@ -6,7 +6,7 @@ import { Header } from '@/components/layout/header';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink, Loader2 } from 'lucide-react';
+import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink, Loader2, DollarSign } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -177,6 +177,9 @@ function JobDetailClient({ job }: { job: Job }) {
                         <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4" /> {job.company}</span>
                         <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {job.location}</span>
                         <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" /> <span className="capitalize">{job.type}</span></span>
+                        {job.salary && (
+                            <span className="flex items-center gap-1.5 text-green-400"><DollarSign className="h-4 w-4" /> {job.salary}</span>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -250,3 +253,5 @@ function JobDetailClient({ job }: { job: Job }) {
     </div>
   );
 }
+
+    
