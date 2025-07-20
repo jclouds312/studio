@@ -12,6 +12,7 @@ import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 import { ChatPanel } from '../chat/chat-panel';
 import { useSession } from '@/hooks/use-session';
+import { Separator } from '../ui/separator';
 
 export function Header() {
   const { session, logout } = useSession();
