@@ -31,6 +31,7 @@ import { CandidateProfileModal } from './modals/candidate-profile-modal';
 import { ChatPanel } from '../chat/chat-panel';
 import { getAllJobs, createJob, updateJob, deleteJob } from '@/services/jobService';
 import { JobFormModal } from '../admin/modals/job-form-modal';
+import { cn } from '@/lib/utils';
 
 const companyApplicants: Candidate[] = allUsers
     .filter(u => u.role === 'user' && ['trabajador@test.com', 'ana.garcia@example.com'].includes(u.email))
@@ -46,6 +47,105 @@ const companyApplicants: Candidate[] = allUsers
             { question: '¿Cuál es tu proceso de diseño habitual?', answer: 'Comienzo con investigación de usuario, luego wireframing, prototipado en Figma y finalmente pruebas de usabilidad.' }
         ]
     }));
+
+function FeatureJobModal({ job, onFeatured }: { job: Job, onFeatured: (jobId: string) => void }) {
+    const { toast } = useToast();
+    const [isPaying, setIsPaying] = useState(false);
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handlePayment = async () => {
+        setIsPaying(true);
+        try {
+            const response = await fetch('/api/mercadopago/create-preference', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: `Destacar: ${job.title}`,
+                    unit_price: 500,
+                }),
+            });
+
+            if (!response.ok) throw new Error('Failed to create payment preference');
+
+            const preference = await response.json();
+            console.log('Preferencia de pago creada:', preference.id);
+            toast({
+                title: "Redirigiendo a Mercado Pago...",
+                description: `ID de Preferencia: ${preference.id}. En una app real, serías redirigido.`,
+            });
+
+            setTimeout(async () => {
+                await updateJob(job.id, { isFeatured: true });
+                onFeatured(job.id);
+                setIsPaying(false);
+                setPaymentSuccess(true);
+            }, 2000);
+
+        } catch (error) {
+            console.error(error);
+            toast({
+                title: "Error al procesar el pago",
+                description: "No se pudo crear la preferencia de pago. Intenta de nuevo.",
+                variant: "destructive"
+            });
+            setIsPaying(false);
+        }
+    };
+
+    const handleOpenChange = (open: boolean) => {
+        setIsModalOpen(open);
+        if (!open) {
+            setPaymentSuccess(false);
+        }
+    }
+
+    return (
+        <AlertDialog open={isModalOpen} onOpenChange={handleOpenChange}>
+            <AlertDialogTrigger asChild>
+                <Button variant="outline" size="icon" disabled={job.isFeatured}>
+                    <Star className={cn("h-4 w-4", job.isFeatured ? "text-amber-400 fill-amber-400" : "text-amber-400")} />
+                </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    {paymentSuccess ? (
+                        <div className="text-center py-4">
+                            <Sparkles className="h-12 w-12 text-green-500 mx-auto mb-2" />
+                            <AlertDialogTitle>¡Publicación Destacada!</AlertDialogTitle>
+                            <AlertDialogDescription>Tu oferta ahora tiene máxima visibilidad.</AlertDialogDescription>
+                        </div>
+                    ) : (
+                        <>
+                            <AlertDialogTitle>Destacar Publicación</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Estás a punto de pagar <span className="font-bold text-foreground">ARS $500.00</span> para destacar esta publicación.
+                                Aparecerá en la página principal y en la parte superior de los resultados de búsqueda.
+                            </AlertDialogDescription>
+                        </>
+                    )}
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    {paymentSuccess ? (
+                        <AlertDialogCancel>Cerrar</AlertDialogCancel>
+                    ) : (
+                        <>
+                            <AlertDialogCancel disabled={isPaying}>Cancelar</AlertDialogCancel>
+                            <Button onClick={handlePayment} disabled={isPaying}>
+                                {isPaying ? (
+                                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Procesando...</>
+                                ) : (
+                                    <><CreditCard className="mr-2 h-4 w-4" /> Pagar ahora</>
+                                )}
+                            </Button>
+                        </>
+                    )}
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    );
+}
+
 
 export function CompanyDashboard() {
   const { session } = useSession();
@@ -116,6 +216,11 @@ export function CompanyDashboard() {
     toast({ title: 'Publicación Eliminada', variant: 'destructive' });
     fetchCompanyJobs();
   };
+  
+  const handleJobFeatured = (jobId: string) => {
+      setCompanyJobs(prevJobs => prevJobs.map(j => j.id === jobId ? { ...j, isFeatured: true } : j));
+  };
+
 
   const handleConnectMp = () => {
     toast({
@@ -223,6 +328,7 @@ export function CompanyDashboard() {
                                     </TableCell>
                                     <TableCell className="font-medium">
                                         <Link href={`/jobs/${job.id}`} className="hover:underline">{job.title}</Link>
+                                         {job.isFeatured && <Badge className="ml-2 bg-amber-400 text-amber-900">Destacado</Badge>}
                                     </TableCell>
                                     <TableCell>
                                         <Badge>Activa</Badge>
@@ -232,6 +338,7 @@ export function CompanyDashboard() {
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex gap-2 justify-end">
+                                            <FeatureJobModal job={job} onFeatured={handleJobFeatured} />
                                             <Button variant="outline" size="icon" onClick={() => handleOpenJobModal(job)}>
                                                 <Edit className="h-4 w-4" />
                                             </Button>
