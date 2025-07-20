@@ -11,13 +11,15 @@ import Image from "next/image";
 import React, { useState, useMemo, useContext } from "react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { UserProfileContext } from "@/context/user-profile-context";
 import { useSession } from "@/hooks/use-session";
+import { useRouter } from "next/navigation";
 
 function JobListingCard({ job }: { job: Job }) {
     const { toast } = useToast();
+    const router = useRouter();
     const { savedJobs, handleSaveJob, handleApplyForJob } = useContext(UserProfileContext);
     const { session } = useSession();
     const [isApplying, setIsApplying] = useState(false);
@@ -25,7 +27,7 @@ function JobListingCard({ job }: { job: Job }) {
     const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
 
     const handleApply = async (e: React.MouseEvent) => {
-        e.preventDefault(); 
+        e.preventDefault();
         e.stopPropagation();
         setIsApplying(true);
 
@@ -61,6 +63,10 @@ function JobListingCard({ job }: { job: Job }) {
                 title: "¡Postulación Enviada!",
                 description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
             });
+            
+            // Redirigir al detalle del trabajo después de aplicar
+            router.push(`/jobs/${job.id}`);
+
         } catch (error) {
             console.error(error);
             toast({
