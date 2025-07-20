@@ -3,9 +3,18 @@
 
 import type { Job } from '@prisma/client';
 import { allJobs as staticJobs } from '@/data/jobs';
+import {allCompanies} from "@/data/companies";
 
 // Simulate a database connection by using static data from a file
-let jobs: Job[] = staticJobs.map(job => ({ ...job, createdAt: new Date(), updatedAt: new Date(), companyProfileId: null })) as Job[];
+let jobs: Job[] = staticJobs.map(job => {
+    const company = allCompanies.find(c => c.name === job.company);
+    return {
+        ...job,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        companyProfileId: company?.id ?? null
+    } as Job
+});
 
 
 export async function getAllJobs(): Promise<Job[]> {
@@ -17,13 +26,12 @@ export async function getJobById(id: string): Promise<Job | null> {
     return Promise.resolve(job);
 }
 
-export async function createJob(data: Omit<Job, 'id' | 'createdAt' | 'updatedAt' | 'companyProfileId'>): Promise<Job> {
+export async function createJob(data: Omit<Job, 'id' | 'createdAt' | 'updatedAt'>): Promise<Job> {
     const newJob: Job = {
         ...data,
         id: String(Date.now()),
         createdAt: new Date(),
         updatedAt: new Date(),
-        companyProfileId: 'clz7s1m2n000018mjdlgqdt7g', // Mock company ID
     };
     jobs.push(newJob);
     return Promise.resolve(newJob);

@@ -1,10 +1,11 @@
 
 import type { LucideIcon } from "lucide-react";
-import type { User as PrismaUser, Job as PrismaJob, Application as PrismaApplication } from '@prisma/client';
+import type { User as PrismaUser, Job as PrismaJob, Application as PrismaApplication, CompanyProfile as PrismaCompanyProfile } from '@prisma/client';
 
 export type Job = PrismaJob;
 export type User = PrismaUser;
 export type Application = PrismaApplication;
+export type CompanyProfile = PrismaCompanyProfile;
 
 
 export type UserApplication = {
@@ -29,18 +30,6 @@ export type UserProfileData = {
 
 export type Candidate = User & {
     appliedFor: string;
-};
-
-export type CompanyProfile = {
-    id:string;
-    name: string;
-    cuit: string;
-    address?: string;
-    city: string;
-    province?: string;
-    phone?: string;
-    logoUrl?: string;
-    status?: 'Activa' | 'Inactiva' | 'Pendiente';
 };
 
 export type Transaction = {

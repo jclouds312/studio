@@ -7,10 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { Job } from "@/lib/types";
 import { Switch } from "@/components/ui/switch";
 import React, { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import type { CompanyProfile, Job } from "@/lib/types";
+import { getAllCompanies } from "@/services/companyService";
 
 interface JobFormModalProps {
   isOpen: boolean;
@@ -22,10 +23,13 @@ interface JobFormModalProps {
 export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState<Partial<Job>>({});
+  const [companies, setCompanies] = useState<CompanyProfile[]>([]);
   const title = job ? 'Editar Publicación' : 'Crear Nueva Publicación';
   const description = job ? 'Modifica los detalles de la publicación.' : 'Completa el formulario para crear una nueva oferta de trabajo.';
 
   useEffect(() => {
+    getAllCompanies().then(setCompanies);
+
     if (job) {
       setFormData(job);
     } else {
@@ -39,6 +43,7 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
         description: '',
         whatsapp: '',
         isFeatured: false,
+        companyProfileId: null,
       });
     }
   }, [job, isOpen]);
@@ -49,7 +54,19 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
   };
 
   const handleSelectChange = (id: string, value: string) => {
-    setFormData(prev => ({...prev, [id]: value as any}));
+    if (id === 'companyProfileId') {
+      const selectedCompany = companies.find(c => c.id === value);
+      if (selectedCompany) {
+        setFormData(prev => ({
+          ...prev,
+          companyProfileId: value,
+          company: selectedCompany.name,
+          companyLogo: selectedCompany.logoUrl || 'https://placehold.co/56x56.png'
+        }));
+      }
+    } else {
+      setFormData(prev => ({...prev, [id]: value as any}));
+    }
   };
 
   const handleSwitchChange = (id: string, checked: boolean) => {
@@ -58,6 +75,14 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.companyProfileId) {
+      toast({
+        title: "Error de validación",
+        description: "Debes seleccionar una empresa para la publicación.",
+        variant: "destructive"
+      });
+      return;
+    }
     onSave(formData as Job);
     toast({
         title: "¡Éxito!",
@@ -83,10 +108,19 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
                 <Input id="title" value={formData.title || ''} onChange={handleInputChange} className="col-span-3" required/>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="company" className="text-right">
+                <Label htmlFor="companyProfileId" className="text-right">
                 Empresa
                 </Label>
-                <Input id="company" value={formData.company || ''} onChange={handleInputChange} className="col-span-3" required/>
+                <Select value={formData.companyProfileId || undefined} onValueChange={(value) => handleSelectChange('companyProfileId', value)}>
+                  <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Seleccionar empresa" />
+                  </SelectTrigger>
+                  <SelectContent>
+                      {companies.map(company => (
+                          <SelectItem key={company.id} value={company.id}>{company.name}</SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="location" className="text-right">

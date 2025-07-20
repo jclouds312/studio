@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -9,7 +9,7 @@ import { PlusCircle, Edit, Trash2, Eye, MessageSquare, Star, KeyRound, DollarSig
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
-import { allJobs, allUsers } from '@/data';
+import { allUsers } from '@/data';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
 import { Label } from '../ui/label';
@@ -26,9 +26,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import Image from "next/image";
-import type { Candidate } from '@/lib/types';
+import type { Candidate, Job } from '@/lib/types';
 import { CandidateProfileModal } from './modals/candidate-profile-modal';
 import { ChatPanel } from '../chat/chat-panel';
+import { getAllJobs } from '@/services/jobService';
 
 const companyApplicants: Candidate[] = allUsers
     .filter(u => u.role === 'user' && ['juan.perez@example.com', 'ana.garcia@example.com'].includes(u.email))
@@ -46,6 +47,20 @@ export function CompanyDashboard() {
   const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
+  const [companyJobs, setCompanyJobs] = useState<Job[]>([]);
+
+  useEffect(() => {
+    const fetchCompanyJobs = async () => {
+      if (session.user?.companyProfileId) {
+        const allJobs = await getAllJobs();
+        const jobs = allJobs.filter(job => job.companyProfileId === session.user?.companyProfileId);
+        setCompanyJobs(jobs);
+      }
+    };
+    if (session.isMounted) {
+      fetchCompanyJobs();
+    }
+  }, [session.isMounted, session.user]);
 
   const handleViewProfile = (candidate: Candidate) => {
     setSelectedCandidate(candidate);
@@ -110,8 +125,6 @@ export function CompanyDashboard() {
     return <div className="text-center py-12">Acceso denegado. Esta sección es solo para empresas.</div>;
   }
   
-  const companyJobs = allJobs.filter(job => job.company === session.user?.name);
-
   return (
     <>
     <ChatPanel isOpen={isChatOpen} setIsOpen={setIsChatOpen} />

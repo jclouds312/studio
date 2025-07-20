@@ -34,7 +34,7 @@ export function JobsTab() {
         setIsModalOpen(true);
     };
 
-    const handleSave = async (jobData: any) => {
+    const handleSave = async (jobData: Job) => {
         try {
             if (selectedJob && selectedJob.id) {
                 const updated = await updateJob(selectedJob.id, jobData);

@@ -3,9 +3,16 @@
 
 import type { User, Job } from '@prisma/client';
 import { allUsers as staticUsers } from '@/data/users';
+import { allCompanies } from '@/data/companies';
 
 // Simulate a database connection by using static data
-let users: User[] = staticUsers as User[];
+let users: User[] = staticUsers.map(u => {
+    const company = allCompanies.find(c => c.name === u.name);
+    return {
+        ...u,
+        companyProfileId: company?.id ?? null,
+    }
+}) as User[];
 
 export async function getAllUsers(): Promise<User[]> {
     return Promise.resolve(users);
@@ -21,7 +28,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
     return Promise.resolve(user || null);
 }
 
-export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'phone' | 'location' | 'professionalSummary' | 'experience' | 'avatar' | 'savedJobIds' | 'status'> & { status?: string | null }): Promise<User> {
+export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'phone' | 'location' | 'professionalSummary' | 'experience' | 'avatar' | 'savedJobIds' | 'status' | 'companyProfileId'> & { status?: string | null }): Promise<User> {
     const newUser: User = {
         ...data,
         id: String(Date.now()),
@@ -35,6 +42,7 @@ export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedA
         avatar: 'https://placehold.co/40x40.png',
         savedJobIds: [],
         status: 'VERIFICADO', // Default status for new users
+        companyProfileId: null,
     };
     users.push(newUser);
     return Promise.resolve(newUser);
