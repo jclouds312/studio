@@ -3,7 +3,10 @@ import type { LucideIcon } from "lucide-react";
 import type { User as PrismaUser, Job as PrismaJob, Application as PrismaApplication, CompanyProfile as PrismaCompanyProfile } from '@prisma/client';
 
 export type Job = PrismaJob;
-export type User = PrismaUser;
+export type User = PrismaUser & {
+    subscriptionPlan?: string | null;
+    subscriptionUntil?: string | null;
+};
 export type Application = PrismaApplication;
 export type CompanyProfile = PrismaCompanyProfile;
 
@@ -71,3 +74,4 @@ export type SubscriptionPlan = {
   iconName: keyof typeof import('lucide-react').icons;
   pricing: PricingOption[];
 };
+

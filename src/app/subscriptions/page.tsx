@@ -6,7 +6,7 @@ import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle, Building, Award, LucideIcon, icons, Gem } from 'lucide-react';
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,15 +28,41 @@ import { useToast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { SubscriptionPlan, PricingOption } from '@/lib/types';
 import { getAllPlans } from '@/services/planService';
+import { UserProfileContext } from '@/context/user-profile-context';
+import { updateUser } from '@/services/userService';
 
 
 function PaymentModal({ planName, pricingOption, isPopular }: { planName: string, pricingOption: PricingOption, isPopular: boolean }) {
+    const { session } = useSession();
+    const { setProfileData } = useContext(UserProfileContext);
     const [isPaying, setIsPaying] = React.useState(false);
     const [paymentSuccess, setPaymentSuccess] = React.useState(false);
     const { toast } = useToast();
   
+    const activateSubscription = async () => {
+        if (!session.user) return;
+        
+        const durationMap = {
+            monthly: 1,
+            quarterly: 3,
+            'semi-annually': 6
+        };
+        const expiryDate = new Date();
+        expiryDate.setMonth(expiryDate.getMonth() + durationMap[pricingOption.duration]);
+
+        const updatedUser = await updateUser(session.user.id, {
+            subscriptionPlan: planName,
+            subscriptionUntil: expiryDate.toISOString(),
+        });
+
+        if (updatedUser) {
+            setProfileData(updatedUser);
+        }
+    };
+
     const handlePayment = async () => {
       if(pricingOption.priceAmount <= 0) {
+        await activateSubscription();
         setPaymentSuccess(true);
         return;
       }
@@ -64,7 +90,8 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
           description: `ID de Preferencia: ${preference.id}. En una app real, serías redirigido.`,
         });
 
-        setTimeout(() => {
+        setTimeout(async () => {
+          await activateSubscription();
           setIsPaying(false);
           setPaymentSuccess(true);
         }, 2000);
@@ -110,7 +137,11 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                         Estás a punto de suscribirte al <strong>Plan {planName}</strong>.
-                        Se realizará un pago único de <span className="font-bold text-foreground">{totalAmount}</span> {durationText}.
+                        {pricingOption.priceAmount > 0 ? (
+                            <> Se realizará un pago único de <span className="font-bold text-foreground">{totalAmount}</span> {durationText}.</>
+                        ) : (
+                            <> Activarás el plan gratuito.</>
+                        )}
                     </AlertDialogDescription>
                 </>
               )}
@@ -284,7 +315,9 @@ function CustomerPlanView() {
                                     <Card className={cn(
                                         "flex flex-col h-full transition-all duration-300 dark",
                                         plan.isPopular && "border-2 border-primary shadow-2xl",
-                                        plan.name.includes('Plus') && 'theme-premium'
+                                        plan.name.includes('Plus') && 'theme-premium',
+                                        plan.name.includes('VIP') && 'theme-premium',
+                                        plan.name.includes('Corporativo') && 'theme-premium'
                                     )}>
                                         {plan.isPopular && (
                                             <div className="w-full flex justify-center">

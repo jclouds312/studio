@@ -15,7 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
 import { ChatPanel } from '../chat/chat-panel';
-import type { CompanyProfile } from '@/lib/types';
+import type { CompanyProfile, User as AppUser } from '@/lib/types';
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
 import { UserProfileContext } from '@/context/user-profile-context';
@@ -133,7 +133,7 @@ function EditProfileTab() {
     try {
         const updatedUser = await updateUser(session.user.id, updatedData);
         if (updatedUser) {
-            setProfileData(prev => prev ? { ...prev, ...updatedUser } : null);
+            setProfileData(updatedUser);
             toast({
                 title: "Perfil Actualizado",
                 description: "Tus cambios se han guardado correctamente.",
@@ -402,7 +402,7 @@ function OffersTab() {
 
 export function UserProfile() {
   const { session } = useSession();
-  const { profileData, hasActiveSubscription, activePlan } = useContext(UserProfileContext);
+  const { profileData, hasActiveSubscription, activePlan, subscriptionEndDate } = useContext(UserProfileContext);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   const [companyProfile, setCompanyProfile] = useState<CompanyProfile | null>(null);
   const [initialJobs, setInitialJobs] = useState<PrismaJob[]>([]);
@@ -491,12 +491,10 @@ export function UserProfile() {
                         <Crown className="h-6 w-6"/>
                         <CardTitle className="text-2xl text-white">Miembro Premium</CardTitle>
                     </div>
-                    <CardDescription className="text-amber-100/80">
-                        ¡Estás disfrutando de los beneficios de un plan premium!
-                    </CardDescription>
                 </CardHeader>
                 <CardContent className="p-0">
                     <p className="text-lg font-semibold text-white">Plan Actual: {activePlan}</p>
+                    {subscriptionEndDate && <p className="text-sm text-amber-100/80 mt-1">Vence el: {subscriptionEndDate}</p>}
                     <Button asChild variant="link" className="text-amber-200 hover:text-white mt-1">
                         <Link href="/subscriptions">Administrar mi suscripción</Link>
                     </Button>

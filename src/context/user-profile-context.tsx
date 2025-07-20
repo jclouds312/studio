@@ -12,14 +12,15 @@ type ExtendedApplication = Application & { job: Job };
 
 // Define the shape of the context
 interface UserProfileContextType {
-    profileData: (UserProfileData & User) | null;
-    setProfileData: React.Dispatch<React.SetStateAction<(UserProfileData & User) | null>>;
+    profileData: User | null;
+    setProfileData: React.Dispatch<React.SetStateAction<User | null>>;
     savedJobs: Job[];
     handleSaveJob: (job: Job) => void;
     handleApplyForJob: (job: Job) => void;
     applications: ExtendedApplication[];
     hasActiveSubscription: boolean;
     activePlan: string | null;
+    subscriptionEndDate: string | null;
 }
 
 // Create the context with a default value
@@ -32,17 +33,17 @@ export const UserProfileContext = createContext<UserProfileContextType>({
     applications: [],
     hasActiveSubscription: false,
     activePlan: null,
+    subscriptionEndDate: null,
 });
 
 // Create the provider component
 export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     const { session } = useSession();
-    const [profileData, setProfileData] = useState<(UserProfileData & User) | null>(null);
+    const [profileData, setProfileData] = useState<User | null>(null);
     const [applications, setApplications] = useState<ExtendedApplication[]>([]);
-    
-    // Simulación del estado de la suscripción
     const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
     const [activePlan, setActivePlan] = useState<string | null>(null);
+    const [subscriptionEndDate, setSubscriptionEndDate] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -51,17 +52,25 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
                     const userProfile = await getUserById(session.user.id);
                     if (userProfile) {
                         const userApplications = await getApplicationsByUserId(session.user.id);
-                        // @ts-ignore
                         setProfileData(userProfile);
                         setApplications(userApplications as ExtendedApplication[]);
 
-                        // Simulación: el usuario 'juan.perez@example.com' tiene un plan activo.
-                        if(userProfile.email === 'juan.perez@example.com'){
-                            setHasActiveSubscription(true);
-                            setActivePlan('Profesional');
+                        if (userProfile.subscriptionPlan && userProfile.subscriptionUntil) {
+                            const endDate = new Date(userProfile.subscriptionUntil);
+                            if (endDate > new Date()) {
+                                setHasActiveSubscription(true);
+                                setActivePlan(userProfile.subscriptionPlan);
+                                setSubscriptionEndDate(endDate.toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' }));
+                            } else {
+                                // Subscription expired
+                                setHasActiveSubscription(false);
+                                setActivePlan(null);
+                                setSubscriptionEndDate(null);
+                            }
                         } else {
-                            setHasActiveSubscription(false);
-                            setActivePlan(null);
+                             setHasActiveSubscription(false);
+                             setActivePlan(null);
+                             setSubscriptionEndDate(null);
                         }
 
                     }
@@ -75,10 +84,11 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
                 setApplications([]);
                 setHasActiveSubscription(false);
                 setActivePlan(null);
+                setSubscriptionEndDate(null);
             }
         };
         fetchProfileData();
-    }, [session.isLoggedIn, session.user]);
+    }, [session.isLoggedIn, session.user, profileData?.subscriptionPlan]);
 
     const handleSaveJob = useCallback(async (job: Job) => {
         if (!profileData) return;
@@ -93,7 +103,6 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
         const updatedUser = await updateUser(profileData.id, { savedJobIds: updatedSavedJobIds });
 
         if (updatedUser) {
-            // @ts-ignore
             setProfileData(updatedUser);
         }
     }, [profileData]);
@@ -119,11 +128,10 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [profileData, applications]);
 
-    // @ts-ignore
-    const savedJobs = profileData?.savedJobs || [];
+    const savedJobs = (profileData as any)?.savedJobs || [];
 
     return (
-        <UserProfileContext.Provider value={{ profileData, setProfileData, savedJobs, handleSaveJob, handleApplyForJob, applications, hasActiveSubscription, activePlan }}>
+        <UserProfileContext.Provider value={{ profileData, setProfileData, savedJobs, handleSaveJob, handleApplyForJob, applications, hasActiveSubscription, activePlan, subscriptionEndDate }}>
             {children}
         </UserProfileContext.Provider>
     );
