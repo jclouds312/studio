@@ -71,7 +71,7 @@ export const allPlans: SubscriptionPlan[] = [
         userType: 'worker',
         isPopular: false,
         description: 'Acceso total y asistencia personalizada para tu carrera.',
-        iconName: 'Award',
+        iconName: 'Gem',
         pricing: [
              {
                 duration: 'monthly',
@@ -82,7 +82,7 @@ export const allPlans: SubscriptionPlan[] = [
                 features: [
                     'Todo lo del plan Profesional',
                     'Gestor de cuenta de carrera personal',
-                    'Creación de portafolio profesional',
+                    'Postulaciones destacadas (Prioridad)',
                     'Aplicaciones gestionadas por expertos',
                 ],
             },
