@@ -116,7 +116,7 @@ function JobListingCard({ job }: { job: Job }) {
                     </div>
                     <CardHeader className="p-6 pb-2">
                         <div className="flex gap-4">
-                            <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-white p-1 shrink-0" data-ai-hint="company logo" />
+                            <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-white p-1 shrink-0" data-ai-hint={`${job.company} logo`} />
                             <div className="flex-grow">
                                 <CardTitle className="text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors">{job.title}</CardTitle>
                                 <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">

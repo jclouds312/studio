@@ -14,18 +14,36 @@ let users: User[] = staticUsers.map(u => {
     }
 }) as User[];
 
+function convertSavedJobsToArray(user: User): User {
+    if (typeof user.savedJobIds === 'string') {
+        // @ts-ignore
+        user.savedJobIds = user.savedJobIds ? user.savedJobIds.split(',') : [];
+    }
+    return user;
+}
+
+function convertSavedJobsToString(user: Partial<User>): Partial<User> {
+    if (Array.isArray(user.savedJobIds)) {
+        // @ts-ignore
+        user.savedJobIds = user.savedJobIds.join(',');
+    }
+    return user;
+}
+
 export async function getAllUsers(): Promise<User[]> {
-    return Promise.resolve(users);
+    return Promise.resolve(users.map(convertSavedJobsToArray));
 }
 
 export async function getUserById(id: string): Promise<User | null> {
     const user = users.find(u => u.id === id);
-    return Promise.resolve(user || null);
+    if (!user) return null;
+    return Promise.resolve(convertSavedJobsToArray(JSON.parse(JSON.stringify(user))));
 }
 
 export async function getUserByEmail(email: string): Promise<User | null> {
     const user = users.find(u => u.email === email);
-    return Promise.resolve(user || null);
+    if (!user) return null;
+    return Promise.resolve(convertSavedJobsToArray(JSON.parse(JSON.stringify(user))));
 }
 
 export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'emailVerified' | 'phone' | 'location' | 'professionalSummary' | 'experience' | 'avatar' | 'savedJobIds' | 'status' | 'companyProfileId' | 'skills' | 'customQuestions' | 'subscriptionPlan' | 'subscriptionUntil'> & { status?: string | null, subscriptionPlan?: string | null, subscriptionUntil?: string | null }): Promise<User> {
@@ -40,7 +58,8 @@ export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedA
         professionalSummary: null,
         experience: null,
         avatar: 'https://placehold.co/40x40.png',
-        savedJobIds: [],
+        // @ts-ignore
+        savedJobIds: '',
         status: 'VERIFICADO', // Default status for new users
         companyProfileId: null,
         skills: [],
@@ -49,16 +68,18 @@ export async function createUser(data: Omit<User, 'id' | 'createdAt' | 'updatedA
         subscriptionUntil: null,
     };
     users.push(newUser);
-    return Promise.resolve(newUser);
+    return Promise.resolve(convertSavedJobsToArray(JSON.parse(JSON.stringify(newUser))));
 }
 
 export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): Promise<User | null> {
     const userIndex = users.findIndex(u => u.id === id);
     if (userIndex === -1) return null;
 
-    const updatedUser = { ...users[userIndex], ...data, updatedAt: new Date() };
+    const dataWithString = convertSavedJobsToString(data);
+
+    const updatedUser = { ...users[userIndex], ...dataWithString, updatedAt: new Date() };
     users[userIndex] = updatedUser as User;
-    return Promise.resolve(updatedUser as User);
+    return Promise.resolve(convertSavedJobsToArray(JSON.parse(JSON.stringify(updatedUser))));
 }
 
 export async function deleteUser(id: string): Promise<boolean> {

@@ -57,7 +57,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
                         setProfileData(userProfile);
                         
                         // Fetch saved jobs details
-                        if (userProfile.savedJobIds && userProfile.savedJobIds.length > 0) {
+                        if (userProfile.savedJobIds && Array.isArray(userProfile.savedJobIds) && userProfile.savedJobIds.length > 0) {
                             const jobPromises = userProfile.savedJobIds.map(id => getJobById(id));
                             const resolvedJobs = (await Promise.all(jobPromises)).filter((job): job is Job => job !== null);
                             setSavedJobs(resolvedJobs);
@@ -108,7 +108,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     const handleSaveJob = useCallback(async (job: Job) => {
         if (!profileData) return;
 
-        const currentSavedJobIds = profileData.savedJobIds || [];
+        const currentSavedJobIds = Array.isArray(profileData.savedJobIds) ? profileData.savedJobIds : [];
         const isAlreadySaved = currentSavedJobIds.includes(job.id);
         
         const updatedSavedJobIds = isAlreadySaved

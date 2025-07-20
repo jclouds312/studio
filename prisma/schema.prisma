@@ -1,6 +1,9 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,68 +17,68 @@ model User {
   id                    String    @id @default(cuid())
   name                  String
   email                 String    @unique
-  password              String?
-  avatar                String?
+  password              String
   role                  String    @default("user") // 'user', 'company', 'admin'
-  status                String?   @default("Verificado") // 'Verificado', 'Pendiente', 'Suspendido'
+  avatar                String?
   phone                 String?
   location              String?
   professionalSummary   String?
   experience            String?
-  savedJobIds           String[]
+  savedJobIds           String?   // Comma-separated string of Job IDs
   subscriptionPlan      String?
   subscriptionUntil     DateTime?
-  companyProfile        CompanyProfile?
-  applications          Application[]
+  status                String?   // 'Verificado', 'Pendiente', 'Suspendido'
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  companyProfileId      String?   @unique
+  company               CompanyProfile? @relation(fields: [companyProfileId], references: [id])
+  applications          Application[]
 }
 
 model CompanyProfile {
-  id      String  @id @default(cuid())
-  userId  String  @unique
-  user    User    @relation(fields: [userId], references: [id])
-  name    String
-  cuit    String  @unique
-  address String?
-  city    String?
-  province String?
-  phone   String?
-  logoUrl String?
-  status  String  @default("Activa") // 'Activa', 'Inactiva', 'Pendiente'
-  jobs    Job[]
+  id        String  @id @default(cuid())
+  name      String
+  cuit      String
+  address   String?
+  city      String?
+  province  String?
+  phone     String?
+  logoUrl   String?
+  status    String  @default("Pendiente") // 'Activa', 'Inactiva', 'Pendiente'
+  userId    String? @unique
+  user      User?
+  jobs      Job[]
 }
 
 model Job {
-  id              String      @id @default(cuid())
-  title           String
-  company         String
-  companyLogo     String
-  location        String
-  type            String      // 'Full-time', 'Part-time', etc.
-  category        String
-  description     String
-  whatsapp        String?
-  salary          String?
-  isFeatured      Boolean     @default(false)
-  isNew           Boolean     @default(false)
-  companyProfileId String?
-  companyProfile  CompanyProfile? @relation(fields: [companyProfileId], references: [id])
-  applications    Application[]
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id                String    @id @default(cuid())
+  title             String
+  company           String
+  companyLogo       String
+  location          String
+  type              String    // 'Full-time', 'Part-time', etc.
+  category          String
+  description       String
+  whatsapp          String?
+  isFeatured        Boolean   @default(false)
+  isNew             Boolean   @default(false)
+  salary            String?
+  skills            String?   // JSON string of skills
+  customQuestions   String?   // JSON string of questions
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  companyProfileId  String?
+  companyProfile    CompanyProfile? @relation(fields: [companyProfileId], references: [id])
+  applications      Application[]
 }
 
 model Application {
-  id        String   @id @default(cuid())
-  userId    String
-  jobId     String
-  user      User     @relation(fields: [userId], references: [id])
-  job       Job      @relation(fields: [jobId], references: [id])
-  status    String   @default("EN_REVISION") // 'EN_REVISION', 'CONTACTADO', 'RECHAZADO'
-  createdAt DateTime @default(now())
-
-  @@unique([userId, jobId])
+  id              String   @id @default(cuid())
+  userId          String
+  jobId           String
+  status          String   @default("EN_REVISION") // 'EN_REVISION', 'CONTACTADO', 'RECHAZADO'
+  createdAt       DateTime @default(now())
+  customAnswers   String?  // JSON string of answers
+  user            User     @relation(fields: [userId], references: [id])
+  job             Job      @relation(fields: [jobId], references: [id])
 }
-
-    

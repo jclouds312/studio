@@ -5,6 +5,30 @@ import type { Job } from '@prisma/client';
 import { allJobs as staticJobs } from '@/data/jobs';
 import {allCompanies} from "@/data/companies";
 
+// Helper functions for data conversion
+function toJobArray(job: Job): Job {
+    const newJob = { ...job };
+    // @ts-ignore
+    if (typeof newJob.skills === 'string') newJob.skills = JSON.parse(newJob.skills || '[]');
+    // @ts-ignore
+    if (typeof newJob.customQuestions === 'string') newJob.customQuestions = JSON.parse(newJob.customQuestions || '[]');
+    return newJob;
+}
+
+function fromJobArray(data: Partial<Omit<Job, 'id'>>): Partial<Omit<Job, 'id'>> {
+    const newData = { ...data };
+    if (Array.isArray(newData.skills)) {
+        // @ts-ignore
+        newData.skills = JSON.stringify(newData.skills);
+    }
+    if (Array.isArray(newData.customQuestions)) {
+        // @ts-ignore
+        newData.customQuestions = JSON.stringify(newData.customQuestions);
+    }
+    return newData;
+}
+
+
 // Simulate a database connection by using static data from a file
 let jobs: Job[] = staticJobs.map(job => {
     const company = allCompanies.find(c => c.name === job.company);
@@ -13,41 +37,40 @@ let jobs: Job[] = staticJobs.map(job => {
         createdAt: new Date(),
         updatedAt: new Date(),
         companyProfileId: company?.id ?? null,
-        skills: job.skills || [],
-        customQuestions: job.customQuestions || []
+        skills: JSON.stringify(job.skills || []),
+        customQuestions: JSON.stringify(job.customQuestions || [])
     } as Job
 });
 
 
 export async function getAllJobs(): Promise<Job[]> {
-    return Promise.resolve(jobs);
+    return Promise.resolve(jobs.map(toJobArray));
 }
 
 export async function getJobById(id: string): Promise<Job | null> {
     const job = jobs.find(j => j.id === id) || null;
-    return Promise.resolve(job);
+    if (!job) return null;
+    return Promise.resolve(toJobArray(job));
 }
 
 export async function createJob(data: Omit<Job, 'id' | 'createdAt' | 'updatedAt'>): Promise<Job> {
     const newJob: Job = {
-        ...data,
+        ...(fromJobArray(data) as any),
         id: String(Date.now()),
         createdAt: new Date(),
         updatedAt: new Date(),
-        skills: data.skills || [],
-        customQuestions: data.customQuestions || []
     };
     jobs.push(newJob);
-    return Promise.resolve(newJob);
+    return Promise.resolve(toJobArray(newJob));
 }
 
 export async function updateJob(id: string, data: Partial<Omit<Job, 'id'>>): Promise<Job | null> {
     const jobIndex = jobs.findIndex(j => j.id === id);
     if (jobIndex === -1) return null;
     
-    const updatedJob = { ...jobs[jobIndex], ...data, updatedAt: new Date() };
+    const updatedJob = { ...jobs[jobIndex], ...fromJobArray(data), updatedAt: new Date() };
     jobs[jobIndex] = updatedJob as Job;
-    return Promise.resolve(updatedJob as Job);
+    return Promise.resolve(toJobArray(updatedJob as Job));
 }
 
 export async function deleteJob(id: string): Promise<boolean> {

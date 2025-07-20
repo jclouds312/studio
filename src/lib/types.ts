@@ -1,11 +1,13 @@
 
+
 import type { LucideIcon } from "lucide-react";
 import type { User as PrismaUser, Job as PrismaJob, Application as PrismaApplication, CompanyProfile as PrismaCompanyProfile } from '@prisma/client';
 
-export type Job = PrismaJob & {
-    skills?: string[];
-    customQuestions?: string[];
+export type Job = Omit<PrismaJob, 'skills' | 'customQuestions'> & {
+    skills: string[];
+    customQuestions: string[];
 };
+
 export type User = PrismaUser & {
     subscriptionPlan?: string | null;
     subscriptionUntil?: string | null;
@@ -16,9 +18,10 @@ export type CustomAnswer = {
     answer: string;
 };
 
-export type Application = PrismaApplication & {
+export type Application = Omit<PrismaApplication, 'customAnswers'> & {
     customAnswers?: CustomAnswer[];
 };
+
 export type CompanyProfile = PrismaCompanyProfile;
 
 
