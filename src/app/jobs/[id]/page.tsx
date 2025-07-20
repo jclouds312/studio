@@ -253,5 +253,3 @@ function JobDetailClient({ job }: { job: Job }) {
     </div>
   );
 }
-
-    

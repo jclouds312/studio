@@ -28,9 +28,9 @@ const userProfileAna: any = {
 export const allUsers: any[] = [
     {
         id: '1',
-        name: 'Juan Pérez',
-        email: 'juan.perez@example.com',
-        password: 'password123',
+        name: 'Juan Pérez (Trabajador)',
+        email: 'trabajador@test.com',
+        password: 'password',
         avatar: 'https://placehold.co/40x40.png',
         role: 'user',
         status: 'Verificado',
@@ -61,8 +61,8 @@ export const allUsers: any[] = [
      {
         id: '4',
         name: 'Admin LaburoYA',
-        email: 'admin@laburoya.com',
-        password: 'julio2025',
+        email: 'admin@test.com',
+        password: 'password',
         avatar: 'https://placehold.co/40x40.png',
         role: 'admin',
         status: 'Verificado',
@@ -70,9 +70,9 @@ export const allUsers: any[] = [
     },
     {
         id: '5',
-        name: 'Tech Solutions Inc.',
-        email: 'tech.solutions@example.com',
-        password: 'password123',
+        name: 'Tech Solutions Inc. (Empresa)',
+        email: 'empresa@test.com',
+        password: 'password',
         avatar: 'https://placehold.co/40x40.png',
         role: 'company',
         status: 'Verificado',

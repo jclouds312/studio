@@ -25,6 +25,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'design',
     isNew: true,
+    isFeatured: false,
     whatsapp: null,
     salary: '$900.000 ARS mensual',
   },
@@ -38,6 +39,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     companyLogo: 'https://placehold.co/56x56.png',
     category: 'tech',
     isNew: true,
+    isFeatured: false,
     whatsapp: null,
     salary: 'A convenir',
   },
@@ -194,7 +196,19 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     isNew: false,
     whatsapp: null,
     salary: 'Excelente remuneración',
+  },
+  {
+    id: '15',
+    title: 'Asistente de Construcción',
+    company: 'Constructora del Sur',
+    location: 'Neuquén',
+    type: 'Changa',
+    description: 'Se busca ayudante de albañil para obra en Neuquén. Tareas generales de construcción, no se requiere experiencia previa pero sí ganas de aprender. Pago semanal.',
+    companyLogo: 'https://placehold.co/56x56.png',
+    category: 'construction',
+    isNew: true,
+    isFeatured: false,
+    whatsapp: '+5492991234567',
+    salary: 'A convenir',
   }
 ].map(job => ({ ...job, createdAt: new Date(), updatedAt: new Date() }));
-
-    

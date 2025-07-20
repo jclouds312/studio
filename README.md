@@ -13,6 +13,20 @@ Este es un proyecto de Next.js que sirve como una plataforma completa para la b�
 *   **Pagos (simulados):** Integración simulada de Mercado Pago.
 *   **IA Generativa:** Genkit para futuras integraciones de IA.
 
+## Cuentas de Prueba
+
+Para facilitar las pruebas y la revisión de la plataforma, se han preconfigurado las siguientes cuentas:
+
+*   **Rol de Trabajador:**
+    *   **Email:** `trabajador@test.com`
+    *   **Contraseña:** `password`
+*   **Rol de Empresa:**
+    *   **Email:** `empresa@test.com`
+    *   **Contraseña:** `password`
+*   **Rol de Administrador:**
+    *   **Email:** `admin@test.com`
+    *   **Contraseña:** `password`
+
 ## Funcionalidades Clave
 
 *   **Doble Rol de Usuario:** La plataforma soporta dos flujos principales: **Trabajadores** que buscan empleo y **Empresas** que buscan contratar.
@@ -21,6 +35,8 @@ Este es un proyecto de Next.js que sirve como una plataforma completa para la b�
 *   **Proceso de Postulación:** Los usuarios pueden postularse a ofertas y las empresas pueden ver los candidatos.
 *   **Perfiles de Usuario y Empresa:** Paneles dedicados para que los usuarios gestionen su información, postulaciones y trabajos guardados, y para que las empresas gestionen sus ofertas y candidatos.
 *   **Funcionalidades de PWA:** La aplicación es una Progressive Web App (PWA), lo que permite su instalación en dispositivos móviles.
+*   **Contacto Directo:** Las empresas pueden añadir su número de WhatsApp para que los candidatos puedan contactarlas directamente desde la oferta.
+*   **Mapas Integrados:** Cada oferta de trabajo muestra un mapa interactivo con la ubicación del empleo.
 
 ## Instalación como Aplicación Móvil (PWA)
 

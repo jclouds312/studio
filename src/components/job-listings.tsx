@@ -118,7 +118,7 @@ function JobListingCard({ job }: { job: Job }) {
                         <div className="flex gap-4">
                             <Image src={job.companyLogo} alt={`${job.company} logo`} width={56} height={56} className="rounded-lg border bg-white p-1 shrink-0" data-ai-hint="company logo" />
                             <div className="flex-grow">
-                                <CardTitle className="text-lg md:text-xl mb-1 text-blue-400">{job.title}</CardTitle>
+                                <CardTitle className="text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors">{job.title}</CardTitle>
                                 <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
                                     <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
                                     <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
@@ -133,9 +133,9 @@ function JobListingCard({ job }: { job: Job }) {
                         </div>
                     </CardHeader>
                     <CardContent className="p-6 pt-4 flex-grow flex flex-col justify-between">
-                        <p className="text-sm text-card-foreground line-clamp-2 mb-4">{job.description}</p>
+                        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{job.description}</p>
                         <div className="flex flex-row justify-between items-center pt-4 border-t border-border/50 mt-auto">
-                            <Badge variant="outline" className="text-xs capitalize text-amber-400 border-amber-400/50 bg-amber-400/10">{job.type}</Badge>
+                            <Badge variant="outline" className="text-xs capitalize border-amber-400/50 bg-amber-400/10 text-amber-400">{job.type}</Badge>
                             <div className="flex items-center gap-2">
                                 {session.isLoggedIn && session.user?.role === 'user' && (
                                     <Button variant="ghost" size="sm" onClick={onSaveClick} className="hidden md:flex">
@@ -283,5 +283,3 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
         </div>
     );
 }
-
-    

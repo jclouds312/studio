@@ -1,4 +1,3 @@
-
 // src/scripts/sync-to-firebase.ts
 
 /**
@@ -58,7 +57,13 @@ async function main() {
         collection: (name: string) => ({
             doc: (id: string) => ({
                 set: (data: any) => {
-                    console.log(`[Simulado] Escribiendo en Firestore: ${name}/${id}`, data);
+                    console.log(`[Simulado] Escribiendo en Firestore: ${name}/${id}`);
+                    // Omitir la impresión de datos largos como el CV para mantener la consola limpia
+                    const dataToLog = { ...data };
+                    if (dataToLog.profileData && dataToLog.profileData.cv) {
+                        dataToLog.profileData.cv = '...base64_data...';
+                    }
+                    // console.log(dataToLog);
                     return Promise.resolve();
                 }
             })
@@ -71,14 +76,25 @@ async function main() {
         console.log(`\n--- Sincronizando colección: ${collectionName} ---`);
         
         // const items = await dataFetcher(); // Descomentar en un escenario real
-        const items: any[] = []; // Datos simulados para demostración
-        if (items.length === 0) {
-             console.log(`[Simulado] No hay datos para sincronizar en ${collectionName}. Usando datos de ejemplo.`);
-             if (collectionName === 'users') items.push({ id: '1', name: 'Usuario de Ejemplo' });
-             if (collectionName === 'companies') items.push({ id: 'comp1', name: 'Empresa de Ejemplo' });
-             if (collectionName === 'jobs') items.push({ id: 'job1', title: 'Oferta de Ejemplo' });
+        let items: any[] = []; // Usaremos esta variable para datos de ejemplo si el fetcher no devuelve nada
+        
+        try {
+             // En un escenario real, usarías los fetchers
+             // items = await dataFetcher(); 
+             
+             // Para la simulación, vamos a importar directamente los datos estáticos
+             if (collectionName === 'users') items = (await import('../data/users')).allUsers;
+             if (collectionName === 'companies') items = (await import('../data/companies')).allCompanies;
+             if (collectionName === 'jobs') items = (await import('../data/jobs')).allJobs;
+
+        } catch (e) {
+            console.log(`No se pudo cargar la data para ${collectionName}, usando un array vacío.`);
         }
 
+        if (items.length === 0) {
+             console.log(`[Simulado] No hay datos para sincronizar en ${collectionName}.`);
+             return;
+        }
 
         const collectionRef = db.collection(collectionName);
         
@@ -90,7 +106,7 @@ async function main() {
             try {
                 // Usamos `set` con el ID del item local para mantener la consistencia.
                 // Esto crea o sobrescribe el documento en Firestore.
-                await collectionRef.doc(item.id).set(item);
+                await collectionRef.doc(String(item.id)).set(item);
                 console.log(` -> Documento ${item.id} sincronizado en ${collectionName}.`);
             } catch (error) {
                 console.error(`Error sincronizando el documento ${item.id} en ${collectionName}:`, error);
@@ -101,12 +117,12 @@ async function main() {
 
     // --- 3. EJECUTAR SINCRONIZACIÓN PARA CADA COLECCIÓN ---
     try {
+        // Ejecución simulada que carga los datos de los archivos locales para la demo.
         // En un escenario real, pasarías las funciones de servicio reales:
         // await syncCollection('users', getAllUsers);
         // await syncCollection('companies', getAllCompanies);
         // await syncCollection('jobs', getAllJobs);
         
-        // Ejecución simulada para demostración:
         await syncCollection('users', async () => []);
         await syncCollection('companies', async () => []);
         await syncCollection('jobs', async () => []);
