@@ -1,3 +1,4 @@
+
 /** @type {import('next').NextConfig} */
 const withPWA = require('next-pwa')({
   dest: 'public',
@@ -44,6 +45,10 @@ const nextConfig = {
         hostname: 'www.mercadopago.com.co',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
       },
     ],
   },

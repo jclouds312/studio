@@ -46,7 +46,7 @@ async function JobCarousel() {
                                                     </Badge>
                                                 )}
                                                 {job.isNew && !job.isFeatured && (
-                                                    <Badge variant="secondary" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-primary/20">
+                                                     <Badge variant="outline" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-sky-400 bg-sky-500/10 text-sky-400">
                                                         <Info className="h-4 w-4" />
                                                         NUEVO
                                                     </Badge>

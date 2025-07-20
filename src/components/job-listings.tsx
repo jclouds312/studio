@@ -27,9 +27,9 @@ function JobListingCard({ job }: { job: Job }) {
     const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
 
     const handleApply = (e: React.MouseEvent) => {
+        e.preventDefault();
         setIsApplying(true);
         if (!session.isLoggedIn) {
-            e.preventDefault();
             toast({
                 title: "Inicia Sesión",
                 description: "Debes iniciar sesión para postularte a una oferta.",
@@ -38,12 +38,12 @@ function JobListingCard({ job }: { job: Job }) {
             setIsApplying(false);
             return;
         }
-        // No prevenimos el default, la navegación del Link se ejecutará
+        router.push(`/jobs/${job.id}`);
     };
 
     const onSaveClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        e.stopPropagation(); // Detiene la propagación para que solo se guarde sin navegar.
+        e.stopPropagation();
         if (!session.isLoggedIn) {
             toast({
                 title: "Inicia Sesión",
@@ -66,7 +66,7 @@ function JobListingCard({ job }: { job: Job }) {
 
     return (
         <Link href={`/jobs/${job.id}`} className="block h-full group">
-            <div className={cn("h-full card-neon-border rounded-lg", job.isNew && !job.isFeatured && "border-2 border-sky-400")}>
+            <div className={cn("h-full card-neon-border rounded-lg")}>
                 <Card className={cn("hover:shadow-xl transition-all duration-300 transform group-hover:scale-[1.02] relative overflow-hidden flex flex-col h-full bg-transparent border-0", getThemeClass())}>
                     <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                         {job.isFeatured && (
@@ -76,7 +76,7 @@ function JobListingCard({ job }: { job: Job }) {
                             </Badge>
                         )}
                          {job.isNew && !job.isFeatured && (
-                            <Badge variant="outline" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-sky-400 bg-sky-500/10 text-sky-400">
+                             <Badge variant="outline" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-sky-400 bg-sky-500/10 text-sky-400">
                                 <Info className="h-4 w-4" />
                                 NUEVO
                             </Badge>

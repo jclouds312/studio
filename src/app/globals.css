@@ -29,7 +29,7 @@ body {
     transform: translate(-50%, -50%);
     width: 150%;
     height: 150%;
-    background: conic-gradient(from 0deg, hsl(var(--primary)), hsl(285, 100%, 70%), hsl(300, 100%, 70%), hsl(var(--primary)));
+    background: conic-gradient(from 0deg, hsl(var(--primary)), hsl(145, 100%, 70%), hsl(220, 100%, 70%), hsl(var(--primary)));
     animation: keyframes-border-spin 4s linear infinite;
     z-index: -1;
   }
@@ -133,7 +133,7 @@ body {
   .theme-premium {
     --card: 346.8 77.2% 20%; /* Vino tinto oscuro */
     --card-foreground: 0 0% 100%; /* Blanco puro */
-    --primary: 270 85% 65%;   /* Púrpura metálico */
+    --primary: 270 85% 65%; /* Púrpura metálico, para que coincida con el resto de la app */
     --primary-foreground: 0 0% 100%;
     --muted-foreground: 0 0% 85%; /* Un gris claro para texto secundario */
     --border: 346.8 77.2% 30%;
