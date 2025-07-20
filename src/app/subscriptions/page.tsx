@@ -273,12 +273,11 @@ function CustomerPlanView() {
     React.useEffect(() => {
         getAllPlans().then(setAllPlans);
     }, []);
-
-    const visiblePlans = allPlans.filter(plan => {
-        if (userRole === 'user') return plan.userType === 'worker';
-        if (userRole === 'company') return plan.userType === 'company';
-        return false; 
-    });
+    
+    const visiblePlans = React.useMemo(() => {
+        const targetUserType = userRole === 'user' ? 'worker' : 'company';
+        return allPlans.filter(plan => plan.userType === targetUserType);
+    }, [allPlans, userRole]);
 
     const title = userRole === 'company' ? 'Planes para Empresas' : 'Planes para Candidatos';
     const description = userRole === 'company' 
