@@ -1,0 +1,17 @@
+CUENTAS DE PRUEBA PARA LABUROYA
+
+Este archivo contiene las credenciales para acceder a la plataforma con los diferentes roles de usuario.
+
+---
+
+**Rol: Trabajador**
+Email: trabajador@test.com
+Contraseña: password
+
+**Rol: Empresa**
+Email: empresa@test.com
+Contraseña: password
+
+**Rol: Administrador**
+Email: admin@test.com
+Contraseña: password

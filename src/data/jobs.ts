@@ -231,7 +231,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     description: 'Importante estudio jurídico busca abogado/a con experiencia en derecho corporativo para asesoramiento a empresas, redacción de contratos y seguimiento de litigios. Se requiere matrícula activa.',
     desiredProfile: 'Abogado/a con al menos 3 años de experiencia en derecho empresario. Inglés avanzado es un plus.',
     companyLogo: 'https://images.unsplash.com/photo-1599249300675-c39f1dd2d6be?q=80&w=1974&auto=format&fit=crop',
-    imageUrl: 'https://images.unsplash.com/photo-1599249300675-c39f1dd2d6be?q=80&w=1974&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1589216532372-1c2a36790039?q=80&w=2070&auto=format&fit=crop',
     category: 'legal',
     isFeatured: false,
     isNew: false,
