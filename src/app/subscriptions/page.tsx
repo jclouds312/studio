@@ -219,51 +219,55 @@ function AdminPlanView() {
              ) : plans.map((plan) => {
                 const Icon = icons[plan.iconName] as LucideIcon;
                 return (
-                    <Card key={plan.name} className={cn(
-                        "flex flex-col dark",
-                        plan.isPopular && "border-primary shadow-2xl relative",
-                        plan.name === 'Empresa Plus' && 'theme-premium'
-                    )}>
-                        {plan.isPopular && (
-                            <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
-                                <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold flex items-center gap-1">
-                                    <Star className="h-4 w-4"/>
-                                    MÁS POPULAR
-                                </Badge>
-                            </div>
-                        )}
-                        <CardHeader className="text-center pt-10">
-                            <div className="mx-auto bg-secondary p-3 rounded-full w-fit mb-2">
-                                <Icon className="h-6 w-6 text-primary" />
-                            </div>
-                            <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                            <CardDescription>{plan.description}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="flex-grow space-y-6">
-                            <div className="text-center">
-                                <span className="text-4xl font-bold">{plan.pricing[0].price}</span>
-                                <span className="text-muted-foreground"> {plan.pricing[0].priceDetail}</span>
-                            </div>
-                            <ul className="space-y-3 text-sm">
-                                {plan.pricing[0].features.map((feature, index) => (
-                                    <li key={index} className="flex items-start gap-3">
-                                        <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
-                                        <span>{feature}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </CardContent>
-                        <CardFooter className='flex gap-2'>
-                           <Button variant="outline" className='w-full'>
-                                <Edit className='mr-2 h-4 w-4' />
-                                Editar
-                           </Button>
-                           <Button variant="destructive" className='w-full' onClick={() => handleDelete(plan.name)}>
-                                <Trash2 className='mr-2 h-4 w-4'/>
-                                Eliminar
-                           </Button>
-                        </CardFooter>
-                    </Card>
+                    <div key={plan.name} className="h-full card-neon-border rounded-lg">
+                        <Card className={cn(
+                            "flex flex-col dark h-full bg-transparent border-0",
+                            plan.isPopular && "relative",
+                            plan.name.includes('Plus') && 'theme-premium',
+                            plan.name.includes('VIP') && 'theme-premium',
+                            plan.name.includes('Corporativo') && 'theme-premium'
+                        )}>
+                            {plan.isPopular && (
+                                <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
+                                    <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold flex items-center gap-1">
+                                        <Star className="h-4 w-4"/>
+                                        MÁS POPULAR
+                                    </Badge>
+                                </div>
+                            )}
+                            <CardHeader className="text-center pt-10">
+                                <div className="mx-auto bg-secondary p-3 rounded-full w-fit mb-2">
+                                    <Icon className="h-6 w-6 text-primary" />
+                                </div>
+                                <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                                <CardDescription>{plan.description}</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex-grow space-y-6">
+                                <div className="text-center">
+                                    <span className="text-4xl font-bold">{plan.pricing[0].price}</span>
+                                    <span className="text-muted-foreground"> {plan.pricing[0].priceDetail}</span>
+                                </div>
+                                <ul className="space-y-3 text-sm">
+                                    {plan.pricing[0].features.map((feature, index) => (
+                                        <li key={index} className="flex items-start gap-3">
+                                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
+                                            <span>{feature}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </CardContent>
+                            <CardFooter className='flex gap-2 mt-auto'>
+                            <Button variant="outline" className='w-full'>
+                                    <Edit className='mr-2 h-4 w-4' />
+                                    Editar
+                            </Button>
+                            <Button variant="destructive" className='w-full' onClick={() => handleDelete(plan.name)}>
+                                    <Trash2 className='mr-2 h-4 w-4'/>
+                                    Eliminar
+                            </Button>
+                            </CardFooter>
+                        </Card>
+                    </div>
                 );
             })}
         </div>
@@ -323,10 +327,10 @@ function CustomerPlanView() {
                         const Icon = icons[plan.iconName] as LucideIcon;
                         return (
                             <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                                <div className="p-1 h-full">
+                                <div className="p-1 h-full card-neon-border rounded-lg">
                                     <Card className={cn(
-                                        "flex flex-col h-full transition-all duration-300 dark",
-                                        plan.isPopular && "border-2 border-primary shadow-2xl",
+                                        "flex flex-col h-full transition-all duration-300 dark bg-transparent border-0",
+                                        plan.isPopular && "relative",
                                         plan.name.includes('Plus') && 'theme-premium',
                                         plan.name.includes('VIP') && 'theme-premium',
                                         plan.name.includes('Corporativo') && 'theme-premium'
@@ -432,3 +436,4 @@ export default function SubscriptionsPage() {
     </div>
   );
 }
+
