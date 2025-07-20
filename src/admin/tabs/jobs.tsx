@@ -83,7 +83,7 @@ export function JobsTab() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[64px] hidden sm:table-cell">Imagen</TableHead>
+                            <TableHead className="hidden sm:table-cell w-[100px]">Imagen</TableHead>
                             <TableHead>Título</TableHead>
                             <TableHead>Empresa</TableHead>
                             <TableHead>Categoría</TableHead>
