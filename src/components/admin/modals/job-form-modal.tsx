@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import React, { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
@@ -234,26 +234,40 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
                 Categoría
                 </Label>
                 <Select value={formData.category} onValueChange={(value) => handleSelectChange('category', value)}>
-                <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Seleccionar categoría" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="tech">Tecnología</SelectItem>
-                    <SelectItem value="design">Diseño</SelectItem>
-                    <SelectItem value="marketing">Marketing</SelectItem>
-                    <SelectItem value="sales">Ventas</SelectItem>
-                    <SelectItem value="domestic">Doméstico</SelectItem>
-                    <SelectItem value="construction">Construcción</SelectItem>
-                    <SelectItem value="admin">Administración</SelectItem>
-                    <SelectItem value="gastronomy">Gastronomía</SelectItem>
-                    <SelectItem value="health">Salud</SelectItem>
-                    <SelectItem value="education">Educación</SelectItem>
-                    <SelectItem value="hr">Recursos Humanos</SelectItem>
-                    <SelectItem value="finance">Finanzas</SelectItem>
-                    <SelectItem value="legal">Legal</SelectItem>
-                    <SelectItem value="logistics">Logística</SelectItem>
-                    <SelectItem value="other">Otro</SelectItem>
-                </SelectContent>
+                    <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Seleccionar categoría" />
+                    </SelectTrigger>
+                    <SelectContent>
+                         <SelectGroup>
+                            <SelectLabel>Tecnología y Desarrollo</SelectLabel>
+                            <SelectItem value="tech">Desarrollo de Software</SelectItem>
+                            <SelectItem value="it-support">Soporte TI y Redes</SelectItem>
+                            <SelectItem value="data">Datos y BI</SelectItem>
+                        </SelectGroup>
+                         <SelectGroup>
+                            <SelectLabel>Diseño y Creatividad</SelectLabel>
+                            <SelectItem value="design">Diseño UX/UI y Gráfico</SelectItem>
+                            <SelectItem value="audiovisual">Contenido y Audiovisual</SelectItem>
+                        </SelectGroup>
+                        <SelectGroup>
+                            <SelectLabel>Negocios y Administración</SelectLabel>
+                            <SelectItem value="admin">Administración y Finanzas</SelectItem>
+                            <SelectItem value="sales">Ventas y Comercial</SelectItem>
+                            <SelectItem value="marketing">Marketing y Comunicación</SelectItem>
+                            <SelectItem value="hr">Recursos Humanos</SelectItem>
+                            <SelectItem value="legal">Legal</SelectItem>
+                            <SelectItem value="logistics">Logística y Supply Chain</SelectItem>
+                        </SelectGroup>
+                        <SelectGroup>
+                            <SelectLabel>Oficios y Servicios</SelectLabel>
+                            <SelectItem value="gastronomy">Gastronomía y Turismo</SelectItem>
+                            <SelectItem value="construction">Construcción y Mantenimiento</SelectItem>
+                            <SelectItem value="domestic">Servicios Domésticos</SelectItem>
+                            <SelectItem value="health">Salud y Cuidado Personal</SelectItem>
+                            <SelectItem value="education">Educación</SelectItem>
+                        </SelectGroup>
+                        <SelectItem value="other">Otro</SelectItem>
+                    </SelectContent>
                 </Select>
             </div>
             <div className="grid grid-cols-4 items-start gap-4">

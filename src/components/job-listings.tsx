@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { MapPin, Search, Briefcase, Sparkles, Star, Send, Info, Loader2, DollarSign } from "lucide-react";
 import type { Job } from "@prisma/client";
@@ -178,22 +178,45 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Todas las ubicaciones</SelectItem>
-                                <SelectItem value="Remoto">Remoto</SelectItem>
-                                <SelectItem value="Buenos Aires">Buenos Aires</SelectItem>
-                                <SelectItem value="La Matanza">La Matanza (GBA)</SelectItem>
-                                <SelectItem value="Quilmes">Quilmes (GBA)</SelectItem>
-                                <SelectItem value="Lomas de Zamora">Lomas de Zamora (GBA)</SelectItem>
-                                <SelectItem value="La Plata">La Plata</SelectItem>
-                                <SelectItem value="Mar del Plata">Mar del Plata</SelectItem>
-                                <SelectItem value="Córdoba">Córdoba</SelectItem>
-                                <SelectItem value="Rosario">Rosario</SelectItem>
-                                <SelectItem value="Mendoza">Mendoza</SelectItem>
-                                <SelectItem value="San Miguel de Tucumán">San Miguel de Tucumán</SelectItem>
-                                <SelectItem value="Salta">Salta</SelectItem>
-                                <SelectItem value="Santa Fe">Santa Fe</SelectItem>
-                                <SelectItem value="Neuquén">Neuquén</SelectItem>
-                                <SelectItem value="Bariloche">Bariloche</SelectItem>
-                                <SelectItem value="Ushuaia">Ushuaia</SelectItem>
+                                <SelectItem value="Remoto">Trabajo Remoto</SelectItem>
+                                <SelectGroup>
+                                    <SelectLabel>Capital Federal y GBA</SelectLabel>
+                                    <SelectItem value="Capital Federal">Capital Federal</SelectItem>
+                                    <SelectItem value="GBA Norte">GBA Zona Norte</SelectItem>
+                                    <SelectItem value="GBA Oeste">GBA Zona Oeste</SelectItem>
+                                    <SelectItem value="GBA Sur">GBA Zona Sur</SelectItem>
+                                    <SelectItem value="La Plata">La Plata</SelectItem>
+                                </SelectGroup>
+                                <SelectGroup>
+                                    <SelectLabel>Provincia de Buenos Aires</SelectLabel>
+                                    <SelectItem value="Mar del Plata">Mar del Plata</SelectItem>
+                                    <SelectItem value="Bahía Blanca">Bahía Blanca</SelectItem>
+                                    <SelectItem value="Tandil">Tandil</SelectItem>
+                                </SelectGroup>
+                                 <SelectGroup>
+                                    <SelectLabel>Centro del País</SelectLabel>
+                                    <SelectItem value="Córdoba">Córdoba</SelectItem>
+                                    <SelectItem value="Rosario">Rosario</SelectItem>
+                                    <SelectItem value="Santa Fe">Santa Fe</SelectItem>
+                                </SelectGroup>
+                                <SelectGroup>
+                                    <SelectLabel>Cuyo</SelectLabel>
+                                    <SelectItem value="Mendoza">Mendoza</SelectItem>
+                                    <SelectItem value="San Juan">San Juan</SelectItem>
+                                </SelectGroup>
+                                <SelectGroup>
+                                    <SelectLabel>Norte</SelectLabel>
+                                    <SelectItem value="San Miguel de Tucumán">San Miguel de Tucumán</SelectItem>
+                                    <SelectItem value="Salta">Salta</SelectItem>
+                                    <SelectItem value="Jujuy">Jujuy</SelectItem>
+                                </SelectGroup>
+                                <SelectGroup>
+                                    <SelectLabel>Patagonia</SelectLabel>
+                                    <SelectItem value="Neuquén">Neuquén</SelectItem>
+                                    <SelectItem value="Bariloche">Bariloche</SelectItem>
+                                    <SelectItem value="Comodoro Rivadavia">Comodoro Rivadavia</SelectItem>
+                                    <SelectItem value="Ushuaia">Ushuaia</SelectItem>
+                                </SelectGroup>
                             </SelectContent>
                         </Select>
                     </div>
@@ -204,20 +227,34 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Todas las categorías</SelectItem>
-                                <SelectItem value="tech">Tecnología</SelectItem>
-                                <SelectItem value="design">Diseño</SelectItem>
-                                <SelectItem value="marketing">Marketing</SelectItem>
-                                <SelectItem value="sales">Ventas</SelectItem>
-                                <SelectItem value="domestic">Doméstico</SelectItem>
-                                <SelectItem value="construction">Construcción</SelectItem>
-                                <SelectItem value="admin">Administración</SelectItem>
-                                <SelectItem value="gastronomy">Gastronomía</SelectItem>
-                                <SelectItem value="health">Salud</SelectItem>
-                                <SelectItem value="education">Educación</SelectItem>
-                                <SelectItem value="hr">Recursos Humanos</SelectItem>
-                                <SelectItem value="finance">Finanzas</SelectItem>
-                                <SelectItem value="legal">Legal</SelectItem>
-                                <SelectItem value="logistics">Logística</SelectItem>
+                                <SelectGroup>
+                                    <SelectLabel>Tecnología y Desarrollo</SelectLabel>
+                                    <SelectItem value="tech">Desarrollo de Software</SelectItem>
+                                    <SelectItem value="it-support">Soporte TI y Redes</SelectItem>
+                                    <SelectItem value="data">Datos y BI</SelectItem>
+                                </SelectGroup>
+                                 <SelectGroup>
+                                    <SelectLabel>Diseño y Creatividad</SelectLabel>
+                                    <SelectItem value="design">Diseño UX/UI y Gráfico</SelectItem>
+                                    <SelectItem value="audiovisual">Contenido y Audiovisual</SelectItem>
+                                </SelectGroup>
+                                <SelectGroup>
+                                    <SelectLabel>Negocios y Administración</SelectLabel>
+                                    <SelectItem value="admin">Administración y Finanzas</SelectItem>
+                                    <SelectItem value="sales">Ventas y Comercial</SelectItem>
+                                    <SelectItem value="marketing">Marketing y Comunicación</SelectItem>
+                                    <SelectItem value="hr">Recursos Humanos</SelectItem>
+                                    <SelectItem value="legal">Legal</SelectItem>
+                                    <SelectItem value="logistics">Logística y Supply Chain</SelectItem>
+                                </SelectGroup>
+                                <SelectGroup>
+                                    <SelectLabel>Oficios y Servicios</SelectLabel>
+                                    <SelectItem value="gastronomy">Gastronomía y Turismo</SelectItem>
+                                    <SelectItem value="construction">Construcción y Mantenimiento</SelectItem>
+                                    <SelectItem value="domestic">Servicios Domésticos</SelectItem>
+                                    <SelectItem value="health">Salud y Cuidado Personal</SelectItem>
+                                    <SelectItem value="education">Educación</SelectItem>
+                                </SelectGroup>
                                 <SelectItem value="other">Otro</SelectItem>
                             </SelectContent>
                         </Select>

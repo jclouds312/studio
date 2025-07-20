@@ -22,43 +22,53 @@ type Category = {
     id: string;
     name: string;
     description: string;
+    group: string;
 };
 
 const initialCategories: Category[] = [
-    { id: 'tech', name: 'Tecnología', description: 'Desarrollo de software, IT, etc.'},
-    { id: 'design', name: 'Diseño', description: 'Diseño gráfico, UX/UI, etc.'},
-    { id: 'marketing', name: 'Marketing', description: 'Marketing digital, SEO, etc.'},
-    { id: 'sales', name: 'Ventas', description: 'Ejecutivos de venta, etc.'},
-    { id: 'domestic', name: 'Doméstico', description: 'Limpieza, cuidado de niños, etc.'},
-    { id: 'construction', name: 'Construcción', description: 'Albañilería, plomería, etc.'},
-    { id: 'admin', name: 'Administración', description: 'Contabilidad, secretariado, etc.' },
-    { id: 'gastronomy', name: 'Gastronomía', description: 'Chefs, mozos, baristas, etc.' },
-    { id: 'health', name: 'Salud', description: 'Enfermería, cuidado de ancianos, etc.' },
-    { id: 'education', name: 'Educación', description: 'Docentes, tutores, etc.' },
-    { id: 'hr', name: 'Recursos Humanos', description: 'Reclutamiento, gestión de personal, etc.' },
-    { id: 'finance', name: 'Finanzas', description: 'Contabilidad, banca, inversiones, etc.' },
-    { id: 'legal', name: 'Legal', description: 'Abogacía, asesoría jurídica, etc.' },
-    { id: 'logistics', name: 'Logística', description: 'Transporte, depósito, supply chain, etc.' },
-    { id: 'other', name: 'Otro', description: 'Otras categorías no especificadas.' },
+    { id: 'tech', name: 'Desarrollo de Software', description: 'Ingeniería, desarrollo, arquitectura.', group: 'Tecnología y Desarrollo' },
+    { id: 'it-support', name: 'Soporte TI y Redes', description: 'Help desk, redes, ciberseguridad.', group: 'Tecnología y Desarrollo' },
+    { id: 'data', name: 'Datos y BI', description: 'Análisis de datos, ciencia de datos, BI.', group: 'Tecnología y Desarrollo' },
+
+    { id: 'design', name: 'Diseño UX/UI y Gráfico', description: 'Diseño de producto, branding, web.', group: 'Diseño y Creatividad' },
+    { id: 'audiovisual', name: 'Contenido y Audiovisual', description: 'Video, fotografía, redacción.', group: 'Diseño y Creatividad' },
+
+    { id: 'admin', name: 'Administración y Finanzas', description: 'Contabilidad, secretariado, gestión.', group: 'Negocios y Administración' },
+    { id: 'sales', name: 'Ventas y Comercial', description: 'Ejecutivos de venta, B2B, B2C.', group: 'Negocios y Administración' },
+    { id: 'marketing', name: 'Marketing y Comunicación', description: 'Marketing digital, SEO, redes.', group: 'Negocios y Administración' },
+    { id: 'hr', name: 'Recursos Humanos', description: 'Reclutamiento, gestión de personal.', group: 'Negocios y Administración' },
+    { id: 'legal', name: 'Legal', description: 'Abogacía, asesoría jurídica.', group: 'Negocios y Administración' },
+    { id: 'logistics', name: 'Logística y Supply Chain', description: 'Transporte, depósito, compras.', group: 'Negocios y Administración' },
+    
+    { id: 'gastronomy', name: 'Gastronomía y Turismo', description: 'Chefs, mozos, hotelería.', group: 'Oficios y Servicios' },
+    { id: 'construction', name: 'Construcción y Mantenimiento', description: 'Albañilería, plomería, electricidad.', group: 'Oficios y Servicios' },
+    { id: 'domestic', name: 'Servicios Domésticos', description: 'Limpieza, cuidado de niños, etc.', group: 'Oficios y Servicios' },
+    { id: 'health', name: 'Salud y Cuidado Personal', description: 'Enfermería, cuidado de ancianos, estética.', group: 'Oficios y Servicios' },
+    { id: 'education', name: 'Educación', description: 'Docentes, tutores, capacitación.', group: 'Oficios y Servicios' },
+
+    { id: 'other', name: 'Otro', description: 'Otras categorías no especificadas.', group: 'Otros' },
 ];
 
 function CategoryFormModal({ isOpen, setIsOpen, category, onSave }: { isOpen: boolean; setIsOpen: (open: boolean) => void; category: Category | null; onSave: (category: Category) => void; }) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [group, setGroup] = useState('');
 
     React.useEffect(() => {
         if (category) {
             setName(category.name);
             setDescription(category.description);
+            setGroup(category.group);
         } else {
             setName('');
             setDescription('');
+            setGroup('');
         }
     }, [category, isOpen]);
 
     const handleSubmit = () => {
         const id = category ? category.id : name.toLowerCase().replace(/\s+/g, '-');
-        onSave({ id, name, description });
+        onSave({ id, name, description, group });
         setIsOpen(false);
     };
 
@@ -79,6 +89,10 @@ function CategoryFormModal({ isOpen, setIsOpen, category, onSave }: { isOpen: bo
                     <div className="space-y-2">
                         <Label htmlFor="cat-desc">Descripción</Label>
                         <Input id="cat-desc" placeholder="Breve descripción" value={description} onChange={(e) => setDescription(e.target.value)} />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="cat-group">Grupo</Label>
+                        <Input id="cat-group" placeholder="Ej: Oficios y Servicios" value={group} onChange={(e) => setGroup(e.target.value)} />
                     </div>
                 </div>
                 <DialogFooter>
@@ -138,6 +152,7 @@ export function CategoriesTab() {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Nombre</TableHead>
+                            <TableHead>Grupo</TableHead>
                             <TableHead>Descripción</TableHead>
                             <TableHead>
                                 <span className="sr-only">Acciones</span>
@@ -148,6 +163,7 @@ export function CategoriesTab() {
                         {categories.map(category => (
                             <TableRow key={category.id}>
                                 <TableCell className="font-medium">{category.name}</TableCell>
+                                <TableCell>{category.group}</TableCell>
                                 <TableCell>{category.description}</TableCell>
                                 <TableCell>
                                     <DropdownMenu>
