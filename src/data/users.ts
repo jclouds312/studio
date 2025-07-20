@@ -35,6 +35,8 @@ export const allUsers: any[] = [
         role: 'user',
         status: 'Verificado',
         createdAt: new Date('2023-10-27'),
+        subscriptionPlan: 'Profesional',
+        subscriptionUntil: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
         profileData: userProfileJuan
     },
     {
@@ -76,7 +78,9 @@ export const allUsers: any[] = [
         avatar: 'https://placehold.co/40x40.png',
         role: 'company',
         status: 'Verificado',
-        createdAt: new Date('2024-02-15')
+        createdAt: new Date('2024-02-15'),
+        subscriptionPlan: 'Empresa Plus',
+        subscriptionUntil: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
     },
     {
         id: '6',

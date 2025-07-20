@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Edit, Trash2, Eye, MessageSquare, Star, KeyRound, DollarSign, Loader2, Sparkles, CreditCard } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Eye, MessageSquare, Star, KeyRound, DollarSign, Loader2, Sparkles, CreditCard, Crown, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
@@ -32,6 +32,7 @@ import { ChatPanel } from '../chat/chat-panel';
 import { getAllJobs, createJob, updateJob, deleteJob } from '@/services/jobService';
 import { JobFormModal } from '../admin/modals/job-form-modal';
 import { cn } from '@/lib/utils';
+import { UserProfileContext } from '@/context/user-profile-context';
 
 const companyApplicants: Candidate[] = allUsers
     .filter(u => u.role === 'user' && ['trabajador@test.com', 'ana.garcia@example.com'].includes(u.email))
@@ -149,6 +150,7 @@ function FeatureJobModal({ job, onFeatured }: { job: Job, onFeatured: (jobId: st
 
 export function CompanyDashboard() {
   const { session } = useSession();
+  const { hasActiveSubscription, activePlan, subscriptionEndDate } = React.useContext(UserProfileContext);
   const { toast } = useToast();
   const [isMpConnected, setIsMpConnected] = React.useState(false);
   const [isPaying, setIsPaying] = React.useState(false);
@@ -295,6 +297,41 @@ export function CompanyDashboard() {
         <h1 className="text-4xl font-bold tracking-tight">Panel de Empresa</h1>
         <p className="text-lg text-muted-foreground">Gestiona tus publicaciones, candidatos y suscripciones.</p>
       </div>
+      
+       {hasActiveSubscription ? (
+             <Card className="theme-premium text-center p-6 rounded-lg shadow-lg">
+                <CardHeader className="p-0 mb-2">
+                    <div className="flex justify-center items-center gap-2 text-amber-300">
+                        <Crown className="h-6 w-6"/>
+                        <CardTitle className="text-2xl text-white">Miembro Premium</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <p className="text-lg font-semibold text-white">Plan Actual: {activePlan}</p>
+                    {subscriptionEndDate && <p className="text-sm text-amber-100/80 mt-1">Vence el: {subscriptionEndDate}</p>}
+                    <Button asChild variant="link" className="text-amber-200 hover:text-white mt-1">
+                        <Link href="/subscriptions"><Settings className="mr-2 h-4 w-4" />Administrar mi suscripción</Link>
+                    </Button>
+                </CardContent>
+            </Card>
+        ) : (
+            <Card className="bg-gradient-to-r from-primary/80 to-primary/60 text-primary-foreground text-center p-6 rounded-lg shadow-lg">
+                <CardHeader className="p-0 mb-2">
+                <CardTitle>¡Potencia tu Empresa!</CardTitle>
+                <CardDescription className="text-primary-foreground/80">
+                    Publica más ofertas y accede a herramientas avanzadas con nuestros planes premium.
+                </CardDescription>
+                </CardHeader>
+                <CardContent className="p-0">
+                <Button asChild className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+                    <Link href="/subscriptions">
+                        <Star className="mr-2 h-4 w-4" />
+                        Ver Planes Premium
+                    </Link>
+                </Button>
+                </CardContent>
+            </Card>
+        )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
@@ -370,13 +407,16 @@ export function CompanyDashboard() {
                         <h3 className="font-semibold">Mi Plan Actual</h3>
                         <div className="flex justify-between items-center">
                             <div>
-                                <p className="text-lg font-semibold text-foreground">Plan Empresa</p>
-                                <p className="text-sm text-muted-foreground">Próxima renovación: 19 de Agosto, 2024</p>
+                                <p className="text-lg font-semibold text-foreground">{activePlan || 'Plan Básico'}</p>
+                                <p className="text-sm text-muted-foreground">{subscriptionEndDate ? `Vence el: ${subscriptionEndDate}`: 'Suscripción inactiva'}</p>
                             </div>
-                            <Badge variant="default" className="bg-green-500/80">Activo</Badge>
+                            <Badge variant="default" className={cn(hasActiveSubscription ? "bg-green-500/80" : "bg-muted-foreground")}>{hasActiveSubscription ? 'Activo' : 'Inactivo'}</Badge>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            Tu plan te permite publicar hasta 5 ofertas y acceder a la base de datos de candidatos.
+                            {hasActiveSubscription 
+                                ? 'Tu plan te permite publicar más ofertas y acceder a funciones avanzadas.'
+                                : 'Mejora tu plan para publicar más y mejores ofertas.'
+                            }
                         </p>
                         <Button variant="outline" asChild className="w-full">
                             <Link href="/subscriptions">Administrar Suscripción</Link>
