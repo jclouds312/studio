@@ -22,6 +22,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Lunes a Viernes de 9 a 18 hs.',
     modalidad: 'Híbrido',
     direccionCompleta: 'Av. Corrientes 1234, CABA',
+    applicantsCount: 28,
   },
   {
     id: '2',
@@ -43,6 +44,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Flexible, por objetivos.',
     modalidad: 'Remoto',
     direccionCompleta: 'Trabajo remoto desde cualquier parte de Argentina.',
+    applicantsCount: 15,
   },
   {
     id: '3',
@@ -64,6 +66,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Full-time, horario flexible.',
     modalidad: 'Remoto',
     direccionCompleta: 'Trabajo remoto 100%.',
+    applicantsCount: 42,
   },
    {
     id: '4',
@@ -85,6 +88,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: '20 horas semanales, horario a convenir.',
     modalidad: 'Presencial',
     direccionCompleta: 'San Martín 123, Rosario, Santa Fe',
+    applicantsCount: 8,
   },
   {
     id: '5',
@@ -106,6 +110,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Lunes a Viernes de 9 a 18 hs.',
     modalidad: 'Híbrido (3 días oficina, 2 remoto)',
     direccionCompleta: 'Defensa 456, San Telmo, CABA',
+    applicantsCount: 35,
   },
    {
     id: '6',
@@ -127,6 +132,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'A coordinar, aprox. 2-3 días de trabajo.',
     modalidad: 'Presencial',
     direccionCompleta: 'Zona centro, La Plata, Buenos Aires',
+    applicantsCount: 5,
   },
   {
     id: '7',
@@ -148,6 +154,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Lunes a Viernes, 9 a 17 hs.',
     modalidad: 'Presencial',
     direccionCompleta: 'Las Heras 234, Mendoza Capital',
+    applicantsCount: 12,
   },
   {
     id: '8',
@@ -169,6 +176,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Turnos rotativos, principalmente nocturno.',
     modalidad: 'Presencial',
     direccionCompleta: 'Belgrano 2345, Mar del Plata, Buenos Aires',
+    applicantsCount: 22,
   },
   {
     id: '9',
@@ -190,6 +198,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Lunes a Viernes, 9 a 18 hs.',
     modalidad: 'Remoto',
     direccionCompleta: 'Trabajo remoto.',
+    applicantsCount: 18,
   },
   {
     id: '10',
@@ -211,6 +220,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Turnos rotativos, 6 días a la semana.',
     modalidad: 'Presencial',
     direccionCompleta: 'Av. Mitre 1234, Quilmes, Buenos Aires',
+    applicantsCount: 50,
   },
   {
     id: '11',
@@ -232,6 +242,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Lunes a Viernes de 9 a 18 hs.',
     modalidad: 'Presencial',
     direccionCompleta: 'Talcahuano 550, CABA',
+    applicantsCount: 7,
   },
   {
     id: '12',
@@ -253,6 +264,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Turnos rotativos (mañana, tarde, noche).',
     modalidad: 'Presencial',
     direccionCompleta: '24 de Septiembre 900, San Miguel de Tucumán',
+    applicantsCount: 19,
   },
   {
     id: '13',
@@ -274,6 +286,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Full-time, horario flexible por objetivos.',
     modalidad: 'Remoto',
     direccionCompleta: 'Trabajo remoto.',
+    applicantsCount: 60,
   },
   {
     id: '14',
@@ -295,6 +308,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Lunes a Viernes de 10 a 19 hs.',
     modalidad: 'Híbrido',
     direccionCompleta: 'Juana Manso 999, Puerto Madero, CABA',
+    applicantsCount: 25,
   },
   {
     id: '15',
@@ -316,6 +330,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Lunes a Sábado, jornada completa.',
     modalidad: 'Presencial',
     direccionCompleta: 'Ruta 22 km 123, Neuquén',
+    applicantsCount: 3,
   },
   {
     id: '16',
@@ -337,6 +352,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Horarios de tarde, a convenir.',
     modalidad: 'Presencial',
     direccionCompleta: 'Caseros 456, Salta',
+    applicantsCount: 11,
   },
   {
     id: '17',
@@ -358,6 +374,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Turno noche, con un franco semanal.',
     modalidad: 'Presencial',
     direccionCompleta: 'Mitre 321, Bariloche, Río Negro',
+    applicantsCount: 4,
   },
   {
     id: '18',
@@ -379,6 +396,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Jornadas extendidas según viaje.',
     modalidad: 'Presencial',
     direccionCompleta: 'Base en Hipólito Yrigoyen 9000, Lomas de Zamora',
+    applicantsCount: 14,
   },
   {
     id: '19',
@@ -400,6 +418,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Lunes a Viernes de 9 a 17 hs.',
     modalidad: 'Presencial',
     direccionCompleta: 'San Martín 2345, Santa Fe',
+    applicantsCount: 6,
   },
   {
     id: '20',
@@ -421,5 +440,6 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     horario: 'Según arribo de cruceros.',
     modalidad: 'Presencial',
     direccionCompleta: 'Puerto de Ushuaia, Tierra del Fuego',
+    applicantsCount: 9,
   }
 ].map(job => ({ ...job, createdAt: new Date(), updatedAt: new Date() }));

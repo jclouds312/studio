@@ -11,6 +11,7 @@ export type Job = Omit<PrismaJob, 'skills' | 'customQuestions'> & {
     modalidad: string | null;
     direccionCompleta: string | null;
     imageUrl: string | null;
+    applicantsCount: number;
 };
 
 export type User = PrismaUser & {

@@ -2,7 +2,7 @@
 'use server';
 
 import type { Application, Job, User } from '@prisma/client';
-import { getAllJobs } from './jobService';
+import { getAllJobs, incrementApplicantCount } from './jobService';
 import type { CustomAnswer } from '@/lib/types';
 
 
@@ -46,6 +46,9 @@ export async function createApplication(applicationData: {userId: string, jobId:
     if (existingApplication) {
         return Promise.resolve(existingApplication);
     }
+
+    // Increment the applicant count for the job
+    await incrementApplicantCount(applicationData.jobId);
 
     const newApplicationData = {
       userId: applicationData.userId,

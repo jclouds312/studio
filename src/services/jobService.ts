@@ -66,6 +66,7 @@ export async function createJob(data: Partial<Omit<Job, 'id' | 'createdAt' | 'up
         id: String(Date.now()),
         createdAt: new Date(),
         updatedAt: new Date(),
+        applicantsCount: 0,
     } as Job;
     jobs.push(newJob);
     return Promise.resolve(toJobArray(newJob));
@@ -84,4 +85,13 @@ export async function deleteJob(id: string): Promise<boolean> {
     const initialLength = jobs.length;
     jobs = jobs.filter(j => j.id !== id);
     return Promise.resolve(jobs.length < initialLength);
+}
+
+export async function incrementApplicantCount(jobId: string): Promise<Job | null> {
+    const jobIndex = jobs.findIndex(j => j.id === jobId);
+    if (jobIndex === -1) return null;
+
+    const job = jobs[jobIndex];
+    job.applicantsCount = (job.applicantsCount || 0) + 1;
+    return Promise.resolve(job);
 }

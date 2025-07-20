@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Header } from '@/components/layout/header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -21,16 +21,21 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 // --- This is the Client Component for UI and interactivity ---
-export function JobDetailClient({ job }: { job: Job }) {
+export function JobDetailClient({ job: initialJob }: { job: Job }) {
   const { toast } = useToast();
   const { session } = useSession();
   const { handleApplyForJob, savedJobs, handleSaveJob, applications } = useContext(UserProfileContext);
+  const [currentJob, setCurrentJob] = useState(initialJob);
   const [isApplying, setIsApplying] = React.useState(false);
   const [isQuestionsModalOpen, setIsQuestionsModalOpen] = useState(false);
   const [customAnswers, setCustomAnswers] = useState<Record<string, string>>({});
   
-  const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
-  const hasApplied = applications.some(app => app.jobId === job.id);
+  useEffect(() => {
+    setCurrentJob(initialJob);
+  }, [initialJob]);
+
+  const isSaved = savedJobs.some(savedJob => savedJob.id === currentJob.id);
+  const hasApplied = applications.some(app => app.jobId === currentJob.id);
   
   const startApplicationProcess = () => {
     if (!session.isLoggedIn || !session.user) {
@@ -42,7 +47,7 @@ export function JobDetailClient({ job }: { job: Job }) {
         return;
     }
 
-    const customQuestions = Array.isArray(job.customQuestions) ? job.customQuestions : [];
+    const customQuestions = Array.isArray(currentJob.customQuestions) ? currentJob.customQuestions : [];
     if (customQuestions.length > 0) {
       setIsQuestionsModalOpen(true);
     } else {
@@ -59,18 +64,19 @@ export function JobDetailClient({ job }: { job: Job }) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                jobTitle: job.title,
-                companyName: job.company,
+                jobTitle: currentJob.title,
+                companyName: currentJob.company,
                 companyEmail: 'hr@example.com', // En una app real, esto vendría del perfil de la empresa
                 userName: session.user!.name,
                 userEmail: session.user!.email,
             }),
         });
         
-        handleApplyForJob(job, answers);
+        handleApplyForJob(currentJob, answers);
+        setCurrentJob(prev => ({...prev, applicantsCount: (prev.applicantsCount || 0) + 1 }));
         toast({
             title: "¡Postulación Enviada!",
-            description: `Te has postulado exitosamente a la oferta de ${job.title}.`,
+            description: `Te has postulado exitosamente a la oferta de ${currentJob.title}.`,
         });
     } catch (error) {
         console.error(error);
@@ -85,7 +91,7 @@ export function JobDetailClient({ job }: { job: Job }) {
   };
 
   const handleSubmitQuestions = () => {
-    const customQuestions = Array.isArray(job.customQuestions) ? job.customQuestions : [];
+    const customQuestions = Array.isArray(currentJob.customQuestions) ? currentJob.customQuestions : [];
     const answers = customQuestions.map(q => ({
       question: q,
       answer: customAnswers[q] || 'No respondida'
@@ -104,23 +110,23 @@ export function JobDetailClient({ job }: { job: Job }) {
         });
         return;
     }
-    handleSaveJob(job);
+    handleSaveJob(currentJob);
     toast({
         title: isSaved ? "Oferta quitada de guardados" : "¡Oferta Guardada!",
-        description: isSaved ? `Has quitado la oferta de ${job.title}.` : `Has guardado la oferta de ${job.title}.`,
+        description: isSaved ? `Has quitado la oferta de ${currentJob.title}.` : `Has guardado la oferta de ${currentJob.title}.`,
     });
 }
 
   const getThemeClass = () => {
-    if (job.isFeatured) return 'theme-premium';
+    if (currentJob.isFeatured) return 'theme-premium';
     return '';
   }
 
-  const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(job.direccionCompleta || (job.location + ', Argentina'))}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
-  const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(job.direccionCompleta || (job.location + ', Argentina'))}`;
+  const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(currentJob.direccionCompleta || (currentJob.location + ', Argentina'))}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+  const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentJob.direccionCompleta || (currentJob.location + ', Argentina'))}`;
 
-  const skills = Array.isArray(job.skills) ? job.skills : [];
-  const customQuestions = Array.isArray(job.customQuestions) ? job.customQuestions : [];
+  const skills = Array.isArray(currentJob.skills) ? currentJob.skills : [];
+  const customQuestions = Array.isArray(currentJob.customQuestions) ? currentJob.customQuestions : [];
 
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
@@ -137,16 +143,16 @@ export function JobDetailClient({ job }: { job: Job }) {
         
         <Card className={cn("overflow-hidden mb-8", getThemeClass())}>
             <div className="relative aspect-[2.5/1] w-full bg-secondary">
-                <Image src={job.imageUrl || 'https://placehold.co/800x320.png'} alt={job.title} layout="fill" objectFit="cover" data-ai-hint="job vacancy" />
+                <Image src={currentJob.imageUrl || 'https://placehold.co/800x320.png'} alt={currentJob.title} layout="fill" objectFit="cover" data-ai-hint="job vacancy" />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                  <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
-                    {job.isFeatured && (
+                    {currentJob.isFeatured && (
                          <Badge variant="default" className="bg-amber-400 text-amber-900 text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-2 border-amber-900/20">
                             <Sparkles className="h-4 w-4" />
                             DESTACADO
                         </Badge>
                     )}
-                     {job.isNew && !job.isFeatured && (
+                     {currentJob.isNew && !currentJob.isFeatured && (
                         <Badge variant="outline" className="text-xs font-bold py-1 px-3 rounded-full flex items-center gap-1 border-sky-400 bg-sky-500/10 text-sky-400">
                             <Info className="h-4 w-4" />
                             NUEVO
@@ -154,11 +160,11 @@ export function JobDetailClient({ job }: { job: Job }) {
                     )}
                 </div>
                 <div className="absolute bottom-6 left-6 text-white">
-                    <CardTitle className="text-3xl lg:text-4xl mb-1 drop-shadow-lg">{job.title}</CardTitle>
+                    <CardTitle className="text-3xl lg:text-4xl mb-1 drop-shadow-lg">{currentJob.title}</CardTitle>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-white/90">
-                        <Link href={`/company/${job.companyProfileId}`} className="flex items-center gap-1.5 hover:text-primary transition-colors"><Briefcase className="h-4 w-4" /> {job.company}</Link>
-                        <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {job.location}</span>
-                        <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" /> <span className="capitalize">{job.type}</span></span>
+                        <Link href={`/company/${currentJob.companyProfileId}`} className="flex items-center gap-1.5 hover:text-primary transition-colors"><Briefcase className="h-4 w-4" /> {currentJob.company}</Link>
+                        <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {currentJob.location}</span>
+                        <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" /> <span className="capitalize">{currentJob.type}</span></span>
                     </div>
                  </div>
             </div>
@@ -170,51 +176,58 @@ export function JobDetailClient({ job }: { job: Job }) {
             <Card className={cn("relative overflow-hidden", getThemeClass())}>
               <CardContent className="p-6">
                 <div className="grid md:grid-cols-3 gap-6 text-sm mb-6">
-                  {job.modalidad && (
+                  {currentJob.modalidad && (
                     <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
-                      {job.modalidad === 'Híbrido' ? <Users className="h-5 w-5 text-muted-foreground" /> : <Home className="h-5 w-5 text-muted-foreground" />}
+                      {currentJob.modalidad === 'Híbrido' ? <Users className="h-5 w-5 text-muted-foreground" /> : <Home className="h-5 w-5 text-muted-foreground" />}
                       <div>
                         <p className="font-semibold">Modalidad</p>
-                        <p className="text-muted-foreground">{job.modalidad}</p>
+                        <p className="text-muted-foreground">{currentJob.modalidad}</p>
                       </div>
                     </div>
                   )}
-                   {job.salary && (
+                   {currentJob.salary && (
                     <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
                       <DollarSign className="h-5 w-5 text-muted-foreground" />
                       <div>
                         <p className="font-semibold">Salario</p>
-                        <p className="text-muted-foreground">{job.salary}</p>
+                        <p className="text-muted-foreground">{currentJob.salary}</p>
                       </div>
                     </div>
                   )}
-                  {job.horario && (
+                  {currentJob.horario && (
                     <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
                        <Calendar className="h-5 w-5 text-muted-foreground" />
                        <div>
                          <p className="font-semibold">Horario</p>
-                         <p className="text-muted-foreground">{job.horario}</p>
+                         <p className="text-muted-foreground">{currentJob.horario}</p>
                        </div>
                     </div>
                   )}
                 </div>
                 <Separator className="my-4"/>
-                <h3 className={cn("text-lg font-semibold mb-2", job.isFeatured ? "text-primary" : "text-card-foreground")}>Descripción del trabajo</h3>
-                <p className="text-card-foreground whitespace-pre-wrap">{job.description}</p>
-                 {job.desiredProfile && (
+                <div className="flex justify-between items-center mb-2">
+                    <h3 className={cn("text-lg font-semibold", currentJob.isFeatured ? "text-primary" : "text-card-foreground")}>Descripción del trabajo</h3>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 rounded-lg bg-secondary/50">
+                        <Users className="h-4 w-4" />
+                        <span>{currentJob.applicantsCount} postulante{currentJob.applicantsCount !== 1 && 's'}</span>
+                    </div>
+                </div>
+
+                <p className="text-card-foreground whitespace-pre-wrap">{currentJob.description}</p>
+                 {currentJob.desiredProfile && (
                     <>
                         <Separator className="my-4"/>
-                        <h3 className={cn("text-lg font-semibold mb-2 flex items-center gap-2", job.isFeatured ? "text-primary" : "text-card-foreground")}>
+                        <h3 className={cn("text-lg font-semibold mb-2 flex items-center gap-2", currentJob.isFeatured ? "text-primary" : "text-card-foreground")}>
                             <UserCheck className="h-5 w-5"/>
                             Perfil Deseado
                         </h3>
-                        <p className="text-card-foreground whitespace-pre-wrap">{job.desiredProfile}</p>
+                        <p className="text-card-foreground whitespace-pre-wrap">{currentJob.desiredProfile}</p>
                     </>
                  )}
                  {skills.length > 0 && (
                   <>
                     <Separator className="my-4"/>
-                    <h3 className={cn("text-lg font-semibold mb-2", job.isFeatured ? "text-primary" : "text-card-foreground")}>Habilidades Requeridas</h3>
+                    <h3 className={cn("text-lg font-semibold mb-2", currentJob.isFeatured ? "text-primary" : "text-card-foreground")}>Habilidades Requeridas</h3>
                     <div className="flex flex-wrap gap-2">
                       {skills.map(skill => (
                         <Badge key={skill} variant="secondary" className="flex items-center gap-1.5">
@@ -243,9 +256,9 @@ export function JobDetailClient({ job }: { job: Job }) {
                         )}
                         {hasApplied ? 'Ya Postulaste' : 'Postularse ahora'}
                     </Button>
-                    {job.whatsapp && (
+                    {currentJob.whatsapp && (
                         <Button asChild size="lg" variant="outline" className="w-full bg-green-500/10 border-green-500/30 hover:bg-green-500/20 text-green-400 hover:text-green-300">
-                             <a href={`https://wa.me/${job.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer">
+                             <a href={`https://wa.me/${currentJob.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer">
                                 <Phone className="mr-2 h-4 w-4" />
                                 Contactar por WhatsApp
                              </a>
@@ -261,7 +274,7 @@ export function JobDetailClient({ job }: { job: Job }) {
              <Card>
                 <CardHeader>
                     <CardTitle>Ubicación</CardTitle>
-                    {job.direccionCompleta && <CardDescription>{job.direccionCompleta}</CardDescription>}
+                    {currentJob.direccionCompleta && <CardDescription>{currentJob.direccionCompleta}</CardDescription>}
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="aspect-video w-full overflow-hidden rounded-lg border">
@@ -272,7 +285,7 @@ export function JobDetailClient({ job }: { job: Job }) {
                             allowFullScreen
                             referrerPolicy="no-referrer-when-downgrade"
                             src={mapUrl}
-                            title={`Mapa de ${job.location}`}
+                            title={`Mapa de ${currentJob.location}`}
                             style={{ border: 0 }}
                         ></iframe>
                     </div>
