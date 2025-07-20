@@ -20,18 +20,18 @@ import { useRouter } from "next/navigation";
 function JobListingCard({ job }: { job: Job }) {
     const { toast } = useToast();
     const router = useRouter();
-    const { savedJobs, handleSaveJob, handleApplyForJob } = useContext(UserProfileContext);
+    const { savedJobs, handleSaveJob } = useContext(UserProfileContext);
     const { session } = useSession();
     const [isApplying, setIsApplying] = useState(false);
 
     const isSaved = savedJobs.some(savedJob => savedJob.id === job.id);
 
-    const handleApply = async (e: React.MouseEvent) => {
+    const handleApply = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         setIsApplying(true);
 
-        if (!session.isLoggedIn || !session.user) {
+        if (!session.isLoggedIn) {
             toast({
                 title: "Inicia Sesión",
                 description: "Debes iniciar sesión para postularte a una oferta.",
@@ -41,13 +41,12 @@ function JobListingCard({ job }: { job: Job }) {
             return;
         }
         
-        // Navigate to the job page to see details and apply from there
         router.push(`/jobs/${job.id}`);
     };
 
     const onSaveClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        e.stopPropagation();
+        e.stopPropagation(); // Stop propagation to prevent navigation
         if (!session.isLoggedIn) {
             toast({
                 title: "Inicia Sesión",
@@ -255,3 +254,5 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
         </div>
     );
 }
+
+    
