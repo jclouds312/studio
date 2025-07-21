@@ -63,6 +63,7 @@ function PremiumPostPaymentModal() {
                 toast({
                     title: "¡Pago Exitoso!",
                     description: "Serás redirigido al panel para crear tu vacante destacada.",
+                    duration: 3000,
                 });
                 setTimeout(() => router.push('/company/dashboard'), 2000);
             }, 2000);
