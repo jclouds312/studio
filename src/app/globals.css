@@ -8,7 +8,7 @@ body {
 }
 
 
-@keyframes-border-spin {
+@keyframes keyframes-border-spin {
   0% {
     transform: rotate(0deg);
   }

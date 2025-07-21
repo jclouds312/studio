@@ -5,10 +5,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Briefcase, Sparkles, Star, Send, Info, Loader2, DollarSign } from "lucide-react";
+import { MapPin, Search, Briefcase, Sparkles, Star, Send, Info, Loader2, DollarSign, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Job } from "@prisma/client";
 import Image from "next/image";
-import React, { useState, useMemo, useContext } from "react";
+import React, { useState, useMemo, useContext, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
@@ -128,13 +128,20 @@ function JobListingCard({ job }: { job: Job }) {
     );
 }
 
+const JOBS_PER_PAGE = 9;
+
 export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
     const [keyword, setKeyword] = useState('');
     const [location, setLocation] = useState('all');
     const [category, setCategory] = useState('all');
     const [contractType, setContractType] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [keyword, location, category, contractType]);
 
-    const filteredJobs = useMemo(() => {
+    const sortedAndFilteredJobs = useMemo(() => {
         let jobs = initialJobs
             .filter(job => {
                 const keywordMatch = keyword.toLowerCase() ? job.title.toLowerCase().includes(keyword.toLowerCase()) || job.description.toLowerCase().includes(keyword.toLowerCase()) : true;
@@ -147,11 +154,22 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
         jobs.sort((a, b) => {
             const scoreA = (a.isFeatured ? 2 : 0) + (a.isNew ? 1 : 0);
             const scoreB = (b.isFeatured ? 2 : 0) + (b.isNew ? 1 : 0);
-            return scoreB - scoreA;
+            if (scoreB !== scoreA) {
+                return scoreB - scoreA;
+            }
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            return dateB - dateA;
         });
 
         return jobs;
     }, [keyword, location, category, contractType, initialJobs]);
+
+    const totalPages = Math.ceil(sortedAndFilteredJobs.length / JOBS_PER_PAGE);
+    const paginatedJobs = sortedAndFilteredJobs.slice(
+        (currentPage - 1) * JOBS_PER_PAGE,
+        currentPage * JOBS_PER_PAGE
+    );
 
     return (
         <div className="space-y-8">
@@ -275,8 +293,8 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredJobs.length > 0 ? (
-                    filteredJobs.map(job => <JobListingCard key={job.id} job={job} />)
+                {paginatedJobs.length > 0 ? (
+                    paginatedJobs.map(job => <JobListingCard key={job.id} job={job} />)
                 ) : (
                     <Card className="col-span-full">
                         <CardContent className="pt-6">
@@ -285,6 +303,38 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
                     </Card>
                 )}
             </div>
+
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 mt-8">
+                     <div className="card-neon-border rounded-lg">
+                        <Button 
+                            variant="default"
+                            size="icon"
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="bg-transparent"
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                        </Button>
+                    </div>
+                    
+                    <span className="text-sm text-muted-foreground">
+                        Página {currentPage} de {totalPages}
+                    </span>
+
+                    <div className="card-neon-border rounded-lg">
+                        <Button
+                            variant="default"
+                            size="icon"
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="bg-transparent"
+                        >
+                            <ChevronRight className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
