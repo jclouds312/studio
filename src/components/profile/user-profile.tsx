@@ -168,10 +168,10 @@ function EditProfileTab() {
         <CardContent>
             <form className="space-y-6" onSubmit={handleSubmit}>
                  {!isAdmin && (
-                  <div className="card-marble-border">
+                  <div className="rounded-lg border-2 border-green-400 bg-secondary/30 shadow-[0_0_15px_rgba(74,222,128,0.4)]">
                     <div className="p-6 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="text-center md:text-left">
-                            <h3 className="text-xl font-bold text-amber-300 flex items-center gap-2"><Star className="h-5 w-5"/> Potencia tu Perfil</h3>
+                            <h3 className="text-xl font-bold text-green-300 flex items-center gap-2"><Star className="h-5 w-5"/> Potencia tu Perfil</h3>
                             <p className="text-muted-foreground mt-1">Destaca tu postulación para que los reclutadores te vean primero.</p>
                         </div>
                         <Button asChild size="lg" className="bg-primary hover:bg-primary/90 shrink-0">
