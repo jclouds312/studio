@@ -29,8 +29,8 @@ body {
     transform: translate(-50%, -50%);
     width: 150%;
     height: 150%;
-    background: conic-gradient(from 0deg, hsl(var(--primary)), hsl(145, 100%, 70%), hsl(220, 100%, 70%), hsl(var(--primary)));
-    animation: keyframes-border-spin 4s linear infinite;
+    background: conic-gradient(from 0deg, hsl(195, 100%, 70%), hsl(45, 100%, 70%), hsl(220, 100%, 70%), hsl(195, 100%, 70%));
+    animation: keyframes-border-spin 8s linear infinite;
     z-index: -1;
   }
   .card-neon-border > * {
