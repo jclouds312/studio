@@ -47,7 +47,7 @@ body {
     inset: 0;
     border-radius: inherit;
     padding: 1px; /* The border width */
-    background: conic-gradient(from 180deg at 50% 50%, #d4af37, #c0c0c0, #ffffff, #d4af37, #c0c0c0);
+    background: conic-gradient(from 180deg at 50% 50%, #d4af37 0%, #c0c0c0 33%, #ffffff 66%, #d4af37 100%);
     -webkit-mask: 
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
@@ -55,7 +55,7 @@ body {
     mask-composite: exclude;
     transition: all 0.3s;
     opacity: 0.7;
-    animation: keyframes-border-spin 4s linear infinite;
+    animation: keyframes-border-spin 8s linear infinite;
   }
   .card-marble-border > * {
     background: linear-gradient(145deg, hsl(var(--card)) 70%, hsl(var(--card) / 0.9));
@@ -186,3 +186,4 @@ input::placeholder {
     color: hsl(var(--muted-foreground));
     opacity: 0.8;
 }
+
