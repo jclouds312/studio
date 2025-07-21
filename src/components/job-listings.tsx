@@ -130,7 +130,7 @@ function JobListingCard({ job }: { job: Job }) {
 
 const JOBS_PER_PAGE = 9;
 
-export function JobListings({ initialJobs, featuredJobs }: { initialJobs: Job[], featuredJobs: Job[] }) {
+export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
     const [keyword, setKeyword] = useState('');
     const [location, setLocation] = useState('all');
     const [category, setCategory] = useState('all');
@@ -167,17 +167,12 @@ export function JobListings({ initialJobs, featuredJobs }: { initialJobs: Job[],
         currentPage * JOBS_PER_PAGE
     );
 
-    // Añadir las ofertas destacadas al principio de la lista de cada página
-    const jobsToDisplay = currentPage === 1 
-        ? [...featuredJobs, ...paginatedJobs].slice(0, JOBS_PER_PAGE + featuredJobs.length)
-        : paginatedJobs;
-
 
     return (
         <div className="space-y-8">
             <Card className="shadow-lg sticky top-[70px] z-30 bg-card/95 backdrop-blur-sm border-border/50">
-                <CardHeader>
-                    <CardTitle>Encuentra tu próximo trabajo</CardTitle>
+                <CardHeader className="text-center">
+                    <CardTitle className="text-2xl text-primary">Encuentra tu Próximo Trabajo</CardTitle>
                     <CardDescription>Busca entre miles de ofertas de las mejores empresas.</CardDescription>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
@@ -295,8 +290,8 @@ export function JobListings({ initialJobs, featuredJobs }: { initialJobs: Job[],
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {jobsToDisplay.length > 0 ? (
-                    jobsToDisplay.map(job => <JobListingCard key={job.id} job={job} />)
+                {paginatedJobs.length > 0 ? (
+                    paginatedJobs.map(job => <JobListingCard key={job.id} job={job} />)
                 ) : (
                     <Card className="col-span-full">
                         <CardContent className="pt-6">

@@ -551,6 +551,28 @@ export const allJobs: Job[] = [
     modalidad: 'Remoto',
     direccionCompleta: 'Trabajo remoto.',
     applicantsCount: 23,
+  },
+  {
+    id: '26',
+    title: 'Fotógrafo de Producto',
+    company: 'Creative Minds',
+    location: 'Córdoba',
+    type: 'Changa',
+    description: 'Se busca fotógrafo/a para sesión de fotos de productos de e-commerce. Se requiere equipo propio (cámara, luces) y experiencia en fotografía de producto con fondo blanco. Trabajo por jornada.',
+    desiredProfile: 'Fotógrafo/a con portafolio demostrable en fotografía de producto. Detallista y con buen manejo de la iluminación de estudio.',
+    companyLogo: 'https://images.unsplash.com/photo-1522125670776-3c7abb882bc2?q=80&w=2070&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1599909289262-91e2f8d22d56?q=80&w=2070&auto=format&fit=crop',
+    category: 'audiovisual',
+    isNew: true,
+    isFeatured: false,
+    whatsapp: '+5493519876543',
+    salary: '$50.000 por jornada',
+    skills: ['Fotografía de producto', 'Iluminación de estudio', 'Adobe Lightroom'],
+    customQuestions: [],
+    horario: '1 jornada completa, fecha a coordinar.',
+    modalidad: 'Presencial',
+    direccionCompleta: 'Estudio en Bv. San Juan 567, Córdoba',
+    applicantsCount: 8,
   }
 ];
 

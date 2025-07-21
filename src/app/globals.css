@@ -133,6 +133,9 @@ body {
   .theme-premium .card-title-premium {
     @apply text-amber-400;
   }
+   .theme-premium {
+    --card: 345 50% 10%; /* Dark wine red background for premium cards */
+  }
 }
 
 @layer base {
