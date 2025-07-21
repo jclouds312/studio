@@ -68,6 +68,16 @@ function PaymentModal({ plan, pricingOption }: { plan: SubscriptionPlan, pricing
         setPaymentSuccess(true);
         return;
       }
+      
+      const adminToken = localStorage.getItem('mp_access_token');
+      if (!adminToken) {
+          toast({
+              title: "Error de Configuración",
+              description: "El administrador no ha configurado una cuenta de Mercado Pago para recibir pagos.",
+              variant: "destructive"
+          });
+          return;
+      }
 
       setIsPaying(true);
       try {
@@ -77,11 +87,13 @@ function PaymentModal({ plan, pricingOption }: { plan: SubscriptionPlan, pricing
             body: JSON.stringify({
                 title: `Suscripción Plan ${plan.name} (${pricingOption.duration})`,
                 unit_price: pricingOption.priceAmount,
+                accessToken: adminToken,
             }),
         });
 
         if (!response.ok) {
-            throw new Error('Failed to create payment preference');
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'No se pudo crear la preferencia de pago.');
         }
 
         const preference = await response.json();
@@ -105,9 +117,10 @@ function PaymentModal({ plan, pricingOption }: { plan: SubscriptionPlan, pricing
 
       } catch (error) {
         console.error(error);
+        const errorMessage = error instanceof Error ? error.message : "Error desconocido";
         toast({
           title: "Error al procesar el pago",
-          description: "No se pudo crear la preferencia de pago. Intenta de nuevo.",
+          description: errorMessage,
           variant: "destructive"
         })
         setIsPaying(false);
@@ -297,7 +310,7 @@ function AdminPlanView() {
 function CustomerPlanView() {
     const { session } = useSession();
     const router = useRouter();
-    const userRole = session.user?.role || 'user';
+    const userRole = session.user?.role === 'company' ? 'company' : 'worker';
     const [allPlans, setAllPlans] = React.useState<SubscriptionPlan[]>([]);
     
     React.useEffect(() => {
@@ -305,8 +318,7 @@ function CustomerPlanView() {
     }, []);
     
     const visiblePlans = React.useMemo(() => {
-        const targetUserType = userRole === 'user' ? 'worker' : 'company';
-        return allPlans.filter(plan => plan.userType === targetUserType);
+        return allPlans.filter(plan => plan.userType === userRole);
     }, [allPlans, userRole]);
 
     const title = userRole === 'company' ? 'Planes para Empresas' : 'Planes para Candidatos';
@@ -369,7 +381,7 @@ function CustomerPlanView() {
                                         {isOneTimePurchase && (
                                             <div className="w-full flex justify-center">
                                                  <Badge className="bg-sky-400 text-sky-950 text-sm py-1 px-4 font-bold -mt-3.5 flex items-center gap-1 z-10">
-                                                    <Star className="h-4 w-4"/>
+                                                    <Sparkles className="h-4 w-4"/>
                                                     PAGO ÚNICO
                                                 </Badge>
                                             </div>

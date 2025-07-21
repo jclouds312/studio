@@ -30,16 +30,25 @@ function PremiumPostPaymentModal() {
     const handlePayment = async () => {
         setIsPaying(true);
         try {
+            const adminToken = localStorage.getItem('mp_access_token');
+            if (!adminToken) {
+                throw new Error('El Access Token de Mercado Pago no está configurado por el administrador.');
+            }
+            
             const response = await fetch('/api/mercadopago/create-preference', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     title: `Publicación de Vacante Premium`,
                     unit_price: 500,
+                    accessToken: adminToken,
                 }),
             });
 
-            if (!response.ok) throw new Error('Failed to create payment preference');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'No se pudo crear la preferencia de pago.');
+            }
             
             const preference = await response.json();
             console.log('Preferencia de pago creada:', preference.id);
@@ -60,9 +69,10 @@ function PremiumPostPaymentModal() {
 
         } catch (error) {
             console.error(error);
+            const errorMessage = error instanceof Error ? error.message : "Error desconocido";
             toast({
                 title: "Error al procesar el pago",
-                description: "No se pudo crear la preferencia de pago. Intenta de nuevo.",
+                description: errorMessage,
                 variant: "destructive"
             });
             setIsPaying(false);

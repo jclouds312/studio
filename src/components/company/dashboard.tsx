@@ -58,16 +58,25 @@ function FeatureJobModal({ job, onFeatured }: { job: Job, onFeatured: (jobId: st
     const handlePayment = async () => {
         setIsPaying(true);
         try {
+            const adminToken = localStorage.getItem('mp_access_token');
+            if (!adminToken) {
+                throw new Error('El Access Token de Mercado Pago no está configurado por el administrador.');
+            }
+
             const response = await fetch('/api/mercadopago/create-preference', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     title: `Destacar: ${job.title}`,
                     unit_price: 500,
+                    accessToken: adminToken,
                 }),
             });
 
-            if (!response.ok) throw new Error('Failed to create payment preference');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'No se pudo crear la preferencia de pago.');
+            }
 
             const preference = await response.json();
             console.log('Preferencia de pago creada:', preference.id);
@@ -85,9 +94,10 @@ function FeatureJobModal({ job, onFeatured }: { job: Job, onFeatured: (jobId: st
 
         } catch (error) {
             console.error(error);
+            const errorMessage = error instanceof Error ? error.message : "Error desconocido";
             toast({
                 title: "Error al procesar el pago",
-                description: "No se pudo crear la preferencia de pago. Intenta de nuevo.",
+                description: errorMessage,
                 variant: "destructive"
             });
             setIsPaying(false);
@@ -231,43 +241,6 @@ export function CompanyDashboard() {
     });
     setIsMpConnected(true);
   }
-
-  const handlePayment = async () => {
-    setIsPaying(true);
-    try {
-      const response = await fetch('/api/mercadopago/create-preference', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: 'Publicación Destacada',
-          unit_price: 500,
-        }),
-      });
-
-      if (!response.ok) throw new Error('Failed to create payment preference');
-      
-      const preference = await response.json();
-      console.log('Preferencia de pago creada:', preference.id);
-      toast({
-        title: "Redirigiendo a Mercado Pago...",
-        description: `ID de Preferencia: ${preference.id}. En una app real, serías redirigido.`,
-      });
-
-      setTimeout(() => {
-        setIsPaying(false);
-        setPaymentSuccess(true);
-      }, 2000);
-
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Error al procesar el pago",
-        description: "No se pudo crear la preferencia de pago. Intenta de nuevo.",
-        variant: "destructive"
-      })
-      setIsPaying(false);
-    }
-  };
 
   if (!session.isMounted) {
     return <div className="flex justify-center items-center h-64"><Loader2 className="h-8 w-8 animate-spin" /></div>;
@@ -444,58 +417,6 @@ export function CompanyDashboard() {
                                 </Button>
                             </div>
                         )}
-                        <Separator />
-                         <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="outline" className="w-full" disabled={!isMpConnected}>
-                                    <DollarSign className="mr-2 h-4 w-4"/>
-                                    Simular Pago de Servicio
-                                </Button>
-                            </AlertDialogTrigger>
-                             <AlertDialogContent>
-                                <AlertDialogHeader>
-                                {paymentSuccess ? (
-                                    <div className="text-center py-4">
-                                        <Sparkles className="h-12 w-12 text-green-500 mx-auto mb-2"/>
-                                        <AlertDialogTitle>¡Pago exitoso!</AlertDialogTitle>
-                                        <AlertDialogDescription>El servicio ha sido activado.</AlertDialogDescription>
-                                    </div>
-                                    ) : (
-                                    <>
-                                        <AlertDialogTitle className="flex items-center gap-2">
-                                            <Image src="https://www.mercadopago.com.ar/static/logo-lila.svg" alt="Mercado Pago" width={120} height={28} data-ai-hint="company logo"/>
-                                            Confirmar Pago
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            Estás a punto de pagar <span className="font-bold text-foreground">ARS $500.00</span> por un servicio de publicación destacada.
-                                        </AlertDialogDescription>
-                                    </>
-                                    )}
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    {paymentSuccess ? (
-                                        <AlertDialogCancel>Cerrar</AlertDialogCancel>
-                                    ) : (
-                                        <>
-                                            <AlertDialogCancel disabled={isPaying}>Cancelar</AlertDialogCancel>
-                                            <Button onClick={handlePayment} disabled={isPaying}>
-                                            {isPaying ? (
-                                                <>
-                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                Procesando...
-                                                </>
-                                            ) : (
-                                                <>
-                                                <CreditCard className="mr-2 h-4 w-4" />
-                                                Pagar ahora
-                                                </>
-                                            )}
-                                            </Button>
-                                        </>
-                                    )}
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
                     </div>
                 </CardContent>
             </Card>
@@ -542,5 +463,3 @@ export function CompanyDashboard() {
     </>
   );
 }
-
-    

@@ -140,20 +140,35 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
   const [isPaying, setIsPaying] = React.useState(false);
   const [paymentSuccess, setPaymentSuccess] = React.useState(false);
   const [isMpConnected, setIsMpConnected] = React.useState(false);
+  const [accessToken, setAccessToken] = React.useState('');
+
+  React.useEffect(() => {
+    const storedToken = localStorage.getItem('mp_access_token');
+    if (storedToken) {
+        setAccessToken(storedToken);
+        setIsMpConnected(true);
+    }
+  }, []);
   
   const handlePayment = async () => {
     setIsPaying(true);
     try {
+      const adminToken = localStorage.getItem('mp_access_token');
+      if (!adminToken) {
+          throw new Error('El Access Token de Mercado Pago no está configurado por el administrador.');
+      }
+
       const response = await fetch('/api/mercadopago/create-preference', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: 'Publicación Destacada',
           unit_price: 500,
+          accessToken: adminToken,
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to create payment preference');
+      if (!response.ok) throw new Error('No se pudo crear la preferencia de pago. Revisa la consola para más detalles.');
       
       const preference = await response.json();
       console.log('Preferencia de pago creada:', preference.id);
@@ -169,9 +184,10 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
 
     } catch (error) {
       console.error(error);
+      const errorMessage = error instanceof Error ? error.message : "Error desconocido";
       toast({
         title: "Error al procesar el pago",
-        description: "No se pudo crear la preferencia de pago. Intenta de nuevo.",
+        description: errorMessage,
         variant: "destructive"
       })
       setIsPaying(false);
@@ -293,11 +309,31 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
   };
 
   const handleConnectMp = () => {
+    if (!accessToken || !accessToken.startsWith('APP_USR-')) {
+        toast({
+            title: "Token Inválido",
+            description: "Por favor, ingresa un Access Token válido de Mercado Pago.",
+            variant: "destructive",
+        });
+        return;
+    }
+    localStorage.setItem('mp_access_token', accessToken);
     toast({
-        title: "Conexión Simulada",
-        description: "Tu Access Token ha sido guardado (simulado).",
+        title: "Conexión Exitosa",
+        description: "Tu Access Token ha sido guardado de forma segura (simulado).",
     });
     setIsMpConnected(true);
+  };
+  
+  const handleDisconnectMp = () => {
+    localStorage.removeItem('mp_access_token');
+    setAccessToken('');
+    setIsMpConnected(false);
+    toast({
+        title: "Desconectado",
+        description: "Tu cuenta de Mercado Pago ha sido desconectada.",
+        variant: "destructive",
+    })
   }
 
 
@@ -500,7 +536,7 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
                         <Sparkles className="h-10 w-10 text-green-400 mb-2"/>
                         <p className="font-semibold text-green-300">¡Mercado Pago Conectado!</p>
                         <p className="text-xs text-green-400/80">Ya puedes procesar pagos de forma segura.</p>
-                        <Button variant="link" size="sm" className="mt-2 text-muted-foreground" onClick={() => setIsMpConnected(false)}>Desconectar</Button>
+                        <Button variant="link" size="sm" className="mt-2 text-muted-foreground" onClick={handleDisconnectMp}>Desconectar</Button>
                     </div>
                 ) : (
                     <>
@@ -508,7 +544,7 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
                             <Label htmlFor="mp-token">Access Token</Label>
                             <div className="relative">
                                 <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
-                                <Input id="mp-token" type="password" placeholder="APP_USR-..." className="pl-10"/>
+                                <Input id="mp-token" type="password" placeholder="APP_USR-..." className="pl-10" value={accessToken} onChange={(e) => setAccessToken(e.target.value)} />
                             </div>
                         </div>
                         <Button onClick={handleConnectMp}>
