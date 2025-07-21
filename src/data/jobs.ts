@@ -555,3 +555,5 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
 ].map(job => ({ ...job, createdAt: new Date(), updatedAt: new Date() }));
 
     
+
+    
