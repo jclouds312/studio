@@ -246,13 +246,10 @@ function AdminPlanView() {
              ) : plans.map((plan) => {
                 const Icon = icons[plan.iconName] as LucideIcon;
                 return (
-                    <div key={plan.name} className="h-full card-neon-border rounded-lg">
+                    <div key={plan.name} className="h-full card-marble-border rounded-lg">
                         <Card className={cn(
                             "flex flex-col dark h-full bg-transparent border-0",
                             plan.isPopular && "relative",
-                            plan.name.includes('Plus') && 'theme-premium',
-                            plan.name.includes('VIP') && 'theme-premium',
-                            plan.name.includes('Corporativo') && 'theme-premium'
                         )}>
                             {plan.isPopular && (
                                 <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
@@ -352,7 +349,7 @@ function CustomerPlanView() {
                     {visiblePlans.map((plan, index) => {
                         const Icon = icons[plan.iconName] as LucideIcon;
                         const isOneTimePurchase = plan.planType === 'one-time';
-                        const cardBorderClass = isOneTimePurchase ? 'card-neon-border' : 'card-neon-border';
+                        const cardBorderClass = isOneTimePurchase ? 'card-marble-border' : 'card-neon-border';
                         
                         return (
                             <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
@@ -360,9 +357,6 @@ function CustomerPlanView() {
                                     <Card className={cn(
                                         "flex flex-col h-full transition-all duration-300 dark bg-transparent border-0",
                                         plan.isPopular && "relative",
-                                        plan.name.includes('Plus') && 'theme-premium',
-                                        plan.name.includes('VIP') && 'theme-premium',
-                                        plan.name.includes('Corporativo') && 'theme-premium',
                                         isOneTimePurchase && 'border-2 border-sky-400/50'
                                     )}>
                                         {plan.isPopular && (
