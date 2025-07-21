@@ -89,7 +89,7 @@ function JobListingCard({ job }: { job: Job }) {
                     </CardHeader>
                     <CardContent className="p-6 pt-4 flex-grow flex flex-col justify-between">
                         <div>
-                             <CardTitle className="text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors">{job.title}</CardTitle>
+                             <CardTitle className={cn("text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors", job.isFeatured && "card-title-premium")}>{job.title}</CardTitle>
                             <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
                                 <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
                                 <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
@@ -130,7 +130,7 @@ function JobListingCard({ job }: { job: Job }) {
 
 const JOBS_PER_PAGE = 9;
 
-export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
+export function JobListings({ initialJobs, featuredJobs }: { initialJobs: Job[], featuredJobs: Job[] }) {
     const [keyword, setKeyword] = useState('');
     const [location, setLocation] = useState('all');
     const [category, setCategory] = useState('all');
@@ -151,15 +151,11 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
                 return keywordMatch && locationMatch && categoryMatch && contractTypeMatch;
             });
         
+        // Ordenar primero por nuevos y luego por fecha de creación
         jobs.sort((a, b) => {
-            const scoreA = (a.isFeatured ? 2 : 0) + (a.isNew ? 1 : 0);
-            const scoreB = (b.isFeatured ? 2 : 0) + (b.isNew ? 1 : 0);
-            if (scoreB !== scoreA) {
-                return scoreB - scoreA;
-            }
-            const dateA = new Date(a.createdAt).getTime();
-            const dateB = new Date(b.createdAt).getTime();
-            return dateB - dateA;
+            if (a.isNew && !b.isNew) return -1;
+            if (!a.isNew && b.isNew) return 1;
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         });
 
         return jobs;
@@ -170,6 +166,12 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
         (currentPage - 1) * JOBS_PER_PAGE,
         currentPage * JOBS_PER_PAGE
     );
+
+    // Añadir las ofertas destacadas al principio de la lista de cada página
+    const jobsToDisplay = currentPage === 1 
+        ? [...featuredJobs, ...paginatedJobs].slice(0, JOBS_PER_PAGE + featuredJobs.length)
+        : paginatedJobs;
+
 
     return (
         <div className="space-y-8">
@@ -293,8 +295,8 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {paginatedJobs.length > 0 ? (
-                    paginatedJobs.map(job => <JobListingCard key={job.id} job={job} />)
+                {jobsToDisplay.length > 0 ? (
+                    jobsToDisplay.map(job => <JobListingCard key={job.id} job={job} />)
                 ) : (
                     <Card className="col-span-full">
                         <CardContent className="pt-6">

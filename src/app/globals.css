@@ -130,13 +130,8 @@ body {
     --sidebar-ring: 270 85% 65%;
   }
 
-  .theme-premium {
-    --card: 346.8 77.2% 20%; /* Vino tinto oscuro */
-    --card-foreground: 0 0% 100%; /* Blanco puro */
-    --primary: 270 85% 65%; /* Púrpura metálico, para que coincida con el resto de la app */
-    --primary-foreground: 0 0% 100%;
-    --muted-foreground: 0 0% 85%; /* Un gris claro para texto secundario */
-    --border: 346.8 77.2% 30%;
+  .theme-premium .card-title-premium {
+    @apply text-amber-400;
   }
 }
 
@@ -164,3 +159,4 @@ input::placeholder {
     color: hsl(var(--muted-foreground));
     opacity: 0.8;
 }
+
