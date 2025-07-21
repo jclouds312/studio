@@ -66,7 +66,7 @@ function JobListingCard({ job }: { job: Job }) {
 
     return (
         <Link href={`/jobs/${job.id}`} className="block h-full group">
-            <div className={cn("h-full card-neon-border rounded-lg")}>
+            <div className={cn("h-full card-marble-border rounded-lg")}>
                 <Card className={cn("hover:shadow-xl transition-all duration-300 transform group-hover:scale-[1.02] relative overflow-hidden flex flex-col h-full bg-transparent border-0", getThemeClass())}>
                     <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                         {job.isFeatured && (
@@ -310,34 +310,28 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
             </div>
 
             {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 mt-8">
-                     <div className="card-marble-border rounded-lg">
-                        <Button 
-                            variant="default"
-                            size="icon"
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                            disabled={currentPage === 1}
-                            className="bg-transparent"
-                        >
-                            <ChevronLeft className="h-4 w-4" />
-                        </Button>
-                    </div>
+                <div className="flex justify-center items-center gap-4 mt-8">
+                    <Button 
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                    >
+                        <ChevronLeft className="h-4 w-4" />
+                    </Button>
                     
                     <span className="text-sm text-muted-foreground">
                         Página {currentPage} de {totalPages}
                     </span>
 
-                    <div className="card-marble-border rounded-lg">
-                        <Button
-                            variant="default"
-                            size="icon"
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                            disabled={currentPage === totalPages}
-                            className="bg-transparent"
-                        >
-                            <ChevronRight className="h-4 w-4" />
-                        </Button>
-                    </div>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                    >
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
                 </div>
             )}
         </div>
