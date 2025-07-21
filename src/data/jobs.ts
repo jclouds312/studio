@@ -55,7 +55,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     description: 'Únete a nuestro equipo de backend para diseñar e implementar aplicaciones del lado del servidor escalables y robustas. Trabajarás con un equipo de desarrolladores para construir y mantener nuestros servicios principales, asegurando un alto rendimiento y capacidad de respuesta a las solicitudes del front-end.',
     desiredProfile: 'Ingeniero/a de software con experiencia en Node.js y bases de datos SQL. Se busca una persona autónoma, con habilidades para la resolución de problemas y familiarizada con arquitecturas de microservicios.',
     companyLogo: 'https://images.unsplash.com/photo-1580894908361-967195033215?q=80&w=2070&auto=format&fit=crop',
-    imageUrl: 'https://images.unsplash.com/photo-1544256718-3b62ff04992a?q=80&w=1974&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1592609931095-54a2168ae893?q=80&w=2070&auto=format&fit=crop',
     category: 'tech',
     isNew: true,
     isFeatured: false,
