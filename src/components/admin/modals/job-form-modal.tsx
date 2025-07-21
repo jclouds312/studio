@@ -43,7 +43,7 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
         title: '',
         company: '',
         companyLogo: 'https://placehold.co/56x56.png',
-        imageUrl: 'https://placehold.co/400x200.png',
+        imageUrl: '', // Dejar vacío para que se muestre el uploader
         location: '',
         type: 'Full-time',
         category: 'tech',
@@ -118,6 +118,10 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Si no se subió una imagen, se asigna una por defecto.
+    if (!formData.imageUrl) {
+        formData.imageUrl = 'https://placehold.co/800x400.png';
+    }
     onSave(formData as Job);
     toast({
         title: "¡Éxito!",
@@ -139,7 +143,10 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
             
             <div className="space-y-2">
               <Label>Imagen de la Vacante</Label>
-              <div className="aspect-[2/1] w-full rounded-md border-2 border-dashed border-muted-foreground/30 flex items-center justify-center relative cursor-pointer hover:bg-muted/50" onClick={() => fileInputRef.current?.click()}>
+              <div 
+                className="aspect-[2/1] w-full rounded-md border-2 border-dashed border-muted-foreground/30 flex items-center justify-center relative cursor-pointer hover:bg-muted/50" 
+                onClick={() => fileInputRef.current?.click()}
+              >
                 {formData.imageUrl ? (
                   <Image src={formData.imageUrl} alt="Previsualización" layout="fill" objectFit="cover" className="rounded-md" data-ai-hint="job vacancy" />
                 ) : (
@@ -344,3 +351,5 @@ export function JobFormModal({ isOpen, setIsOpen, job, onSave }: JobFormModalPro
     </Dialog>
   );
 }
+
+    
