@@ -38,6 +38,32 @@ body {
     background: hsl(var(--card));
     z-index: 1;
   }
+   .card-marble-border {
+    @apply relative overflow-hidden rounded-lg p-px shadow-lg transition-all duration-300;
+  }
+  .card-marble-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px; /* The border width */
+    background: conic-gradient(from 180deg at 50% 50%, #d4af37, #c0c0c0, #ffffff, #d4af37, #c0c0c0);
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    transition: all 0.3s;
+  }
+   .card-marble-border:hover::before {
+    opacity: 0.7;
+    filter: blur(4px);
+  }
+  .card-marble-border > * {
+    background: linear-gradient(145deg, hsl(var(--card)) 70%, hsl(var(--card) / 0.9));
+    border-radius: calc(var(--radius) - 1px);
+    z-index: 1;
+  }
 }
 
 
