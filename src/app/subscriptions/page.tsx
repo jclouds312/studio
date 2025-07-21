@@ -352,7 +352,7 @@ function CustomerPlanView() {
                     {visiblePlans.map((plan, index) => {
                         const Icon = icons[plan.iconName] as LucideIcon;
                         const isOneTimePurchase = plan.planType === 'one-time';
-                        const cardBorderClass = isOneTimePurchase ? 'border-sky-400' : 'card-neon-border';
+                        const cardBorderClass = isOneTimePurchase ? 'card-neon-border' : 'card-neon-border';
                         
                         return (
                             <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">

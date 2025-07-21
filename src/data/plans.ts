@@ -2,6 +2,26 @@
 import type { SubscriptionPlan } from '@/lib/types';
 
 export const allPlans: SubscriptionPlan[] = [
+    // Worker Plans
+    {
+        name: 'Postulación Destacada',
+        userType: 'worker',
+        isPopular: false,
+        planType: 'one-time',
+        description: 'Destaca una postulación para máxima visibilidad.',
+        iconName: 'Sparkles',
+        pricing: [{
+            duration: 'monthly', // Duration is not relevant for one-time, but needed for type
+            price: '$200',
+            priceDetail: 'pago único',
+            priceAmount: 200,
+            features: [
+                'Prioridad en la lista de candidatos',
+                'Insignia de "Candidato Destacado"',
+                'Aumenta tus chances de ser visto',
+            ],
+        }]
+    },
     {
         name: 'Básico',
         userType: 'worker',
@@ -17,25 +37,6 @@ export const allPlans: SubscriptionPlan[] = [
                 'Hasta 5 postulaciones por mes',
                 'Perfil público básico',
                 'Acceso a todas las ofertas',
-            ],
-        }]
-    },
-    {
-        name: 'Postulación Destacada',
-        userType: 'worker',
-        isPopular: false,
-        planType: 'one-time',
-        description: 'Destaca una postulación para máxima visibilidad.',
-        iconName: 'Sparkles',
-        pricing: [{
-            duration: 'monthly',
-            price: '$200',
-            priceDetail: 'pago único',
-            priceAmount: 200,
-            features: [
-                'Prioridad en la lista de candidatos',
-                'Insignia de "Candidato Destacado"',
-                'Aumenta tus chances de ser visto',
             ],
         }]
     },
@@ -107,6 +108,8 @@ export const allPlans: SubscriptionPlan[] = [
             },
         ]
     },
+    
+    // Company Plans
      {
         name: 'Publicación Premium Única',
         userType: 'company',
