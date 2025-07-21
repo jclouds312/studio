@@ -95,4 +95,5 @@ export type SubscriptionPlan = {
   description: string;
   iconName: keyof typeof import('lucide-react').icons;
   pricing: PricingOption[];
+  planType?: 'subscription' | 'one-time';
 };

@@ -33,15 +33,16 @@ import { updateUser } from '@/services/userService';
 import { useRouter } from 'next/navigation';
 
 
-function PaymentModal({ planName, pricingOption, isPopular }: { planName: string, pricingOption: PricingOption, isPopular: boolean }) {
+function PaymentModal({ plan, pricingOption }: { plan: SubscriptionPlan, pricingOption: PricingOption }) {
     const { session } = useSession();
     const { setProfileData } = useContext(UserProfileContext);
     const [isPaying, setIsPaying] = React.useState(false);
     const [paymentSuccess, setPaymentSuccess] = React.useState(false);
     const { toast } = useToast();
+    const router = useRouter();
   
     const activateSubscription = async () => {
-        if (!session.user) return;
+        if (!session.user || plan.planType === 'one-time') return;
         
         const durationMap = {
             monthly: 1,
@@ -52,7 +53,7 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
         expiryDate.setMonth(expiryDate.getMonth() + durationMap[pricingOption.duration]);
 
         const updatedUser = await updateUser(session.user.id, {
-            subscriptionPlan: planName,
+            subscriptionPlan: plan.name,
             subscriptionUntil: expiryDate.toISOString(),
         });
 
@@ -74,7 +75,7 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title: `Suscripción Plan ${planName} (${pricingOption.duration})`,
+                title: `Suscripción Plan ${plan.name} (${pricingOption.duration})`,
                 unit_price: pricingOption.priceAmount,
             }),
         });
@@ -92,9 +93,14 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
         });
 
         setTimeout(async () => {
-          await activateSubscription();
+          if (plan.planType !== 'one-time') {
+            await activateSubscription();
+          }
           setIsPaying(false);
           setPaymentSuccess(true);
+           if (plan.planType === 'one-time' && plan.userType === 'company') {
+              setTimeout(() => router.push('/company/dashboard'), 2000);
+           }
         }, 2000);
 
       } catch (error) {
@@ -115,10 +121,23 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
         'semi-annually': 'por 6 meses'
     }[pricingOption.duration];
 
+    let successTitle = '¡Suscripción Activada!';
+    let successDescription = `Tu plan ${plan.name} ha sido activado.`;
+
+    if (plan.planType === 'one-time') {
+      successTitle = '¡Pago Exitoso!';
+      if (plan.userType === 'company') {
+        successDescription = 'Serás redirigido para crear tu vacante destacada.';
+      } else {
+        successDescription = 'Tu beneficio ha sido activado.';
+      }
+    }
+
+
     return (
        <AlertDialog onOpenChange={() => { setIsPaying(false); setPaymentSuccess(false); }}>
         <AlertDialogTrigger asChild>
-          <Button className="w-full" size="lg" variant={isPopular ? 'default' : 'outline'}>
+          <Button className="w-full" size="lg" variant={plan.isPopular ? 'default' : 'outline'}>
             {pricingOption.priceAmount === 0 ? 'Comenzar Ahora' : 'Contratar Plan'}
           </Button>
         </AlertDialogTrigger>
@@ -127,8 +146,8 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
               {paymentSuccess ? (
                 <div className="text-center py-4">
                   <Sparkles className="h-12 w-12 text-green-500 mx-auto mb-2"/>
-                  <AlertDialogTitle>¡Suscripción Activada!</AlertDialogTitle>
-                  <AlertDialogDescription>Tu plan {planName} ha sido activado.</AlertDialogDescription>
+                  <AlertDialogTitle>{successTitle}</AlertDialogTitle>
+                  <AlertDialogDescription>{successDescription}</AlertDialogDescription>
                 </div>
               ) : (
                 <>
@@ -137,9 +156,9 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
                         Confirmar Pago
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                        Estás a punto de suscribirte al <strong>Plan {planName}</strong>.
+                        Estás a punto de adquirir el <strong>Plan {plan.name}</strong>.
                         {pricingOption.priceAmount > 0 ? (
-                            <> Se realizará un pago único de <span className="font-bold text-foreground">{totalAmount}</span> {durationText}.</>
+                            <> Se realizará un pago único de <span className="font-bold text-foreground">{totalAmount}</span>.</>
                         ) : (
                             <> Activarás el plan gratuito.</>
                         )}
@@ -149,7 +168,7 @@ function PaymentModal({ planName, pricingOption, isPopular }: { planName: string
           </AlertDialogHeader>
           <AlertDialogFooter>
               {paymentSuccess ? (
-                  <AlertDialogCancel>Cerrar</AlertDialogCancel>
+                  <AlertDialogCancel onClick={() => {if(plan.planType === 'one-time' && plan.userType === 'company') router.push('/company/dashboard')}}>Cerrar</AlertDialogCancel>
               ) : (
                   <>
                       <AlertDialogCancel disabled={isPaying}>Cancelar</AlertDialogCancel>
@@ -325,15 +344,19 @@ function CustomerPlanView() {
                 <CarouselContent className="-ml-4">
                     {visiblePlans.map((plan, index) => {
                         const Icon = icons[plan.iconName] as LucideIcon;
+                        const isOneTimePurchase = plan.planType === 'one-time';
+                        const cardBorderClass = isOneTimePurchase ? 'border-sky-400' : 'card-neon-border';
+                        
                         return (
                             <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                                <div className="p-1 h-full card-neon-border rounded-lg">
+                                <div className={cn("p-1 h-full rounded-lg", cardBorderClass)}>
                                     <Card className={cn(
                                         "flex flex-col h-full transition-all duration-300 dark bg-transparent border-0",
                                         plan.isPopular && "relative",
                                         plan.name.includes('Plus') && 'theme-premium',
                                         plan.name.includes('VIP') && 'theme-premium',
-                                        plan.name.includes('Corporativo') && 'theme-premium'
+                                        plan.name.includes('Corporativo') && 'theme-premium',
+                                        isOneTimePurchase && 'border-2 border-sky-400/50'
                                     )}>
                                         {plan.isPopular && (
                                             <div className="w-full flex justify-center">
@@ -343,9 +366,17 @@ function CustomerPlanView() {
                                                 </Badge>
                                             </div>
                                         )}
+                                        {isOneTimePurchase && (
+                                            <div className="w-full flex justify-center">
+                                                 <Badge className="bg-sky-400 text-sky-950 text-sm py-1 px-4 font-bold -mt-3.5 flex items-center gap-1 z-10">
+                                                    <Star className="h-4 w-4"/>
+                                                    PAGO ÚNICO
+                                                </Badge>
+                                            </div>
+                                        )}
                                         <CardHeader className="text-center pt-8">
-                                            <div className="mx-auto bg-secondary p-4 rounded-full w-fit mb-4">
-                                                <Icon className="h-8 w-8 text-primary" />
+                                            <div className={cn("mx-auto bg-secondary p-4 rounded-full w-fit mb-4", isOneTimePurchase && "bg-sky-400/10")}>
+                                                <Icon className={cn("h-8 w-8 text-primary", isOneTimePurchase && "text-sky-400")} />
                                             </div>
                                             <CardTitle className="text-3xl">{plan.name}</CardTitle>
                                             <CardDescription className="text-base h-10">{plan.description}</CardDescription>
@@ -387,9 +418,8 @@ function CustomerPlanView() {
                                                         </div>
                                                         <div className="pt-6 mt-auto">
                                                             <PaymentModal 
-                                                                planName={plan.name} 
+                                                                plan={plan}
                                                                 pricingOption={option}
-                                                                isPopular={plan.isPopular || false}
                                                             />
                                                         </div>
                                                     </TabsContent>

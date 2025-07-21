@@ -21,6 +21,25 @@ export const allPlans: SubscriptionPlan[] = [
         }]
     },
     {
+        name: 'Postulación Destacada',
+        userType: 'worker',
+        isPopular: false,
+        planType: 'one-time',
+        description: 'Destaca una postulación para máxima visibilidad.',
+        iconName: 'Sparkles',
+        pricing: [{
+            duration: 'monthly',
+            price: '$200',
+            priceDetail: 'pago único',
+            priceAmount: 200,
+            features: [
+                'Prioridad en la lista de candidatos',
+                'Insignia de "Candidato Destacado"',
+                'Aumenta tus chances de ser visto',
+            ],
+        }]
+    },
+    {
         name: 'Profesional',
         userType: 'worker',
         isPopular: true,
@@ -87,6 +106,26 @@ export const allPlans: SubscriptionPlan[] = [
                 ],
             },
         ]
+    },
+     {
+        name: 'Publicación Premium Única',
+        userType: 'company',
+        planType: 'one-time',
+        isPopular: false,
+        description: 'Destaca una única vacante por 30 días.',
+        iconName: 'Sparkles',
+        pricing: [{
+            duration: 'monthly',
+            price: '$500',
+            priceDetail: 'pago único',
+            priceAmount: 500,
+            features: [
+                'Tu anuncio en la página principal',
+                'Posicionamiento superior en búsquedas',
+                'Insignia "Destacado" para máxima atracción',
+                'Ideal para búsquedas urgentes',
+            ],
+        }]
     },
     {
         name: 'Empresa',
