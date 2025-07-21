@@ -55,7 +55,7 @@ body {
     mask-composite: exclude;
     transition: all 0.3s;
     opacity: 0.7;
-    filter: blur(4px);
+    animation: keyframes-border-spin 4s linear infinite;
   }
   .card-marble-border > * {
     background: linear-gradient(145deg, hsl(var(--card)) 70%, hsl(var(--card) / 0.9));
@@ -158,7 +158,7 @@ body {
     @apply text-amber-400;
   }
    .theme-premium {
-    --card: 345 50% 10%; /* Dark wine red background for premium cards */
+    --card: 345 20% 8%; /* Dark wine red background for premium cards */
   }
 }
 
@@ -186,4 +186,3 @@ input::placeholder {
     color: hsl(var(--muted-foreground));
     opacity: 0.8;
 }
-

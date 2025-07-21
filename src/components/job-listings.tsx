@@ -89,7 +89,7 @@ function JobListingCard({ job }: { job: Job }) {
                     </CardHeader>
                     <CardContent className="p-6 pt-4 flex-grow flex flex-col justify-between">
                         <div>
-                             <CardTitle className={cn("text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors", job.isFeatured && "text-amber-400")}>{job.title}</CardTitle>
+                             <CardTitle className={cn("text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors", job.isFeatured && "card-title-premium")}>{job.title}</CardTitle>
                             <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
                                 <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
                                 <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
@@ -141,11 +141,8 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
         setCurrentPage(1);
     }, [keyword, location, category, contractType]);
 
-    const featuredJobs = useMemo(() => initialJobs.filter(job => job.isFeatured), [initialJobs]);
-    const regularJobs = useMemo(() => initialJobs.filter(job => !job.isFeatured), [initialJobs]);
-
-    const sortedAndFilteredJobs = useMemo(() => {
-        let jobs = regularJobs
+    const filteredJobs = useMemo(() => {
+        return initialJobs
             .filter(job => {
                 const keywordMatch = keyword.toLowerCase() ? job.title.toLowerCase().includes(keyword.toLowerCase()) || job.description.toLowerCase().includes(keyword.toLowerCase()) : true;
                 const locationMatch = location && location !== 'all' ? job.location === location : true;
@@ -153,29 +150,30 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
                 const contractTypeMatch = contractType && contractType !== 'all' ? job.type === contractType : true;
                 return keywordMatch && locationMatch && categoryMatch && contractTypeMatch;
             });
-        
-        jobs.sort((a, b) => {
+    }, [keyword, location, category, contractType, initialJobs]);
+
+
+    const sortedJobs = useMemo(() => {
+        return [...filteredJobs].sort((a, b) => {
+            if (a.isFeatured && !b.isFeatured) return -1;
+            if (!a.isFeatured && b.isFeatured) return 1;
             if (a.isNew && !b.isNew) return -1;
             if (!a.isNew && b.isNew) return 1;
             return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         });
-
-        return jobs;
-    }, [keyword, location, category, contractType, regularJobs]);
+    }, [filteredJobs]);
+    
+    const featuredJobs = useMemo(() => sortedJobs.filter(j => j.isFeatured), [sortedJobs]);
+    const regularJobsOnPage = useMemo(() => {
+        const nonFeatured = sortedJobs.filter(j => !j.isFeatured);
+        return nonFeatured.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE);
+    }, [currentPage, sortedJobs]);
 
     const jobsToShowOnThisPage = useMemo(() => {
-        // Always show featured jobs on every page at the top
-        const pageJobs = sortedAndFilteredJobs.slice(
-            (currentPage - 1) * JOBS_PER_PAGE,
-            currentPage * JOBS_PER_PAGE
-        );
-        const featuredIds = new Set(featuredJobs.map(j => j.id));
-        const nonFeaturedPageJobs = pageJobs.filter(j => !featuredIds.has(j.id));
-        return [...featuredJobs, ...nonFeaturedPageJobs];
-    }, [currentPage, sortedAndFilteredJobs, featuredJobs]);
+       return [...featuredJobs, ...regularJobsOnPage];
+    }, [featuredJobs, regularJobsOnPage]);
 
-
-    const totalPages = Math.ceil(sortedAndFilteredJobs.length / JOBS_PER_PAGE);
+    const totalPages = Math.ceil(sortedJobs.filter(j => !j.isFeatured).length / JOBS_PER_PAGE);
 
 
     return (
