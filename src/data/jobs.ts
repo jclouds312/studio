@@ -430,7 +430,7 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     desiredProfile: 'Guía de turismo con credencial habilitante y dominio de inglés. Apasionado por la naturaleza y la historia de la Patagonia.',
     companyLogo: 'https://images.unsplash.com/photo-1501555088652-021faa106b9b?q=80&w=2073&auto=format&fit=crop',
     imageUrl: 'https://images.unsplash.com/photo-1528543606781-df6e6807b3d0?q=80&w=2070&auto=format&fit=crop',
-    category: 'other',
+    category: 'gastronomy',
     isNew: true,
     isFeatured: true,
     whatsapp: '+5492901123456',
