@@ -29,7 +29,7 @@ body {
     transform: translate(-50%, -50%);
     width: 150%;
     height: 150%;
-    background: conic-gradient(from 0deg, hsl(195, 100%, 70%), hsl(45, 100%, 70%), hsl(220, 100%, 70%), hsl(195, 100%, 70%));
+    background: conic-gradient(from 0deg, hsl(270, 85%, 65%), hsl(140, 70%, 55%), hsl(210, 85%, 60%), hsl(45, 100%, 60%), hsl(0, 0%, 100%), hsl(270, 85%, 65%));
     animation: keyframes-border-spin 8s linear infinite;
     z-index: -1;
   }
