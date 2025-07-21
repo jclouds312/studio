@@ -89,7 +89,7 @@ function JobListingCard({ job }: { job: Job }) {
                     </CardHeader>
                     <CardContent className="p-6 pt-4 flex-grow flex flex-col justify-between">
                         <div>
-                             <CardTitle className={cn("text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors", job.isFeatured && "card-title-premium")}>{job.title}</CardTitle>
+                             <CardTitle className={cn("text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors", job.isFeatured && "text-amber-400")}>{job.title}</CardTitle>
                             <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
                                 <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
                                 <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
@@ -163,15 +163,15 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
         });
     }, [filteredJobs]);
     
-    const featuredJobs = useMemo(() => sortedJobs.filter(j => j.isFeatured), [sortedJobs]);
+    const featuredJobsOnPage = useMemo(() => sortedJobs.filter(j => j.isFeatured), [sortedJobs]);
     const regularJobsOnPage = useMemo(() => {
         const nonFeatured = sortedJobs.filter(j => !j.isFeatured);
         return nonFeatured.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE);
     }, [currentPage, sortedJobs]);
 
     const jobsToShowOnThisPage = useMemo(() => {
-       return [...featuredJobs, ...regularJobsOnPage];
-    }, [featuredJobs, regularJobsOnPage]);
+       return [...featuredJobsOnPage, ...regularJobsOnPage];
+    }, [featuredJobsOnPage, regularJobsOnPage]);
 
     const totalPages = Math.ceil(sortedJobs.filter(j => !j.isFeatured).length / JOBS_PER_PAGE);
 
@@ -311,7 +311,7 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
 
             {totalPages > 1 && (
                 <div className="flex justify-center items-center gap-2 mt-8">
-                     <div className="card-neon-border rounded-lg">
+                     <div className="card-marble-border rounded-lg">
                         <Button 
                             variant="default"
                             size="icon"
@@ -327,7 +327,7 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
                         Página {currentPage} de {totalPages}
                     </span>
 
-                    <div className="card-neon-border rounded-lg">
+                    <div className="card-marble-border rounded-lg">
                         <Button
                             variant="default"
                             size="icon"
