@@ -1,8 +1,6 @@
+
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -14,71 +12,90 @@ datasource db {
 }
 
 model User {
-  id                    String    @id @default(cuid())
-  name                  String
-  email                 String    @unique
-  password              String
-  role                  String    @default("user") // 'user', 'company', 'admin'
-  avatar                String?
-  phone                 String?
-  location              String?
-  professionalSummary   String?
-  experience            String?
-  savedJobIds           String?   // Comma-separated string of Job IDs
-  subscriptionPlan      String?
-  subscriptionUntil     DateTime?
-  status                String?   // 'Verificado', 'Pendiente', 'Suspendido'
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  companyProfileId      String?   @unique
-  company               CompanyProfile? @relation(fields: [companyProfileId], references: [id])
-  applications          Application[]
+  id                  String       @id @default(cuid())
+  name                String
+  email               String       @unique
+  password            String
+  role                String       @default("user") // 'user', 'company', 'admin'
+  avatar              String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  emailVerified       DateTime?
+  status              String?      // 'VERIFICADO', 'PENDIENTE', 'SUSPENDIDO'
+  phone               String?
+  location            String?
+  professionalSummary String?
+  experience          String?
+  companyProfileId    String?      @unique
+  companyProfile      CompanyProfile? @relation(fields: [companyProfileId], references: [id])
+  subscriptionPlan    String?
+  subscriptionUntil   DateTime?
+  applications        Application[]
+  savedJobIds         String[]
+  savedJobs           Job[]        @relation("SavedJobs", fields: [savedJobIds], references: [id])
 }
 
 model CompanyProfile {
-  id        String  @id @default(cuid())
-  name      String
-  cuit      String
-  address   String?
-  city      String?
-  province  String?
-  phone     String?
-  logoUrl   String?
-  status    String  @default("Pendiente") // 'Activa', 'Inactiva', 'Pendiente'
-  userId    String? @unique
-  user      User?
-  jobs      Job[]
+  id          String   @id @default(cuid())
+  name        String   @unique
+  cuit        String   @unique
+  address     String?
+  city        String?
+  province    String?
+  phone       String?
+  logoUrl     String?
+  description String?
+  status      String   // 'Activa', 'Inactiva', 'Pendiente'
+  userId      String?  @unique
+  user        User?
+  jobs        Job[]
 }
 
 model Job {
-  id                String    @id @default(cuid())
-  title             String
-  company           String
-  companyLogo       String
-  location          String
-  type              String    // 'Full-time', 'Part-time', etc.
-  category          String
-  description       String
-  whatsapp          String?
-  isFeatured        Boolean   @default(false)
-  isNew             Boolean   @default(false)
-  salary            String?
-  skills            String?   // JSON string of skills
-  customQuestions   String?   // JSON string of questions
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  companyProfileId  String?
-  companyProfile    CompanyProfile? @relation(fields: [companyProfileId], references: [id])
-  applications      Application[]
+  id                  String       @id @default(cuid())
+  title               String
+  description         String
+  company             String
+  location            String
+  type                String       // 'Full-time', 'Part-time', etc.
+  category            String
+  salary              String?
+  whatsapp            String?
+  isFeatured          Boolean      @default(false)
+  isNew               Boolean      @default(true)
+  companyLogo         String?
+  imageUrl            String?
+  desiredProfile      String?
+  horario             String?
+  modalidad           String?
+  direccionCompleta   String?
+  applicantsCount     Int          @default(0)
+  skills              Json?        // ["React", "Node.js"]
+  customQuestions     Json?        // ["Pregunta 1", "Pregunta 2"]
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  
+  companyProfileId    String?
+  companyProfile      CompanyProfile? @relation(fields: [companyProfileId], references: [id])
+  
+  applications        Application[]
+  
+  savedBy             User[]       @relation("SavedJobs")
 }
 
 model Application {
   id              String   @id @default(cuid())
-  userId          String
-  jobId           String
-  status          String   @default("EN_REVISION") // 'EN_REVISION', 'CONTACTADO', 'RECHAZADO'
   createdAt       DateTime @default(now())
-  customAnswers   String?  // JSON string of answers
-  user            User     @relation(fields: [userId], references: [id])
-  job             Job      @relation(fields: [jobId], references: [id])
+  status          String   @default("EN_REVISION") // 'EN_REVISION', 'CONTACTADO', 'RECHAZADO'
+  customAnswers   Json?    // [{ question: "...", answer: "..." }]
+  
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  jobId           String
+  job             Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
 }
+
+    

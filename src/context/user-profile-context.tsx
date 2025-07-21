@@ -2,9 +2,8 @@
 'use client';
 
 import React, { createContext, useState, useCallback, ReactNode, useEffect } from 'react';
-import type { UserProfileData } from '@/lib/types';
-import type { Job, User, Application } from '@prisma/client';
 import type { CustomAnswer } from '@/lib/types';
+import type { Job, User, Application } from '@prisma/client';
 import { useSession } from '@/hooks/use-session';
 import { getUserById, updateUser } from '@/services/userService';
 import { createApplication, getApplicationsByUserId } from '@/services/applicationService';
@@ -57,13 +56,10 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
                         setProfileData(userProfile);
                         
                         // Fetch saved jobs details
-                        if (userProfile.savedJobIds && Array.isArray(userProfile.savedJobIds) && userProfile.savedJobIds.length > 0) {
-                            const jobPromises = userProfile.savedJobIds.map(id => getJobById(id));
-                            const resolvedJobs = (await Promise.all(jobPromises)).filter((job): job is Job => job !== null);
-                            setSavedJobs(resolvedJobs);
-                        } else {
-                            setSavedJobs([]);
-                        }
+                        const jobPromises = (userProfile.savedJobIds || []).map(id => getJobById(id));
+                        const resolvedJobs = (await Promise.all(jobPromises)).filter((job): job is Job => job !== null);
+                        setSavedJobs(resolvedJobs);
+
 
                         // Fetch applications
                         const userApplications = await getApplicationsByUserId(session.user.id);
@@ -136,7 +132,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
             const newApplication = await createApplication({
                 userId: profileData.id,
                 jobId: job.id,
-                customAnswers: answers
+                customAnswers: answers || []
             });
 
             if (newApplication) {
@@ -153,3 +149,5 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
         </UserProfileContext.Provider>
     );
 };
+
+    

@@ -1,7 +1,7 @@
 
-import type { Job } from '@prisma/client';
+import type { Job } from '@/lib/types';
 
-export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[] = [
+export const allJobs: Job[] = [
   {
     id: '1',
     title: 'Frontend Developer (React)',
@@ -552,8 +552,6 @@ export const allJobs: Omit<Job, 'createdAt' | 'updatedAt' | 'companyProfileId'>[
     direccionCompleta: 'Trabajo remoto.',
     applicantsCount: 23,
   }
-].map(job => ({ ...job, createdAt: new Date(), updatedAt: new Date() }));
-
-    
+];
 
     
