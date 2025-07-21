@@ -77,8 +77,8 @@ async function JobCarousel({ featuredJobs }: { featuredJobs: Job[] }) {
                         </CarouselItem>
                     ))}
                 </CarouselContent>
-                <CarouselPrevious className="hidden lg:flex" />
-                <CarouselNext className="hidden lg:flex" />
+                <CarouselPrevious />
+                <CarouselNext />
             </Carousel>
         </div>
     );
