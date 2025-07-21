@@ -128,11 +128,6 @@ function PaymentModal({ plan, pricingOption }: { plan: SubscriptionPlan, pricing
     };
 
     const totalAmount = pricingOption.priceAmount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
-    const durationText = {
-        monthly: 'por 1 mes',
-        quarterly: 'por 3 meses',
-        'semi-annually': 'por 6 meses'
-    }[pricingOption.duration];
 
     let successTitle = '¡Suscripción Activada!';
     let successDescription = `Tu plan ${plan.name} ha sido activado.`;
