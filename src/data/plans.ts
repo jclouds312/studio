@@ -26,6 +26,7 @@ export const allPlans: SubscriptionPlan[] = [
         name: 'Básico',
         userType: 'worker',
         isPopular: false,
+        planType: 'subscription',
         description: 'Ideal para empezar tu búsqueda laboral.',
         iconName: 'Briefcase',
         pricing: [{
@@ -44,6 +45,7 @@ export const allPlans: SubscriptionPlan[] = [
         name: 'Profesional',
         userType: 'worker',
         isPopular: true,
+        planType: 'subscription',
         description: 'Potencia tu perfil y destaca sobre los demás.',
         iconName: 'Star',
         pricing: [
@@ -90,6 +92,7 @@ export const allPlans: SubscriptionPlan[] = [
         name: 'Candidato VIP',
         userType: 'worker',
         isPopular: false,
+        planType: 'subscription',
         description: 'Acceso total y asistencia personalizada para tu carrera.',
         iconName: 'Gem',
         pricing: [
@@ -134,6 +137,7 @@ export const allPlans: SubscriptionPlan[] = [
         name: 'Empresa',
         userType: 'company',
         isPopular: false,
+        planType: 'subscription',
         description: 'Perfecto para pequeñas y medianas empresas.',
         iconName: 'Building',
         pricing: [{
@@ -154,6 +158,7 @@ export const allPlans: SubscriptionPlan[] = [
         name: 'Empresa Plus',
         userType: 'company',
         isPopular: true,
+        planType: 'subscription',
         description: 'La solución completa para grandes reclutadores.',
         iconName: 'Zap',
         pricing: [
@@ -200,6 +205,7 @@ export const allPlans: SubscriptionPlan[] = [
         name: 'Corporativo',
         userType: 'company',
         isPopular: false,
+        planType: 'subscription',
         description: 'Soluciones a medida para grandes corporaciones.',
         iconName: 'Gem',
         pricing: [
