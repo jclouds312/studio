@@ -66,7 +66,7 @@ function JobListingCard({ job }: { job: Job }) {
 
     return (
         <Link href={`/jobs/${job.id}`} className="block h-full group">
-            <div className={cn("h-full card-neon-border rounded-lg")}>
+            <div className={cn("h-full card-marble-border rounded-lg")}>
                 <Card className={cn("hover:shadow-xl transition-all duration-300 transform group-hover:scale-[1.02] relative overflow-hidden flex flex-col h-full bg-transparent border-0", getThemeClass())}>
                     <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                         {job.isFeatured && (
@@ -89,7 +89,7 @@ function JobListingCard({ job }: { job: Job }) {
                     </CardHeader>
                     <CardContent className="p-6 pt-4 flex-grow flex flex-col justify-between">
                         <div>
-                             <CardTitle className={cn("text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors", job.isFeatured && "card-title-premium")}>{job.title}</CardTitle>
+                             <CardTitle className={cn("text-lg md:text-xl mb-1 text-card-foreground group-hover:text-primary transition-colors", job.isFeatured && "text-amber-400")}>{job.title}</CardTitle>
                             <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 pt-1 text-sm">
                                 <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4 text-muted-foreground" /> {job.company}</span>
                                 <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" /> {job.location}</span>
@@ -141,8 +141,11 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
         setCurrentPage(1);
     }, [keyword, location, category, contractType]);
 
+    const featuredJobs = useMemo(() => initialJobs.filter(job => job.isFeatured), [initialJobs]);
+    const regularJobs = useMemo(() => initialJobs.filter(job => !job.isFeatured), [initialJobs]);
+
     const sortedAndFilteredJobs = useMemo(() => {
-        let jobs = initialJobs
+        let jobs = regularJobs
             .filter(job => {
                 const keywordMatch = keyword.toLowerCase() ? job.title.toLowerCase().includes(keyword.toLowerCase()) || job.description.toLowerCase().includes(keyword.toLowerCase()) : true;
                 const locationMatch = location && location !== 'all' ? job.location === location : true;
@@ -151,7 +154,6 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
                 return keywordMatch && locationMatch && categoryMatch && contractTypeMatch;
             });
         
-        // Ordenar primero por nuevos y luego por fecha de creación
         jobs.sort((a, b) => {
             if (a.isNew && !b.isNew) return -1;
             if (!a.isNew && b.isNew) return 1;
@@ -159,13 +161,21 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
         });
 
         return jobs;
-    }, [keyword, location, category, contractType, initialJobs]);
+    }, [keyword, location, category, contractType, regularJobs]);
+
+    const jobsToShowOnThisPage = useMemo(() => {
+        // Always show featured jobs on every page at the top
+        const pageJobs = sortedAndFilteredJobs.slice(
+            (currentPage - 1) * JOBS_PER_PAGE,
+            currentPage * JOBS_PER_PAGE
+        );
+        const featuredIds = new Set(featuredJobs.map(j => j.id));
+        const nonFeaturedPageJobs = pageJobs.filter(j => !featuredIds.has(j.id));
+        return [...featuredJobs, ...nonFeaturedPageJobs];
+    }, [currentPage, sortedAndFilteredJobs, featuredJobs]);
+
 
     const totalPages = Math.ceil(sortedAndFilteredJobs.length / JOBS_PER_PAGE);
-    const paginatedJobs = sortedAndFilteredJobs.slice(
-        (currentPage - 1) * JOBS_PER_PAGE,
-        currentPage * JOBS_PER_PAGE
-    );
 
 
     return (
@@ -180,7 +190,7 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                         <Input 
                             placeholder="Puesto, empresa o palabra clave" 
-                            className="pl-10"
+                            className="pl-10 text-center text-lg h-12"
                             value={keyword}
                             onChange={(e) => setKeyword(e.target.value)}
                         />
@@ -188,7 +198,7 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
                     <div className="relative w-full">
                         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                          <Select value={location} onValueChange={setLocation}>
-                            <SelectTrigger className="w-full pl-10">
+                            <SelectTrigger className="w-full pl-10 text-center text-lg h-12">
                                 <SelectValue placeholder="Ubicación" />
                             </SelectTrigger>
                             <SelectContent>
@@ -237,7 +247,7 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
                     </div>
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                         <Select value={category} onValueChange={setCategory}>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full text-center text-lg h-12">
                                 <SelectValue placeholder="Categoría" />
                             </SelectTrigger>
                             <SelectContent>
@@ -274,7 +284,7 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
                             </SelectContent>
                         </Select>
                         <Select value={contractType} onValueChange={setContractType}>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full text-center text-lg h-12">
                                 <SelectValue placeholder="Tipo de Contrato" />
                             </SelectTrigger>
                             <SelectContent>
@@ -290,8 +300,8 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {paginatedJobs.length > 0 ? (
-                    paginatedJobs.map(job => <JobListingCard key={job.id} job={job} />)
+                {jobsToShowOnThisPage.length > 0 ? (
+                    jobsToShowOnThisPage.map(job => <JobListingCard key={job.id} job={job} />)
                 ) : (
                     <Card className="col-span-full">
                         <CardContent className="pt-6">
