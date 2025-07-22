@@ -246,10 +246,10 @@ function AdminPlanView() {
              ) : plans.map((plan) => {
                 const Icon = icons[plan.iconName] as LucideIcon;
                 return (
-                    <div key={plan.name} className="h-full card-marble-border rounded-lg">
+                    <div key={plan.name} className="h-full">
                         <Card className={cn(
-                            "flex flex-col dark h-full bg-transparent border-0",
-                            plan.isPopular && "relative",
+                            "flex flex-col h-full",
+                            plan.isPopular && "relative border shadow-[0_0_15px_hsl(var(--primary)/0.6)] border-primary/50",
                         )}>
                             {plan.isPopular && (
                                 <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
