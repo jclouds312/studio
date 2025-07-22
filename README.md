@@ -27,6 +27,21 @@ Para facilitar las pruebas y la revisión de la plataforma, se han preconfigurad
     *   **Email:** `admin@test.com`
     *   **Contraseña:** `password`
 
+## Opciones de Despliegue
+
+Este proyecto está listo para ser desplegado en varias plataformas modernas que ofrecen generosos planes gratuitos.
+
+*   **Firebase App Hosting (Recomendado):**
+    *   **¿Por qué?:** Es la opción natural dentro del ecosistema de Firebase/Google Cloud. Tu proyecto ya incluye el archivo `apphosting.yaml` para un despliegue sin complicaciones.
+    *   **Nota sobre la Tarjeta de Crédito:** Firebase requiere que vincules una tarjeta de crédito para activar su plan de pago por uso ("Blaze"), incluso si planeas mantenerte dentro de la capa gratuita. Esto es para **verificación de identidad** y para cubrir cualquier uso que exceda los límites gratuitos. **No se te cobrará nada si tu uso se mantiene dentro de la generosa cuota gratuita.** Si tienes problemas al registrar la tarjeta, asegúrate de que sea una tarjeta de crédito estándar (no prepaga) y que los datos coincidan con los de tu banco.
+
+*   **Railway:**
+    *   **¿Por qué?:** Tu proyecto ya está configurado con un archivo `railway.json`. Railway es conocido por su simplicidad y también ofrece un plan gratuito para empezar.
+
+*   **Vercel:**
+    *   **¿Por qué?:** Es la plataforma de los creadores de Next.js, por lo que la integración es perfecta. Simplemente conecta tu repositorio de GitHub y Vercel se encargará del resto. Su plan gratuito es ideal para proyectos personales y prototipos.
+
+
 ## Funcionalidades Clave
 
 *   **Doble Rol de Usuario:** La plataforma soporta dos flujos principales: **Trabajadores** que buscan empleo y **Empresas** que buscan contratar.
@@ -108,3 +123,4 @@ Para usuarios avanzados que deseen compilar un paquete APK nativo directamente d
 
 8.  **Localizar e Instalar el APK:**
     Una vez terminado, la herramienta te informará dónde se ha guardado el archivo APK. Luego puedes navegar a ese directorio y tocar el archivo para instalarlo en tu dispositivo (es posible que necesites permitir instalaciones de fuentes desconocidas en la configuración de Android).
+
