@@ -62,7 +62,7 @@ export const allUsers: any[] = [
     },
      {
         id: '4',
-        name: 'Admin LaburoYA',
+        name: 'Admin LaburoYA (Test)',
         email: 'admin@test.com',
         password: 'password',
         avatar: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=1780&auto=format&fit=crop',
@@ -154,5 +154,25 @@ export const allUsers: any[] = [
         role: 'company',
         status: 'Verificado',
         createdAt: new Date('2024-07-30')
+    },
+    {
+        id: '13',
+        name: 'Admin LaburoYA',
+        email: 'admin@laburoya.com',
+        password: 'Agosto2025',
+        avatar: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=1780&auto=format&fit=crop',
+        role: 'admin',
+        status: 'Verificado',
+        createdAt: new Date()
+    },
+    {
+        id: '14',
+        name: 'Johnatan Vallejo',
+        email: 'john474nvallejo@gmail.com',
+        password: 'Agosto2025',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1887&auto=format&fit=crop',
+        role: 'admin',
+        status: 'Verificado',
+        createdAt: new Date()
     }
 ];
