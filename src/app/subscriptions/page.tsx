@@ -304,7 +304,7 @@ function AdminPlanView() {
 function CustomerPlanView() {
     const { session } = useSession();
     const router = useRouter();
-    const userRole = session.user?.role === 'company' ? 'company' : 'worker';
+    const userRole = session.user?.role === 'EMPRESA' ? 'company' : 'worker';
     const [allPlans, setAllPlans] = React.useState<SubscriptionPlan[]>([]);
     
     React.useEffect(() => {
@@ -363,7 +363,7 @@ function CustomerPlanView() {
                                     )}>
                                         {plan.isPopular && (
                                             <div className="w-full flex justify-center">
-                                                <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold -mt-3.5 flex items-center gap-1 z-10">
+                                                <Badge className="bg-primary text-primary-foreground text-sm py-1 px-4 font-bold -mt-4 flex items-center gap-1 z-10">
                                                     <Star className="h-4 w-4"/>
                                                     MÁS POPULAR
                                                 </Badge>
@@ -371,7 +371,7 @@ function CustomerPlanView() {
                                         )}
                                         {isOneTimePurchase && (
                                             <div className="w-full flex justify-center">
-                                                 <Badge className="bg-sky-400 text-sky-950 text-sm py-1 px-4 font-bold -mt-3.5 flex items-center gap-1 z-10">
+                                                 <Badge className="bg-sky-400 text-sky-950 text-sm py-1 px-4 font-bold -mt-4 flex items-center gap-1 z-10">
                                                     <Sparkles className="h-4 w-4"/>
                                                     PAGO ÚNICO
                                                 </Badge>
@@ -457,7 +457,7 @@ export default function SubscriptionsPage() {
     );
   }
 
-  const isAdmin = session.user?.role === 'admin';
+  const isAdmin = session.user?.role === 'ADMIN';
 
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
