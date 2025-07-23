@@ -617,7 +617,7 @@ export let allJobs: Job[] = [
         location: 'GBA Oeste',
         type: 'Changa',
         category: 'construction',
-        imageUrl: 'https://images.unsplash.com/photo-1615852582884-39d65158655e?q=80&w=2070&auto=format&fit=crop',
+        imageUrl: 'https://images.unsplash.com/photo-1615852582884-39d652158655e?q=80&w=2070&auto=format&fit=crop',
         isFeatured: false,
         isNew: true,
         applicantsCount: 9,
@@ -737,5 +737,3 @@ export let allJobs: Job[] = [
         direccionCompleta: 'Bariloche, Río Negro'
     }
 ];
-
-    
