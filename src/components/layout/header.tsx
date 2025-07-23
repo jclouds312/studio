@@ -204,15 +204,15 @@ export function Header() {
                         </>
                       )}
                     </div>
-                    <div className="p-4 border-t border-white/10 mt-auto">
-                      <Button variant="ghost" size="lg" className={menuButtonClass} onClick={handleChatClick}>
-                          <LifeBuoy className={menuIconClass} />Contactar Soporte
-                      </Button>
-                      {session.isLoggedIn && (
-                        <Button variant="destructive" size="lg" className="justify-center w-full mt-2 h-12 text-base" onClick={handleLogoutClick}>
-                          <LogOut className="mr-2 h-5 w-5" />Cerrar Sesión
+                     <div className="p-4 border-t border-white/10">
+                        <Button variant="ghost" size="lg" className={menuButtonClass} onClick={handleChatClick}>
+                            <LifeBuoy className={menuIconClass} />Contactar Soporte
                         </Button>
-                      )}
+                        {session.isLoggedIn && (
+                        <Button variant="destructive" size="lg" className="justify-center w-full mt-2 h-12 text-base" onClick={handleLogoutClick}>
+                            <LogOut className="mr-2 h-5 w-5" />Cerrar Sesión
+                        </Button>
+                        )}
                     </div>
                   </div>
                 </SheetContent>
