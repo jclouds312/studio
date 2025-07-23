@@ -1,16 +1,15 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import React, { useEffect, useState, useContext } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Edit, Trash2, Eye, MessageSquare, Star, KeyRound, DollarSign, Loader2, Sparkles, CreditCard, Crown, Settings } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Eye, MessageSquare, Star, KeyRound, DollarSign, Loader2, Sparkles, CreditCard, Crown, Settings, Briefcase, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Separator } from '../ui/separator';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { useToast } from '../ui/use-toast';
@@ -28,7 +27,7 @@ import Image from "next/image";
 import type { Candidate, Job, User } from '@/lib/types';
 import { CandidateProfileModal } from './modals/candidate-profile-modal';
 import { ChatPanel } from '../chat/chat-panel';
-import { getAllJobs, createJob, updateJob, deleteJob } from '@/services/jobService';
+import { getJobsByCompanyId, createJob, updateJob, deleteJob } from '@/services/jobService';
 import { JobFormModal } from '../admin/modals/job-form-modal';
 import { cn } from '@/lib/utils';
 import { UserProfileContext } from '@/context/user-profile-context';
@@ -65,16 +64,12 @@ function FeatureJobModal({ job, onFeatured }: { job: Job, onFeatured: (jobId: st
 
             const preference = await response.json();
             
-            // En una app real, rediriges al usuario.
-            // window.location.href = preference.init_point;
-            
             console.log('Preferencia de pago creada:', preference.id);
             toast({
                 title: "Redirigiendo a Mercado Pago...",
                 description: `ID de Preferencia: ${preference.id}. En una app real, serías redirigido.`,
             });
             
-            // Simulación del proceso de pago exitoso
             setTimeout(async () => {
                 await updateJob(job.id, { isFeatured: true });
                 onFeatured(job.id);
@@ -150,7 +145,7 @@ function FeatureJobModal({ job, onFeatured }: { job: Job, onFeatured: (jobId: st
 
 export function CompanyDashboard() {
   const { session } = useSession();
-  const { hasActiveSubscription, activePlan, subscriptionEndDate } = React.useContext(UserProfileContext);
+  const { hasActiveSubscription, activePlan } = useContext(UserProfileContext);
   const { toast } = useToast();
   const [isMpConnected, setIsMpConnected] = React.useState(false);
   const [accessToken, setAccessToken] = React.useState('');
@@ -161,12 +156,14 @@ export function CompanyDashboard() {
   const [companyJobs, setCompanyJobs] = useState<Job[]>([]);
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [totalApplicants, setTotalApplicants] = useState(0);
 
   const fetchCompanyJobs = async () => {
     if (session.user?.companyProfileId) {
-      const allJobs = await getAllJobs();
-      const jobs = allJobs.filter(job => job.companyProfileId === session.user?.companyProfileId);
+      const jobs = await getJobsByCompanyId(session.user.companyProfileId);
       setCompanyJobs(jobs);
+      const total = jobs.reduce((acc, job) => acc + (job.applicantsCount || 0), 0);
+      setTotalApplicants(total);
     }
   };
 
@@ -303,41 +300,42 @@ export function CompanyDashboard() {
         <h1 className="text-4xl font-bold tracking-tight">Panel de Empresa</h1>
         <p className="text-lg text-muted-foreground">Gestiona tus publicaciones, candidatos y suscripciones.</p>
       </div>
-      
-       {hasActiveSubscription ? (
-             <Card className="theme-premium text-center p-6 rounded-lg shadow-lg">
-                <CardHeader className="p-0 mb-2">
-                    <div className="flex justify-center items-center gap-2 text-amber-300">
-                        <Crown className="h-6 w-6"/>
-                        <CardTitle className="text-2xl text-white">Miembro Premium</CardTitle>
-                    </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Publicaciones Activas</CardTitle>
+                    <Briefcase className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
-                <CardContent className="p-0">
-                    <p className="text-lg font-semibold text-white">Plan Actual: {activePlan}</p>
-                    {subscriptionEndDate && <p className="text-sm text-amber-100/80 mt-1">Vence el: {subscriptionEndDate}</p>}
-                    <Button asChild variant="link" className="text-amber-200 hover:text-white mt-1">
-                        <Link href="/subscriptions"><Settings className="mr-2 h-4 w-4" />Administrar mi suscripción</Link>
-                    </Button>
+                <CardContent>
+                    <div className="text-2xl font-bold">{companyJobs.length}</div>
+                    <p className="text-xs text-muted-foreground">Total de ofertas de empleo</p>
                 </CardContent>
             </Card>
-        ) : (
-            <Card className="bg-gradient-to-r from-primary/80 to-primary/60 text-primary-foreground text-center p-6 rounded-lg shadow-lg">
-                <CardHeader className="p-0 mb-2">
-                <CardTitle>¡Potencia tu Empresa!</CardTitle>
-                <CardDescription className="text-primary-foreground/80">
-                    Publica más ofertas y accede a herramientas avanzadas con nuestros planes premium.
-                </CardDescription>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total de Candidatos</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
-                <CardContent className="p-0">
-                <Button asChild className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
-                    <Link href="/subscriptions">
-                        <Star className="mr-2 h-4 w-4" />
-                        Ver Planes Premium
-                    </Link>
-                </Button>
+                <CardContent>
+                    <div className="text-2xl font-bold">{totalApplicants}</div>
+                    <p className="text-xs text-muted-foreground">Aplicaciones recibidas en total</p>
                 </CardContent>
             </Card>
-        )}
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Plan Actual</CardTitle>
+                    <Crown className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{activePlan || 'Básico'}</div>
+                    <p className="text-xs text-muted-foreground">
+                        {hasActiveSubscription ? `Tu plan premium está activo.` : 'Mejora para más beneficios.'}
+                    </p>
+                </CardContent>
+            </Card>
+        </div>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
@@ -411,10 +409,9 @@ export function CompanyDashboard() {
                 <CardContent className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-4 p-4 border rounded-lg bg-secondary/30">
                         <h3 className="font-semibold">Mi Plan Actual</h3>
-                        <div className="flex justify-between items-center">
+                         <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-lg font-semibold text-foreground">{activePlan || 'Plan Básico'}</p>
-                                <p className="text-sm text-muted-foreground">{subscriptionEndDate ? `Vence el: ${subscriptionEndDate}`: 'Suscripción inactiva'}</p>
                             </div>
                             <Badge variant="default" className={cn(hasActiveSubscription ? "bg-green-500/80" : "bg-muted-foreground")}>{hasActiveSubscription ? 'Activo' : 'Inactivo'}</Badge>
                         </div>
@@ -425,7 +422,7 @@ export function CompanyDashboard() {
                             }
                         </p>
                         <Button variant="outline" asChild className="w-full">
-                            <Link href="/subscriptions">Administrar Suscripción</Link>
+                            <Link href="/subscriptions"><Settings className="mr-2 h-4 w-4" />Administrar Suscripción</Link>
                         </Button>
                     </div>
                     
@@ -484,7 +481,6 @@ export function CompanyDashboard() {
                                     </Button>
                                 </div>
                             </div>
-                            <Separator className="last:hidden" />
                         </React.Fragment>
                     ))}
                     <Button variant="secondary" className="w-full mt-2">Ver todos los candidatos</Button>

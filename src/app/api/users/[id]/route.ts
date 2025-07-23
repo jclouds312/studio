@@ -16,6 +16,7 @@ export async function GET(request: Request, { params }: RouteParams) {
         }
         return NextResponse.json(user);
     } catch (error) {
+        console.error(`Error al obtener el usuario ${params.id}:`, error);
         return NextResponse.json({ error: 'Error al obtener el usuario' }, { status: 500 });
     }
 }
@@ -29,6 +30,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
         }
         return NextResponse.json(updatedUser);
     } catch (error) {
+        console.error(`Error al actualizar el usuario ${params.id}:`, error);
         return NextResponse.json({ error: 'Error al actualizar el usuario' }, { status: 500 });
     }
 }
@@ -41,6 +43,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
         }
         return NextResponse.json({ message: 'Usuario eliminado correctamente' });
     } catch (error) {
+        console.error(`Error al eliminar el usuario ${params.id}:`, error);
         return NextResponse.json({ error: 'Error al eliminar el usuario' }, { status: 500 });
     }
 }

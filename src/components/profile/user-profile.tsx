@@ -423,11 +423,6 @@ export function UserProfile() {
   const { profileData, hasActiveSubscription, activePlan, subscriptionEndDate } = useContext(UserProfileContext);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   const [companyProfile, setCompanyProfile] = useState<CompanyProfile | null>(null);
-  const [initialJobs, setInitialJobs] = useState<PrismaJob[]>([]);
-
-    useEffect(() => {
-        getAllJobs().then(setInitialJobs);
-    }, []);
 
   useEffect(() => {
     async function fetchCompanyProfile() {
@@ -595,7 +590,7 @@ export function UserProfile() {
                 <SavedJobsTab />
             </TabsContent>
             <TabsContent value="offers" className="mt-6">
-                 <JobListings initialJobs={initialJobs} />
+                 <OffersTab />
             </TabsContent>
         </Tabs>
       )}

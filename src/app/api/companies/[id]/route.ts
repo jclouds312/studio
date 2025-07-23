@@ -16,6 +16,7 @@ export async function GET(request: Request, { params }: RouteParams) {
         }
         return NextResponse.json(company);
     } catch (error) {
+        console.error(`Error al obtener la empresa ${params.id}:`, error);
         return NextResponse.json({ error: 'Error al obtener la empresa' }, { status: 500 });
     }
 }
@@ -29,6 +30,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
         }
         return NextResponse.json(updatedCompany);
     } catch (error) {
+        console.error(`Error al actualizar la empresa ${params.id}:`, error);
         return NextResponse.json({ error: 'Error al actualizar la empresa' }, { status: 500 });
     }
 }
@@ -41,6 +43,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
         }
         return NextResponse.json({ message: 'Empresa eliminada correctamente' });
     } catch (error) {
+        console.error(`Error al eliminar la empresa ${params.id}:`, error);
         return NextResponse.json({ error: 'Error al eliminar la empresa' }, { status: 500 });
     }
 }

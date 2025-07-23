@@ -12,19 +12,19 @@ export async function getAllUsers(): Promise<User[]> {
 export async function getUserById(id: string): Promise<User | null> {
     await new Promise(resolve => setTimeout(resolve, 200));
     const user = allUsers.find(user => user.id === id) || null;
-    return JSON.parse(JSON.stringify(user));
+    return user ? JSON.parse(JSON.stringify(user)) : null;
 }
 
 export async function getUserByEmail(email: string): Promise<User | null> {
     await new Promise(resolve => setTimeout(resolve, 200));
     const user = allUsers.find(user => user.email === email) || null;
-    return JSON.parse(JSON.stringify(user));
+    return user ? JSON.parse(JSON.stringify(user)) : null;
 }
 
 export async function getCompanyProfileByUserId(userId: string): Promise<CompanyProfile | null> {
     await new Promise(resolve => setTimeout(resolve, 200));
     const company = allCompanies.find(c => c.userId === userId) || null;
-    return JSON.parse(JSON.stringify(company));
+    return company ? JSON.parse(JSON.stringify(company)) : null;
 }
 
 export async function createUser(data: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>>): Promise<User> {
@@ -32,8 +32,11 @@ export async function createUser(data: Partial<Omit<User, 'id' | 'createdAt' | '
     const roleMap: Record<string, 'TRABAJADOR' | 'EMPRESA' | 'ADMIN'> = {
         'user': 'TRABAJADOR',
         'worker': 'TRABAJADOR',
+        'TRABAJADOR': 'TRABAJADOR',
         'company': 'EMPRESA',
-        'admin': 'ADMIN'
+        'EMPRESA': 'EMPRESA',
+        'admin': 'ADMIN',
+        'ADMIN': 'ADMIN',
     }
     const mappedRole = roleMap[data.role!] || 'TRABAJADOR';
 
@@ -45,7 +48,7 @@ export async function createUser(data: Partial<Omit<User, 'id' | 'createdAt' | '
         email: data.email!,
         password: data.password, // In a real app, hash this!
         role: mappedRole,
-        avatar: data.avatar || 'https://placehold.co/40x40.png',
+        avatar: data.avatar || `https://i.pravatar.cc/150?u=${data.email}`,
         status: data.status || 'VERIFICADO',
         savedJobIds: JSON.stringify(data.savedJobIds || []),
         companyProfileId: data.companyProfileId || null,
@@ -66,13 +69,13 @@ export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): P
     if (userIndex === -1) {
         return null;
     }
-    const updatedUser = { ...allUsers[userIndex], ...data, updatedAt: new Date() };
-
-    // Ensure array fields are stored as strings
-    if (Array.isArray(updatedUser.savedJobIds)) {
-        updatedUser.savedJobIds = JSON.stringify(updatedUser.savedJobIds);
+    
+    const updatedData = { ...data };
+    if (Array.isArray(updatedData.savedJobIds)) {
+        updatedData.savedJobIds = JSON.stringify(updatedData.savedJobIds);
     }
     
+    const updatedUser = { ...allUsers[userIndex], ...updatedData, updatedAt: new Date() };
     allUsers[userIndex] = updatedUser;
     return JSON.parse(JSON.stringify(updatedUser));
 }
@@ -81,7 +84,10 @@ export async function deleteUser(id: string): Promise<boolean> {
      await new Promise(resolve => setTimeout(resolve, 200));
     const initialLength = allUsers.length;
     const filteredUsers = allUsers.filter(user => user.id !== id);
+    if (allUsers.length === filteredUsers.length) {
+        return false;
+    }
     allUsers.length = 0;
     Array.prototype.push.apply(allUsers, filteredUsers);
-    return allUsers.length < initialLength;
+    return true;
 }
