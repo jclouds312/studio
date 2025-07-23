@@ -4,25 +4,6 @@ import type { SubscriptionPlan } from '@/lib/types';
 export const allPlans: SubscriptionPlan[] = [
     // Worker Plans
     {
-        name: 'Postulación Destacada',
-        userType: 'worker',
-        isPopular: false,
-        planType: 'one-time',
-        description: 'Destaca una postulación para máxima visibilidad.',
-        iconName: 'Sparkles',
-        pricing: [{
-            duration: 'monthly', // Duration is not relevant for one-time, but needed for type
-            price: '$200',
-            priceDetail: 'pago único',
-            priceAmount: 200,
-            features: [
-                'Prioridad en la lista de candidatos',
-                'Insignia de "Candidato Destacado"',
-                'Aumenta tus chances de ser visto',
-            ],
-        }]
-    },
-    {
         name: 'Básico',
         userType: 'worker',
         isPopular: false,
@@ -84,29 +65,6 @@ export const allPlans: SubscriptionPlan[] = [
                     'Todo lo del plan trimestral',
                     'Soporte VIP 24/7',
                     'Consulta de 30 min con un coach laboral',
-                ],
-            },
-        ]
-    },
-    {
-        name: 'Candidato VIP',
-        userType: 'worker',
-        isPopular: false,
-        planType: 'subscription',
-        description: 'Acceso total y asistencia personalizada para tu carrera.',
-        iconName: 'Gem',
-        pricing: [
-             {
-                duration: 'monthly',
-                price: '$5.000',
-                priceDetail: 'por mes',
-                priceAmount: 5000,
-                discount: undefined,
-                features: [
-                    'Todo lo del plan Profesional',
-                    'Gestor de cuenta de carrera personal',
-                    'Postulaciones destacadas (Prioridad)',
-                    'Aplicaciones gestionadas por expertos',
                 ],
             },
         ]
