@@ -13,10 +13,23 @@ export async function getApplicationsByUserId(userId: string): Promise<ExtendedA
     const userApplications = allApplications.filter(app => app.userId === userId);
     const extendedApplications = userApplications.map(app => {
         const job = allJobs.find(j => j.id === app.jobId);
-        return { ...app, job: job! };
-    }).filter(app => app.job);
+        if (!job) return null;
+
+        const parsedApp = {
+            ...app,
+            customAnswers: typeof app.customAnswers === 'string' ? JSON.parse(app.customAnswers) : app.customAnswers,
+            job: {
+                ...job,
+                skills: typeof job.skills === 'string' ? JSON.parse(job.skills) : job.skills,
+                customQuestions: typeof job.customQuestions === 'string' ? JSON.parse(job.customQuestions) : job.customQuestions,
+            }
+        };
+        return parsedApp;
+    }).filter((app): app is ExtendedApplication => app !== null);
+    
     return JSON.parse(JSON.stringify(extendedApplications));
 }
+
 
 export async function createApplication(applicationData: {
   userId: string;
@@ -48,5 +61,15 @@ export async function createApplication(applicationData: {
   allApplications.push(newApplication);
   const job = allJobs.find(j => j.id === jobId);
 
-  return JSON.parse(JSON.stringify({ ...newApplication, job }));
+  const extendedNewApplication = {
+      ...newApplication,
+      customAnswers: customAnswers || [],
+      job: {
+          ...job!,
+          skills: typeof job!.skills === 'string' ? JSON.parse(job!.skills) : job!.skills,
+          customQuestions: typeof job!.customQuestions === 'string' ? JSON.parse(job!.customQuestions) : job!.customQuestions,
+      }
+  };
+
+  return JSON.parse(JSON.stringify(extendedNewApplication));
 }

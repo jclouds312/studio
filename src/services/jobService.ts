@@ -4,19 +4,30 @@
 import type { Job } from '@prisma/client';
 import { allJobs } from '@/data/db';
 
+const parseJobFields = (job: Job): Job => {
+    return {
+        ...job,
+        skills: typeof job.skills === 'string' ? JSON.parse(job.skills) : job.skills,
+        customQuestions: typeof job.customQuestions === 'string' ? JSON.parse(job.customQuestions) : job.customQuestions,
+    };
+};
+
 export async function getAllJobs(filters?: { companyId?: string }): Promise<Job[]> {
     await new Promise(resolve => setTimeout(resolve, 200)); // Simulate delay
     let jobs = allJobs;
     if (filters?.companyId) {
         jobs = jobs.filter(job => job.companyProfileId === filters.companyId);
     }
-    return JSON.parse(JSON.stringify(jobs));
+    return JSON.parse(JSON.stringify(jobs.map(parseJobFields)));
 }
 
 export async function getJobById(id: string): Promise<Job | null> {
     await new Promise(resolve => setTimeout(resolve, 200)); // Simulate delay
     const job = allJobs.find(job => job.id === id) || null;
-    return JSON.parse(JSON.stringify(job));
+    if (job) {
+        return JSON.parse(JSON.stringify(parseJobFields(job)));
+    }
+    return null;
 }
 
 export async function createJob(data: Partial<Omit<Job, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Job> {

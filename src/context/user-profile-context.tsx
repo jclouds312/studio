@@ -47,65 +47,71 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     const [activePlan, setActivePlan] = useState<string | null>(null);
     const [subscriptionEndDate, setSubscriptionEndDate] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchProfileData = async () => {
-            if (session.isLoggedIn && session.user) {
-                try {
-                    const userProfile = await getUserById(session.user.id);
-                    if (userProfile) {
-                        setProfileData(userProfile);
+    const fetchProfileData = useCallback(async () => {
+        if (session.isLoggedIn && session.user) {
+            try {
+                const userProfile = await getUserById(session.user.id);
+                if (userProfile) {
+                    setProfileData(userProfile);
+                    
+                    const savedJobIds = Array.isArray(userProfile.savedJobIds) 
+                        ? userProfile.savedJobIds 
+                        : (typeof userProfile.savedJobIds === 'string' ? JSON.parse(userProfile.savedJobIds) : []);
                         
-                        const savedJobIds = Array.isArray(userProfile.savedJobIds) ? userProfile.savedJobIds : [];
-                        // Fetch saved jobs details
-                        const jobPromises = savedJobIds.map(id => getJobById(id));
-                        const resolvedJobs = (await Promise.all(jobPromises)).filter((job): job is Job => job !== null);
-                        setSavedJobs(resolvedJobs);
+                    // Fetch saved jobs details
+                    const jobPromises = savedJobIds.map(id => getJobById(id));
+                    const resolvedJobs = (await Promise.all(jobPromises)).filter((job): job is Job => job !== null);
+                    setSavedJobs(resolvedJobs);
 
+                    // Fetch applications
+                    const userApplications = await getApplicationsByUserId(session.user.id);
+                    setApplications(userApplications);
 
-                        // Fetch applications
-                        const userApplications = await getApplicationsByUserId(session.user.id);
-                        setApplications(userApplications);
-
-                        // Check subscription status
-                        if (userProfile.subscriptionPlan && userProfile.subscriptionUntil) {
-                            const endDate = new Date(userProfile.subscriptionUntil);
-                            if (endDate > new Date()) {
-                                setHasActiveSubscription(true);
-                                setActivePlan(userProfile.subscriptionPlan);
-                                setSubscriptionEndDate(endDate.toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' }));
-                            } else {
-                                setHasActiveSubscription(false);
-                                setActivePlan(null);
-                                setSubscriptionEndDate(null);
-                            }
+                    // Check subscription status
+                    if (userProfile.subscriptionPlan && userProfile.subscriptionUntil) {
+                        const endDate = new Date(userProfile.subscriptionUntil);
+                        if (endDate > new Date()) {
+                            setHasActiveSubscription(true);
+                            setActivePlan(userProfile.subscriptionPlan);
+                            setSubscriptionEndDate(endDate.toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' }));
                         } else {
-                             setHasActiveSubscription(false);
-                             setActivePlan(null);
-                             setSubscriptionEndDate(null);
+                            setHasActiveSubscription(false);
+                            setActivePlan(null);
+                            setSubscriptionEndDate(null);
                         }
+                    } else {
+                         setHasActiveSubscription(false);
+                         setActivePlan(null);
+                         setSubscriptionEndDate(null);
                     }
-                } catch(e){
-                   console.error("Failed to fetch user profile", e);
-                   setProfileData(null);
-                   setSavedJobs([]);
-                   setApplications([]);
                 }
-            } else {
-                setProfileData(null);
-                setSavedJobs([]);
-                setApplications([]);
-                setHasActiveSubscription(false);
-                setActivePlan(null);
-                setSubscriptionEndDate(null);
+            } catch(e){
+               console.error("Failed to fetch user profile", e);
+               setProfileData(null);
+               setSavedJobs([]);
+               setApplications([]);
             }
-        };
-        fetchProfileData();
+        } else {
+            setProfileData(null);
+            setSavedJobs([]);
+            setApplications([]);
+            setHasActiveSubscription(false);
+            setActivePlan(null);
+            setSubscriptionEndDate(null);
+        }
     }, [session.isLoggedIn, session.user]);
+
+    useEffect(() => {
+        fetchProfileData();
+    }, [fetchProfileData]);
 
     const handleSaveJob = useCallback(async (job: Job) => {
         if (!profileData) return;
 
-        const currentSavedJobIds = Array.isArray(profileData.savedJobIds) ? profileData.savedJobIds : [];
+        const currentSavedJobIds = Array.isArray(profileData.savedJobIds) 
+            ? profileData.savedJobIds 
+            : (typeof profileData.savedJobIds === 'string' ? JSON.parse(profileData.savedJobIds) : []);
+        
         const isAlreadySaved = currentSavedJobIds.includes(job.id);
         
         const updatedSavedJobIds = isAlreadySaved
@@ -137,6 +143,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
             });
 
             if (newApplication) {
+                // Manually update the applications list to reflect the change immediately
                 setApplications(prev => [...prev, newApplication]);
             }
         } catch(e){
