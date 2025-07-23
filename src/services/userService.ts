@@ -1,33 +1,46 @@
 
 'use server';
 
-import type { User } from '@prisma/client';
-import { fetchFromPrisma } from './prismaProxy';
+import type { User, CompanyProfile } from '@prisma/client';
+import { allUsers, allCompanies } from '@/data/db';
 
 export async function getAllUsers(): Promise<User[]> {
-    return fetchFromPrisma('user', 'findMany', {});
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return JSON.parse(JSON.stringify(allUsers));
 }
 
 export async function getUserById(id: string): Promise<User | null> {
-    return fetchFromPrisma('user', 'findUnique', { where: { id } });
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const user = allUsers.find(user => user.id === id) || null;
+    return JSON.parse(JSON.stringify(user));
 }
 
 export async function getUserByEmail(email: string): Promise<User | null> {
-    return fetchFromPrisma('user', 'findUnique', { where: { email } });
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const user = allUsers.find(user => user.email === email) || null;
+    return JSON.parse(JSON.stringify(user));
+}
+
+export async function getCompanyProfileByUserId(userId: string): Promise<CompanyProfile | null> {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const company = allCompanies.find(c => c.userId === userId) || null;
+    return JSON.parse(JSON.stringify(company));
 }
 
 export async function createUser(data: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>>): Promise<User> {
-    const roleMap = {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const roleMap: Record<string, 'TRABAJADOR' | 'EMPRESA' | 'ADMIN'> = {
         'user': 'TRABAJADOR',
         'worker': 'TRABAJADOR',
         'company': 'EMPRESA',
         'admin': 'ADMIN'
     }
+    const mappedRole = roleMap[data.role!] || 'TRABAJADOR';
 
-    // @ts-ignore
-    const mappedRole = roleMap[data.role] || 'TRABAJADOR';
-
-    const createData = {
+    const newUser: User = {
+        id: `user_${Date.now()}`,
+        createdAt: new Date(),
+        updatedAt: new Date(),
         name: data.name!,
         email: data.email!,
         password: data.password, // In a real app, hash this!
@@ -35,34 +48,40 @@ export async function createUser(data: Partial<Omit<User, 'id' | 'createdAt' | '
         avatar: data.avatar || 'https://placehold.co/40x40.png',
         status: data.status || 'VERIFICADO',
         savedJobIds: JSON.stringify(data.savedJobIds || []),
+        companyProfileId: data.companyProfileId || null,
+        professionalSummary: data.professionalSummary || null,
+        experience: data.experience || null,
+        phone: data.phone || null,
+        location: data.location || null,
+        subscriptionPlan: data.subscriptionPlan || null,
+        subscriptionUntil: data.subscriptionUntil || null,
     };
-
-    return fetchFromPrisma('user', 'create', { data: createData });
+    allUsers.push(newUser);
+    return JSON.parse(JSON.stringify(newUser));
 }
 
 export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): Promise<User | null> {
-    try {
-        const dataToUpdate = { ...data };
-        if (data.savedJobIds && Array.isArray(data.savedJobIds)) {
-            dataToUpdate.savedJobIds = JSON.stringify(data.savedJobIds);
-        }
-
-        return await fetchFromPrisma('user', 'update', {
-            where: { id },
-            data: dataToUpdate,
-        });
-    } catch (error) {
-        console.error("Error updating user:", error);
+     await new Promise(resolve => setTimeout(resolve, 200));
+    const userIndex = allUsers.findIndex(user => user.id === id);
+    if (userIndex === -1) {
         return null;
     }
+    const updatedUser = { ...allUsers[userIndex], ...data, updatedAt: new Date() };
+
+    // Ensure array fields are stored as strings
+    if (Array.isArray(updatedUser.savedJobIds)) {
+        updatedUser.savedJobIds = JSON.stringify(updatedUser.savedJobIds);
+    }
+    
+    allUsers[userIndex] = updatedUser;
+    return JSON.parse(JSON.stringify(updatedUser));
 }
 
 export async function deleteUser(id: string): Promise<boolean> {
-    try {
-        await fetchFromPrisma('user', 'delete', { where: { id } });
-        return true;
-    } catch (error) {
-        console.error("Error deleting user:", error);
-        return false;
-    }
+     await new Promise(resolve => setTimeout(resolve, 200));
+    const initialLength = allUsers.length;
+    const filteredUsers = allUsers.filter(user => user.id !== id);
+    allUsers.length = 0;
+    Array.prototype.push.apply(allUsers, filteredUsers);
+    return allUsers.length < initialLength;
 }

@@ -9,7 +9,6 @@ import { PlusCircle, Edit, Trash2, Eye, MessageSquare, Star, KeyRound, DollarSig
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
-import { allUsers } from '@/data';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
 import { Label } from '../ui/label';
@@ -26,28 +25,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import Image from "next/image";
-import type { Candidate, Job } from '@/lib/types';
+import type { Candidate, Job, User } from '@/lib/types';
 import { CandidateProfileModal } from './modals/candidate-profile-modal';
 import { ChatPanel } from '../chat/chat-panel';
 import { getAllJobs, createJob, updateJob, deleteJob } from '@/services/jobService';
 import { JobFormModal } from '../admin/modals/job-form-modal';
 import { cn } from '@/lib/utils';
 import { UserProfileContext } from '@/context/user-profile-context';
-
-const companyApplicants: Candidate[] = allUsers
-    .filter(u => u.role === 'user' && ['trabajador@test.com', 'ana.garcia@example.com'].includes(u.email))
-    .map((user, index) => ({
-        ...user,
-        id: user.id!,
-        appliedFor: index === 0 ? 'Frontend Developer (React)' : 'Diseñador/a UX/UI Sr.',
-        customAnswers: index === 0 ? [
-            { question: '¿Cuál es tu experiencia con Next.js App Router?', answer: 'Tengo más de 1 año de experiencia trabajando con el App Router en proyectos profesionales.' },
-            { question: 'Describe un proyecto complejo en el que hayas trabajado.', answer: 'Desarrollé una plataforma de e-commerce con un dashboard de analíticas en tiempo real.' }
-        ] : [
-            { question: 'Por favor, comparte un enlace a tu portafolio.', answer: 'Claro, mi portafolio está en mi.sitio.com/portfolio' },
-            { question: '¿Cuál es tu proceso de diseño habitual?', answer: 'Comienzo con investigación de usuario, luego wireframing, prototipado en Figma y finalmente pruebas de usabilidad.' }
-        ]
-    }));
+import { getAllUsers } from '@/services/userService';
 
 function FeatureJobModal({ job, onFeatured }: { job: Job, onFeatured: (jobId: string) => void }) {
     const { toast } = useToast();
@@ -163,9 +148,8 @@ export function CompanyDashboard() {
   const { hasActiveSubscription, activePlan, subscriptionEndDate } = React.useContext(UserProfileContext);
   const { toast } = useToast();
   const [isMpConnected, setIsMpConnected] = React.useState(false);
-  const [isPaying, setIsPaying] = React.useState(false);
-  const [paymentSuccess, setPaymentSuccess] = React.useState(false);
   const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null);
+  const [companyApplicants, setCompanyApplicants] = React.useState<Candidate[]>([]);
   const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   const [companyJobs, setCompanyJobs] = useState<Job[]>([]);
@@ -181,8 +165,27 @@ export function CompanyDashboard() {
   };
 
   useEffect(() => {
+    async function fetchApplicants() {
+        const allUsers: User[] = await getAllUsers();
+        const applicants: Candidate[] = allUsers
+            .filter(u => u.role === 'TRABAJADOR' && ['trabajador@test.com', 'ana.garcia@example.com'].includes(u.email))
+            .map((user, index) => ({
+                ...user,
+                appliedFor: index === 0 ? 'Frontend Developer (React)' : 'Diseñador/a UX/UI Sr.',
+                customAnswers: index === 0 ? [
+                    { question: '¿Cuál es tu experiencia con Next.js App Router?', answer: 'Tengo más de 1 año de experiencia trabajando con el App Router en proyectos profesionales.' },
+                    { question: 'Describe un proyecto complejo en el que hayas trabajado.', answer: 'Desarrollé una plataforma de e-commerce con un dashboard de analíticas en tiempo real.' }
+                ] : [
+                    { question: 'Por favor, comparte un enlace a tu portafolio.', answer: 'Claro, mi portafolio está en mi.sitio.com/portfolio' },
+                    { question: '¿Cuál es tu proceso de diseño habitual?', answer: 'Comienzo con investigación de usuario, luego wireframing, prototipado en Figma y finalmente pruebas de usabilidad.' }
+                ]
+            }));
+        setCompanyApplicants(applicants);
+    }
+
     if (session.isMounted) {
       fetchCompanyJobs();
+      fetchApplicants();
     }
   }, [session.isMounted, session.user]);
 
@@ -246,7 +249,7 @@ export function CompanyDashboard() {
     return <div className="flex justify-center items-center h-64"><Loader2 className="h-8 w-8 animate-spin" /></div>;
   }
   
-  if (!session.user || session.user.role !== 'company') {
+  if (!session.user || session.user.role !== 'EMPRESA') {
     return <div className="text-center py-12">Acceso denegado. Esta sección es solo para empresas.</div>;
   }
   

@@ -1,23 +1,20 @@
+// This file acts as a central database for the prototype.
+// It imports all data from other files and exports them as a single source of truth.
 
-import { allJobs as staticJobs } from './jobs';
-import { allUsers as staticUsers } from './users';
-import { allCompanies as staticCompanies } from './companies';
+import { allJobs as jobs } from './jobs';
+import { allUsers as users } from './users';
+import { allCompanies as companies } from './companies';
+import { allApplications as applications } from './applications';
+import type { Job, User, CompanyProfile, Application } from '@prisma/client';
 
-// This file is kept for legacy purposes but services should be used instead.
-// Functions here will use the static data to simulate database interaction.
+let allJobs: Job[] = [...jobs];
+let allUsers: User[] = [...users];
+let allCompanies: CompanyProfile[] = [...companies];
+let allApplications: Application[] = [...applications];
 
-export const allJobs = async () => {
-  return Promise.resolve(staticJobs);
+export { 
+    allJobs,
+    allUsers,
+    allCompanies,
+    allApplications
 };
-
-export const allUsers = async () => {
-    return Promise.resolve(staticUsers);
-};
-
-export const allCompanies = async () => {
-    return Promise.resolve(staticCompanies);
-}
-
-// Static data can still be exported for things not in the DB yet, like plans
-import { allPlans as staticPlans } from './plans';
-export const allPlans = () => staticPlans;

@@ -20,17 +20,16 @@ import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
 import { UserProfileContext } from '@/context/user-profile-context';
 import { cn } from '@/lib/utils';
-import { allCompanies } from '@/data';
 import { JobListings } from '../job-listings';
-import { getAllJobs, getJobById } from '@/services/jobService';
-import { updateUser } from '@/services/userService';
+import { getAllJobs } from '@/services/jobService';
+import { updateUser, getCompanyProfileByUserId } from '@/services/userService';
 import type { Job as PrismaJob, Application as PrismaApplication } from '@prisma/client';
 
 
 const roleDisplayMap = {
-    user: 'Trabajador',
-    company: 'Empresa',
-    admin: 'Administrador',
+    TRABAJADOR: 'Trabajador',
+    EMPRESA: 'Empresa',
+    ADMIN: 'Administrador',
 };
 
 function CompanyProfileView({ company }: { company: CompanyProfile | null }) {
@@ -71,19 +70,19 @@ function CompanyProfileView({ company }: { company: CompanyProfile | null }) {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="phone">Teléfono de Contacto</Label>
-                            <Input id="phone" type="tel" defaultValue={company.phone} />
+                            <Input id="phone" type="tel" defaultValue={company.phone || ''} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="address">Dirección</Label>
-                            <Input id="address" defaultValue={company.address} />
+                            <Input id="address" defaultValue={company.address || ''} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="city">Ciudad</Label>
-                            <Input id="city" defaultValue={company.city} />
+                            <Input id="city" defaultValue={company.city || ''} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="province">Provincia</Label>
-                            <Input id="province" defaultValue={company.province} />
+                            <Input id="province" defaultValue={company.province || ''} />
                         </div>
                     </div>
                      <div className="flex justify-end pt-2">
@@ -114,7 +113,7 @@ function EditProfileTab() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = React.useState<string | null>(null);
-  const isAdmin = session.user?.role === 'admin';
+  const isAdmin = session.user?.role === 'ADMIN';
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -427,10 +426,13 @@ export function UserProfile() {
     }, []);
 
   useEffect(() => {
-    if (session.isMounted && session.user?.role === 'company') {
-      const company = allCompanies.find(c => c.name === session.user?.name);
-      setCompanyProfile(company || null);
+    async function fetchCompanyProfile() {
+        if (session.isMounted && session.user?.role === 'EMPRESA') {
+            const profile = await getCompanyProfileByUserId(session.user.id);
+            setCompanyProfile(profile);
+        }
     }
+    fetchCompanyProfile();
   }, [session.isMounted, session.user]);
 
 
@@ -438,8 +440,8 @@ export function UserProfile() {
   if (!session.user) return <div>Usuario no encontrado.</div>;
   
   const { user } = session;
-  const isAdmin = user.role === 'admin';
-  const isCompany = user.role === 'company';
+  const isAdmin = user.role === 'ADMIN';
+  const isCompany = user.role === 'EMPRESA';
   const roleDisplay = roleDisplayMap[user.role as keyof typeof roleDisplayMap] || user.role;
 
   const getAvatarUrl = () => {

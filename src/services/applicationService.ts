@@ -3,16 +3,19 @@
 
 import type { Application, Job } from '@prisma/client';
 import type { CustomAnswer } from '@/lib/types';
-import { fetchFromPrisma } from './prismaProxy';
+import { allApplications, allJobs } from '@/data/db';
 import { incrementApplicantCount } from './jobService';
 
 type ExtendedApplication = Application & { job: Job };
 
 export async function getApplicationsByUserId(userId: string): Promise<ExtendedApplication[]> {
-    return fetchFromPrisma('application', 'findMany', {
-        where: { userId },
-        include: { job: true },
-    });
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const userApplications = allApplications.filter(app => app.userId === userId);
+    const extendedApplications = userApplications.map(app => {
+        const job = allJobs.find(j => j.id === app.jobId);
+        return { ...app, job: job! };
+    }).filter(app => app.job);
+    return JSON.parse(JSON.stringify(extendedApplications));
 }
 
 export async function createApplication(applicationData: {
@@ -20,30 +23,30 @@ export async function createApplication(applicationData: {
   jobId: string;
   customAnswers?: CustomAnswer[];
 }): Promise<ExtendedApplication> {
+  await new Promise(resolve => setTimeout(resolve, 200));
   const { userId, jobId, customAnswers } = applicationData;
 
-  const existingApplication: ExtendedApplication | null = await fetchFromPrisma('application', 'findFirst', {
-    where: { userId, jobId },
-    include: { job: true },
-  });
+  const existingApplication = allApplications.find(app => app.userId === userId && app.jobId === jobId);
 
   if (existingApplication) {
-    return existingApplication;
+      const job = allJobs.find(j => j.id === existingApplication.jobId);
+      return JSON.parse(JSON.stringify({ ...existingApplication, job }));
   }
 
   await incrementApplicantCount(jobId);
-
-  const newApplication: ExtendedApplication = await fetchFromPrisma('application', 'create', {
-    data: {
+  
+  const newApplication: Application = {
+      id: `app_${Date.now()}`,
       userId,
       jobId,
       customAnswers: JSON.stringify(customAnswers || []),
       status: 'EN_REVISION',
-    },
-    include: {
-      job: true,
-    },
-  });
+      createdAt: new Date(),
+      updatedAt: new Date(),
+  };
+  
+  allApplications.push(newApplication);
+  const job = allJobs.find(j => j.id === jobId);
 
-  return newApplication;
+  return JSON.parse(JSON.stringify({ ...newApplication, job }));
 }
