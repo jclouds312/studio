@@ -1,63 +1,94 @@
-// datasource and generator definition
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  engineType      = "library"
+  previewFeatures = ["driverAdapters"]
+}
+
 datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-// --- Main Models ---
-
-// User model for all types of users
+// User model with roles and social login info
 model User {
-  id                      String   @id @default(cuid())
-  name                    String
-  email                   String   @unique
-  password                String?
-  role                    String   @default("TRABAJADOR") // TRABAJADOR, EMPRESA, ADMIN
-  avatar                  String?
-  createdAt               DateTime @default(now())
-  updatedAt               DateTime @updatedAt
-  socialProvider          String?
-  socialId                String?
-  professionalSummary     String?
-  experience              String?
-  location                String?
-  phone                   String?
-  status                  String?
-  subscriptionPlan        String?
-  subscriptionUntil       DateTime?
+  id               String  @id @default(cuid())
+  name             String
+  email            String  @unique
+  password         String?
+  role             String  @default("TRABAJADOR") // TRABAJADOR, EMPRESA, ADMIN
+  socialProvider   String? // google, facebook, microsoft
+  socialId         String? // ID from the social provider
+  avatar           String?
+  phone            String?
+  location         String?
+  professionalSummary String?
+  experience       String?
+  savedJobIds      String? // Storing as JSON string
+  status           String?
+  subscriptionPlan String?
+  subscriptionUntil DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   // Relations
   applications          Application[]
   savedJobs             SavedJob[]
   transactions          MercadoPagoTransactions[]
-  premiumSubscriptions  EmpresaPremium[] // Added back-relation
-  companyProfile        CompanyProfile?  // Corrected relation
+  companyProfile        CompanyProfile?
+  premiumSubscriptions  EmpresaPremium[]
 }
 
+// CompanyProfile model linked to a User
 model CompanyProfile {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  name        String
-  logoUrl     String?
-  cuit        String?
-  address     String?
-  city        String?
-  province    String?
-  phone       String?
-  status      String?
+  id        String   @id @default(cuid())
+  userId    String   @unique // Link to the user who owns this company profile
+  name      String
+  cuit      String?
+  address   String?
+  city      String?
+  province  String?
+  phone     String?
+  logoUrl   String?
+  status    String?  // Activa, Inactiva, Pendiente
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+
   // Relations
   user User  @relation(fields: [userId], references: [id])
   jobs Job[]
 }
 
+// PlanPremium model for subscription plans
+model PlanPremium {
+  id           String   @id @default(cuid())
+  name         String
+  price        Float
+  durationDays Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  empresasPremium EmpresaPremium[]
+}
+
+// EmpresaPremium model to associate a company with its premium plan
+model EmpresaPremium {
+  id        String   @id @default(cuid())
+  userId    String
+  planId    String
+  startDate DateTime @default(now())
+  endDate   DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User        @relation(fields: [userId], references: [id])
+  plan PlanPremium @relation(fields: [planId], references: [id])
+}
 
 // Job model for job postings
 model Job {
@@ -65,29 +96,30 @@ model Job {
   title             String
   description       String?
   isFeatured        Boolean  @default(false)
-  isNew             Boolean  @default(false)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  isNew             Boolean  @default(true)
   company           String
   companyLogo       String?
   location          String
-  type              String   // e.g., Full-time, Part-time
+  type              String   // Full-time, Part-time, etc.
   category          String
   whatsapp          String?
   salary            String?
-  skills            String?  // Stored as JSON string
-  customQuestions   String?  // Stored as JSON string
+  skills            String? // Storing as JSON string
+  customQuestions   String? // Storing as JSON string
   horario           String?
   modalidad         String?
   direccionCompleta String?
   imageUrl          String?
   applicantsCount   Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
+  companyProfileId  String?
+  
   // Relations
-  companyProfileId String?
-  companyProfile   CompanyProfile? @relation(fields: [companyProfileId], references: [id])
-  applications     Application[]
-  savedBy          SavedJob[]
+  applications      Application[]
+  savedBy           SavedJob[]
+  companyProfile    CompanyProfile? @relation(fields: [companyProfileId], references: [id])
 }
 
 // Application model for job applications
@@ -95,10 +127,11 @@ model Application {
   id            String   @id @default(cuid())
   userId        String
   jobId         String
-  status        String   @default("EN_REVISION") // e.g., EN_REVISION, CONTACTADO, RECHAZADO
+  isPremium     Boolean  @default(false)
+  status        String   @default("EN_REVISION")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  customAnswers String?  // Stored as JSON string
+  customAnswers String? // Storing as JSON string
 
   // Relations
   user User @relation(fields: [userId], references: [id])
@@ -107,7 +140,7 @@ model Application {
   @@unique([userId, jobId])
 }
 
-// SavedJob model for tracking saved jobs by users
+// SavedJob model for saved job listings
 model SavedJob {
   id        String   @id @default(cuid())
   userId    String
@@ -121,34 +154,7 @@ model SavedJob {
   @@unique([userId, jobId])
 }
 
-
-// --- Subscription and Payment Models ---
-
-// PlanPremium model for subscription plans
-model PlanPremium {
-  id           String   @id @default(cuid())
-  name         String
-  price        Float
-  durationDays Int
-
-  // Relations
-  empresas EmpresaPremium[]
-}
-
-// EmpresaPremium junction table for user subscriptions
-model EmpresaPremium {
-  id        String    @id @default(cuid())
-  userId    String
-  planId    String
-  startDate DateTime  @default(now())
-  endDate   DateTime?
-
-  // Relations
-  user User        @relation(fields: [userId], references: [id])
-  plan PlanPremium @relation(fields: [planId], references: [id])
-}
-
-// MercadoPagoTransactions for payment tracking
+// MercadoPagoTransactions model
 model MercadoPagoTransactions {
   id        String   @id @default(cuid())
   userId    String
