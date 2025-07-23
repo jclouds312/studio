@@ -8,7 +8,7 @@ export const allPlans: SubscriptionPlan[] = [
         userType: 'worker',
         isPopular: true,
         planType: 'one-time',
-        description: 'Asegúrate de que tu postulación sea vista primero.',
+        description: 'Asegúrate de que tu postulación sea vista primero por los reclutadores.',
         iconName: 'Sparkles',
         pricing: [{
             duration: 'monthly', // Duration is nominal for one-time
@@ -16,10 +16,10 @@ export const allPlans: SubscriptionPlan[] = [
             priceDetail: 'pago único',
             priceAmount: 500,
             features: [
-                'Tu postulación aparece primera',
-                'Insignia "Candidato Destacado"',
-                'Alerta prioritaria para el reclutador',
-                'Ideal para esa oferta que no puedes dejar pasar',
+                'Tu postulación aparece primera en la lista.',
+                'Recibe una insignia de "Candidato Destacado".',
+                'Alerta prioritaria para el reclutador.',
+                'Ideal para esa oferta que no puedes dejar pasar.',
             ],
         }]
     },
@@ -36,9 +36,9 @@ export const allPlans: SubscriptionPlan[] = [
             priceDetail: 'para siempre',
             priceAmount: 0,
             features: [
-                'Hasta 5 postulaciones por mes',
-                'Perfil público básico',
-                'Acceso a todas las ofertas',
+                'Hasta 5 postulaciones por mes.',
+                'Perfil público básico.',
+                'Acceso a todas las ofertas.',
             ],
         }]
     },
