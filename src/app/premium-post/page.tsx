@@ -2,8 +2,6 @@
 'use client';
 
 import React from 'react';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, CheckCircle, Sparkles, Loader2, CreditCard } from 'lucide-react';
@@ -152,7 +150,6 @@ export default function PremiumPostPage() {
 
     return (
     <div className="flex flex-col min-h-screen bg-transparent">
-        <Header />
         <main className="flex-1 container mx-auto py-12 px-4">
             <div className="mb-6">
                 <Button variant="outline" onClick={() => router.back()} className="flex items-center gap-2">
@@ -191,7 +188,6 @@ export default function PremiumPostPage() {
                 </div>
             </div>
         </main>
-        <Footer />
     </div>
   );
 }

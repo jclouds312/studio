@@ -2,7 +2,6 @@
 'use client';
 
 import React, { useContext, useState, useEffect } from 'react';
-import { Header } from '@/components/layout/header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Briefcase, MapPin, Sparkles, Star, Phone, ArrowLeft, Clock, Send, Info, ExternalLink, Loader2, DollarSign, Tag, UserCheck, Calendar, Home, Users } from 'lucide-react';
@@ -10,7 +9,6 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
-import { Footer } from '@/components/layout/footer';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from '@/lib/utils';
 import { useSession } from '@/hooks/use-session';
@@ -132,7 +130,6 @@ export function JobDetailClient({ job: initialJob }: { job: Job }) {
 
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
-      <Header />
       <main className="flex-1 container mx-auto py-8 px-4">
         <div className="mb-6">
             <Button variant="outline" onClick={() => router.back()} className="flex items-center gap-2">
@@ -300,7 +297,6 @@ export function JobDetailClient({ job: initialJob }: { job: Job }) {
           </div>
         </div>
       </main>
-      <Footer />
         <Dialog open={isQuestionsModalOpen} onOpenChange={setIsQuestionsModalOpen}>
             <DialogContent>
                 <DialogHeader>

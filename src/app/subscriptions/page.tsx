@@ -1,8 +1,6 @@
 
 'use client';
 
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Star, Briefcase, Zap, Edit, Trash2, PlusCircle, Building, Award, LucideIcon, icons, Gem, ArrowLeft } from 'lucide-react';
@@ -452,11 +450,9 @@ export default function SubscriptionsPage() {
   if (!session.isMounted) {
     return (
         <div className="flex flex-col min-h-screen bg-transparent">
-          <Header />
             <div className='flex-1 flex items-center justify-center'>
                 <Loader2 className="h-8 w-8 animate-spin" />
             </div>
-          <Footer />
         </div>
     );
   }
@@ -465,9 +461,7 @@ export default function SubscriptionsPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
-      <Header />
         {isAdmin ? <AdminPlanView /> : <CustomerPlanView />}
-      <Footer />
     </div>
   );
 }

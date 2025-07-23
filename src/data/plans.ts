@@ -4,6 +4,26 @@ import type { SubscriptionPlan } from '@/lib/types';
 export const allPlans: SubscriptionPlan[] = [
     // Worker Plans
     {
+        name: 'Postulación Destacada',
+        userType: 'worker',
+        isPopular: true,
+        planType: 'one-time',
+        description: 'Asegúrate de que tu postulación sea vista primero.',
+        iconName: 'Sparkles',
+        pricing: [{
+            duration: 'monthly', // Duration is nominal for one-time
+            price: '$500',
+            priceDetail: 'pago único',
+            priceAmount: 500,
+            features: [
+                'Tu postulación aparece primera',
+                'Insignia "Candidato Destacado"',
+                'Alerta prioritaria para el reclutador',
+                'Ideal para esa oferta que no puedes dejar pasar',
+            ],
+        }]
+    },
+    {
         name: 'Básico',
         userType: 'worker',
         isPopular: false,
@@ -21,53 +41,6 @@ export const allPlans: SubscriptionPlan[] = [
                 'Acceso a todas las ofertas',
             ],
         }]
-    },
-    {
-        name: 'Profesional',
-        userType: 'worker',
-        isPopular: true,
-        planType: 'subscription',
-        description: 'Potencia tu perfil y destaca sobre los demás.',
-        iconName: 'Star',
-        pricing: [
-            {
-                duration: 'monthly',
-                price: '$2.000',
-                priceDetail: 'por mes',
-                priceAmount: 2000,
-                discount: undefined,
-                features: [
-                    'Postulaciones ilimitadas',
-                    'Perfil destacado en búsquedas',
-                    'Acceso a estadísticas de perfil',
-                    'Soporte prioritario por email',
-                ],
-            },
-            {
-                duration: 'quarterly',
-                price: '$1.700',
-                priceDetail: 'por mes',
-                priceAmount: 1700 * 3,
-                discount: 'AHORRA 15%',
-                features: [
-                    'Todo lo del plan mensual',
-                    'Acceso a webinars de carrera exclusivos',
-                    'Revisión de CV por IA',
-                ],
-            },
-            {
-                duration: 'semi-annually',
-                price: '$1.500',
-                priceDetail: 'por mes',
-                priceAmount: 1500 * 6,
-                discount: 'AHORRA 25%',
-                features: [
-                    'Todo lo del plan trimestral',
-                    'Soporte VIP 24/7',
-                    'Consulta de 30 min con un coach laboral',
-                ],
-            },
-        ]
     },
     
     // Company Plans

@@ -14,5 +14,9 @@ export default async function JobPage({ params }: { params: { id: string } }) {
   }
 
   // The Server Component fetches the data and then passes it to the Client Component.
-  return <JobDetailClient job={job} />;
+  return (
+    <main>
+      <JobDetailClient job={job} />
+    </main>
+  );
 }

@@ -2,11 +2,9 @@
 'use client';
 
 import React from 'react';
-import { Header } from '@/components/layout/header';
 import { AdminDashboard } from '@/components/admin/dashboard';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/admin/sidebar';
-import { Footer } from '@/components/layout/footer';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { OverviewTab } from '@/components/admin/tabs/overview';
 import { JobsTab } from '@/admin/tabs/jobs';
@@ -22,7 +20,6 @@ export default function AdminPage() {
   return (
     <SidebarProvider>
         <div className="flex flex-col min-h-screen bg-background">
-            <Header />
             <div className="flex flex-1">
                 <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
                 <SidebarInset>
@@ -54,7 +51,6 @@ export default function AdminPage() {
                     </main>
                 </SidebarInset>
             </div>
-            <Footer />
         </div>
     </SidebarProvider>
   );

@@ -3,8 +3,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { notFound, useRouter } from 'next/navigation';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import { getCompanyById } from '@/services/companyService';
 import { getAllJobs } from '@/services/jobService';
 import type { CompanyProfile, Job } from '@/lib/types';
@@ -45,11 +43,9 @@ export default function CompanyPublicProfilePage({ params }: { params: { id: str
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen">
-        <Header />
         <main className="flex-1 flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin" />
         </main>
-        <Footer />
       </div>
     );
   }
@@ -71,7 +67,6 @@ export default function CompanyPublicProfilePage({ params }: { params: { id: str
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
       <main className="flex-1 container mx-auto py-12 px-4 space-y-12">
         <div className="mb-6">
             <Button variant="outline" onClick={() => router.back()} className="flex items-center gap-2">
@@ -117,7 +112,6 @@ export default function CompanyPublicProfilePage({ params }: { params: { id: str
         </div>
 
       </main>
-      <Footer />
     </div>
   );
 }

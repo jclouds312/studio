@@ -1,10 +1,9 @@
 
-'use client';
-
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
 import { UserProfileProvider } from '@/context/user-profile-context';
+import { ClientLayout } from '@/components/layout/client-layout';
 
 export default function RootLayout({
   children,
@@ -38,8 +37,10 @@ export default function RootLayout({
       </head>
       <body className={cn("font-body antialiased min-h-screen")}>
           <UserProfileProvider>
+            <ClientLayout>
               {children}
-              <Toaster />
+            </ClientLayout>
+            <Toaster />
           </UserProfileProvider>
       </body>
     </html>

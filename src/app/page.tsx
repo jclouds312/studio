@@ -96,12 +96,10 @@ export default async function Home() {
 
   return (
     <div className={cn("flex flex-col min-h-screen")}>
-      <Header />
       <main className="flex-1 container mx-auto py-8 px-4 space-y-12">
          <JobCarousel featuredJobs={featuredJobs} />
          <JobListings initialJobs={regularJobs} />
       </main>
-      <Footer />
     </div>
   );
 }
