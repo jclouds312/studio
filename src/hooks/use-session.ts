@@ -6,10 +6,13 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { getUserByEmail, createUser } from '@/services/userService';
 import type { User, Role } from '@prisma/client';
+import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
+import { auth } from '@/lib/firebase/config';
 
 interface Session {
     isLoggedIn: boolean;
     user: User | null;
+    firebaseUser: FirebaseUser | null;
     isMounted: boolean;
 }
 
@@ -20,83 +23,71 @@ interface RegisterData {
     role: Role;
 }
 
-type SocialProvider = 'google' | 'facebook' | 'microsoft';
-
-const safeLocalStorage = {
-    getItem: (key: string): string | null => {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem(key);
-        }
-        return null;
-    },
-    setItem: (key: string, value: string): void => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem(key, value);
-        }
-    },
-    removeItem: (key: string): void => {
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem(key);
-        }
-    }
-};
-
-
 export function useSession() {
     const router = useRouter();
     const { toast } = useToast();
     const [session, setSession] = useState<Session>({
         isLoggedIn: false,
         user: null,
+        firebaseUser: null,
         isMounted: false,
     });
     const [loginUser, setLoginUser] = useState<User | null>(null);
 
-    // Effect to check session on initial mount
+    const performRedirect = useCallback((user: User | null) => {
+        if (!user) return;
+        if (user.role === 'EMPRESA') {
+            router.push('/company/dashboard');
+        } else if (user.role === 'ADMIN') {
+            router.push('/admin');
+        } else {
+            router.push('/');
+        }
+    }, [router]);
+
+    const performLogin = useCallback(async (appUser: User, firebaseUser?: FirebaseUser) => {
+        setSession({
+            isLoggedIn: true,
+            user: appUser,
+            firebaseUser: firebaseUser || session.firebaseUser,
+            isMounted: true,
+        });
+        toast({ title: `¡Bienvenido, ${appUser.name}!` });
+        performRedirect(appUser);
+    }, [toast, performRedirect, session.firebaseUser]);
+
     useEffect(() => {
-        const checkSession = async () => {
-            const loggedInStatus = safeLocalStorage.getItem('isLoggedIn') === 'true';
-            const userEmail = safeLocalStorage.getItem('userEmail');
-            if (loggedInStatus && userEmail) {
-                const currentUser = await getUserByEmail(userEmail);
-                if (currentUser) {
-                    setSession({ isLoggedIn: true, user: currentUser, isMounted: true });
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+            if (firebaseUser) {
+                const appUser = await getUserByEmail(firebaseUser.email!);
+                if (appUser) {
+                    setSession({ isLoggedIn: true, user: appUser, firebaseUser, isMounted: true });
                 } else {
-                    // Clean up if user is not found in DB
-                    safeLocalStorage.removeItem('isLoggedIn');
-                    safeLocalStorage.removeItem('userEmail');
-                    setSession({ isLoggedIn: false, user: null, isMounted: true });
+                    // This case handles a user authenticated with Firebase but not in our DB.
+                    // It's a good place to create the user profile if it doesn't exist.
+                    // For now, we log them out from our app state.
+                    setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
                 }
             } else {
-                setSession({ isLoggedIn: false, user: null, isMounted: true });
+                setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
             }
-        };
-        checkSession();
+        });
+
+        return () => unsubscribe();
     }, []);
 
-    // Effect to handle redirection after login state is set
-    useEffect(() => {
-        if (loginUser) {
-            if (loginUser.role === 'EMPRESA') {
-                router.push('/company/dashboard');
-            } else if (loginUser.role === 'ADMIN') {
-                router.push('/admin');
-            } else {
-                router.push('/');
-            }
-            // Reset loginUser after redirection to prevent re-triggering
-            setLoginUser(null);
+    const login = useCallback(async (email: string, password?: string) => {
+        const user = await getUserByEmail(email);
+        if (user && user.password === password) {
+            performLogin(user);
+        } else {
+            toast({
+                title: "Error de autenticación",
+                description: "El email o la contraseña son incorrectos.",
+                variant: "destructive",
+            });
         }
-    }, [loginUser, router]);
-
-    const performLogin = useCallback((user: User) => {
-        safeLocalStorage.setItem('isLoggedIn', 'true');
-        safeLocalStorage.setItem('userEmail', user.email);
-        setSession({ isLoggedIn: true, user, isMounted: true });
-        toast({ title: `¡Bienvenido, ${user.name}!` });
-        // Set the user to be redirected by the useEffect
-        setLoginUser(user);
-    }, [toast]);
+    }, [performLogin, toast]);
 
     const register = useCallback(async (data: RegisterData) => {
         const existingUser = await getUserByEmail(data.email);
@@ -112,7 +103,7 @@ export function useSession() {
         const newUser = await createUser({
             name: data.name,
             email: data.email,
-            password: data.password, // In a real app, hash this password!
+            password: data.password,
             role: data.role,
         });
         
@@ -123,45 +114,43 @@ export function useSession() {
         performLogin(newUser);
     }, [performLogin, toast]);
     
-    const loginWithSocial = useCallback(async (provider: SocialProvider, role: Role = 'TRABAJADOR') => {
-        const simulatedEmail = `user.${provider}@example.com`;
-        
-        let user = await getUserByEmail(simulatedEmail);
+    const loginWithGoogle = useCallback(async (role: Role = 'TRABAJADOR') => {
+        const provider = new GoogleAuthProvider();
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const firebaseUser = result.user;
 
-        if (user) {
-            performLogin(user);
-        } else {
-            const simulatedName = `Usuario de ${provider.charAt(0).toUpperCase() + provider.slice(1)}`;
-            const newUser = await createUser({
-                name: simulatedName,
-                email: simulatedEmail,
-                role: role,
-                password: 'social-login',
-            });
-            performLogin(newUser);
-        }
-    }, [performLogin]);
+            let appUser = await getUserByEmail(firebaseUser.email!);
 
-    const login = useCallback(async (email: string, password?: string) => {
-        const user = await getUserByEmail(email);
-        if (user && user.password === password) {
-            performLogin(user);
-        } else {
+            if (appUser) {
+                performLogin(appUser, firebaseUser);
+            } else {
+                // If user doesn't exist, create a new one
+                const newUser = await createUser({
+                    name: firebaseUser.displayName || 'Usuario de Google',
+                    email: firebaseUser.email!,
+                    role: role,
+                    password: 'social-login', // Not used for social auth
+                    avatar: firebaseUser.photoURL,
+                });
+                performLogin(newUser, firebaseUser);
+            }
+        } catch (error) {
+            console.error("Error during Google sign-in:", error);
             toast({
                 title: "Error de autenticación",
-                description: "El email o la contraseña son incorrectos.",
+                description: "No se pudo iniciar sesión con Google.",
                 variant: "destructive",
             });
         }
     }, [performLogin, toast]);
 
-    const logout = useCallback(() => {
-        safeLocalStorage.removeItem('isLoggedIn');
-        safeLocalStorage.removeItem('userEmail');
-        setSession({ isLoggedIn: false, user: null, isMounted: true });
+    const logout = useCallback(async () => {
+        await signOut(auth);
+        setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
         toast({ title: 'Has cerrado sesión exitosamente.' });
         router.push('/login');
     }, [router, toast]);
 
-    return { session, login, loginWithSocial, register, logout };
+    return { session, login, loginWithGoogle, register, logout };
 }

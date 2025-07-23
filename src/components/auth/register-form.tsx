@@ -31,7 +31,7 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function RegisterForm() {
-    const { register, loginWithSocial } = useSession();
+    const { register, loginWithGoogle } = useSession();
     const [role, setRole] = React.useState<Role>('TRABAJADOR');
 
     const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
@@ -49,11 +49,11 @@ export function RegisterForm() {
     return (
         <div className="mt-2 space-y-4">
              <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('google', role)}>
+                <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithGoogle(role)}>
                   <GoogleIcon className="mr-2 h-5 w-5" />
                   Google
                 </Button>
-                 <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithSocial('facebook', role)}>
+                 <Button variant="outline" className="w-full" size="lg" onClick={() => {}}>
                   <FacebookIcon className="mr-2 h-5 w-5" />
                   Facebook
                 </Button>
