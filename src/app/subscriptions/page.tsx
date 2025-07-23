@@ -98,12 +98,16 @@ function PaymentModal({ plan, pricingOption }: { plan: SubscriptionPlan, pricing
 
         const preference = await response.json();
         
+        // En una app real, rediriges al usuario.
+        // window.location.href = preference.init_point;
+        
         console.log('Preferencia de pago creada:', preference.id);
         toast({
           title: "Redirigiendo a Mercado Pago...",
           description: `ID de Preferencia: ${preference.id}. En una app real, serías redirigido.`,
         });
 
+        // Simulación del proceso de pago exitoso
         setTimeout(async () => {
           if (plan.planType !== 'one-time') {
             await activateSubscription();

@@ -10,9 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit",
-    "db:push": "prisma db push",
-    "db:setup": "prisma db push && sqlite3 ./prisma/dev.db < ./prisma/script.sql"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@genkit-ai/googleai": "^1.13.0",
@@ -48,6 +46,7 @@
     "firebase": "^11.9.1",
     "genkit": "^1.13.0",
     "lucide-react": "^0.475.0",
+    "mercadopago": "^2.0.11",
     "next": "15.3.3",
     "next-pwa": "^5.6.0",
     "papaparse": "^5.4.1",
@@ -57,13 +56,11 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
     "recharts": "^2.15.1",
-    "sqlite3": "^5.1.7",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@prisma/client": "^5.17.0",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^20",
     "@types/papaparse": "^5.3.14",

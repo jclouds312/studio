@@ -51,12 +51,17 @@ function PremiumPostPaymentModal() {
             }
             
             const preference = await response.json();
+            
+            // En una app real, aquí es donde redirigirías al usuario a la URL de pago.
+            // window.location.href = preference.init_point;
+
             console.log('Preferencia de pago creada:', preference.id);
             toast({
                 title: "Redirigiendo a Mercado Pago...",
                 description: `ID de Preferencia: ${preference.id}. En una app real, serías redirigido.`,
             });
-
+            
+            // Simulación del proceso de pago exitoso para el prototipo
             setTimeout(() => {
                 setIsPaying(false);
                 setPaymentSuccess(true);
