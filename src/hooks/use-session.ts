@@ -22,6 +22,26 @@ interface RegisterData {
 
 type SocialProvider = 'google' | 'facebook' | 'microsoft';
 
+const safeLocalStorage = {
+    getItem: (key: string): string | null => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem(key);
+        }
+        return null;
+    },
+    setItem: (key: string, value: string): void => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(key, value);
+        }
+    },
+    removeItem: (key: string): void => {
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem(key);
+        }
+    }
+};
+
+
 export function useSession() {
     const router = useRouter();
     const { toast } = useToast();
@@ -33,24 +53,18 @@ export function useSession() {
 
     useEffect(() => {
         const checkSession = async () => {
-            try {
-                const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
-                const userEmail = localStorage.getItem('userEmail');
-                if (loggedInStatus && userEmail) {
-                    const currentUser = await getUserByEmail(userEmail);
-                    if (currentUser) {
-                        setSession({ isLoggedIn: true, user: currentUser, isMounted: true });
-                    } else {
-                        // User in localStorage not found in our "DB", clear session
-                        localStorage.removeItem('isLoggedIn');
-                        localStorage.removeItem('userEmail');
-                        setSession({ isLoggedIn: false, user: null, isMounted: true });
-                    }
+            const loggedInStatus = safeLocalStorage.getItem('isLoggedIn') === 'true';
+            const userEmail = safeLocalStorage.getItem('userEmail');
+            if (loggedInStatus && userEmail) {
+                const currentUser = await getUserByEmail(userEmail);
+                if (currentUser) {
+                    setSession({ isLoggedIn: true, user: currentUser, isMounted: true });
                 } else {
+                    safeLocalStorage.removeItem('isLoggedIn');
+                    safeLocalStorage.removeItem('userEmail');
                     setSession({ isLoggedIn: false, user: null, isMounted: true });
                 }
-            } catch (error) {
-                console.error("Could not access localStorage or fetch user.", error);
+            } else {
                 setSession({ isLoggedIn: false, user: null, isMounted: true });
             }
         };
@@ -58,21 +72,17 @@ export function useSession() {
     }, []);
 
     const performLogin = useCallback((user: User) => {
-        try {
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userEmail', user.email);
-            setSession({ isLoggedIn: true, user, isMounted: true });
-            toast({ title: `¡Bienvenido, ${user.name}!` });
-            
-            if (user.role === 'EMPRESA') {
-                router.push('/company/dashboard');
-            } else if (user.role === 'ADMIN') {
-                router.push('/admin');
-            } else {
-                router.push('/');
-            }
-        } catch (error) {
-            console.error("Could not access localStorage.", error);
+        safeLocalStorage.setItem('isLoggedIn', 'true');
+        safeLocalStorage.setItem('userEmail', user.email);
+        setSession({ isLoggedIn: true, user, isMounted: true });
+        toast({ title: `¡Bienvenido, ${user.name}!` });
+        
+        if (user.role === 'EMPRESA') {
+            router.push('/company/dashboard');
+        } else if (user.role === 'ADMIN') {
+            router.push('/admin');
+        } else {
+            router.push('/');
         }
     }, [router, toast]);
 
@@ -134,15 +144,11 @@ export function useSession() {
     }, [performLogin, toast]);
 
     const logout = useCallback(() => {
-        try {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userEmail');
-            setSession({ isLoggedIn: false, user: null, isMounted: true });
-            toast({ title: 'Has cerrado sesión exitosamente.' });
-            router.push('/login');
-        } catch (error) {
-            console.error("Could not access localStorage.", error);
-        }
+        safeLocalStorage.removeItem('isLoggedIn');
+        safeLocalStorage.removeItem('userEmail');
+        setSession({ isLoggedIn: false, user: null, isMounted: true });
+        toast({ title: 'Has cerrado sesión exitosamente.' });
+        router.push('/login');
     }, [router, toast]);
 
     return { session, login, loginWithSocial, register, logout };
