@@ -28,9 +28,10 @@ function PremiumPostPaymentModal() {
     const handlePayment = async () => {
         setIsPaying(true);
         try {
-            const adminToken = localStorage.getItem('mp_access_token');
-            if (!adminToken) {
-                throw new Error('El Access Token de Mercado Pago no está configurado por el administrador.');
+            // Se usa el token que la empresa guardó en su panel
+            const companyToken = localStorage.getItem('company_mp_access_token');
+            if (!companyToken) {
+                throw new Error('Debes conectar tu cuenta de Mercado Pago en tu panel de empresa antes de poder realizar cobros.');
             }
             
             const response = await fetch('/api/mercadopago/create-preference', {
@@ -39,7 +40,7 @@ function PremiumPostPaymentModal() {
                 body: JSON.stringify({
                     title: `Publicación de Vacante Premium`,
                     unit_price: 500,
-                    accessToken: adminToken,
+                    accessToken: companyToken,
                 }),
             });
 

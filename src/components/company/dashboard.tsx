@@ -43,9 +43,9 @@ function FeatureJobModal({ job, onFeatured }: { job: Job, onFeatured: (jobId: st
     const handlePayment = async () => {
         setIsPaying(true);
         try {
-            const adminToken = localStorage.getItem('mp_access_token');
-            if (!adminToken) {
-                throw new Error('El Access Token de Mercado Pago no está configurado por el administrador.');
+            const companyToken = localStorage.getItem('company_mp_access_token');
+            if (!companyToken) {
+                throw new Error('Debes conectar tu cuenta de Mercado Pago en el panel antes de destacar una publicación.');
             }
 
             const response = await fetch('/api/mercadopago/create-preference', {
@@ -54,7 +54,7 @@ function FeatureJobModal({ job, onFeatured }: { job: Job, onFeatured: (jobId: st
                 body: JSON.stringify({
                     title: `Destacar: ${job.title}`,
                     unit_price: 500,
-                    accessToken: adminToken,
+                    accessToken: companyToken,
                 }),
             });
 
@@ -192,7 +192,7 @@ export function CompanyDashboard() {
     if (session.isMounted) {
       fetchCompanyJobs();
       fetchApplicants();
-       const storedToken = localStorage.getItem('mp_access_token');
+       const storedToken = localStorage.getItem('company_mp_access_token');
        if (storedToken) {
            setAccessToken(storedToken);
            setIsMpConnected(true);
@@ -256,7 +256,7 @@ export function CompanyDashboard() {
         });
         return;
     }
-    localStorage.setItem('mp_access_token', accessToken);
+    localStorage.setItem('company_mp_access_token', accessToken);
     toast({
         title: "Conexión Exitosa",
         description: "Tu Access Token ha sido guardado de forma segura (simulado).",
@@ -265,7 +265,7 @@ export function CompanyDashboard() {
   };
 
   const handleDisconnectMp = () => {
-    localStorage.removeItem('mp_access_token');
+    localStorage.removeItem('company_mp_access_token');
     setAccessToken('');
     setIsMpConnected(false);
     toast({
@@ -406,7 +406,7 @@ export function CompanyDashboard() {
             <Card>
                  <CardHeader>
                     <CardTitle>Suscripción y Pagos</CardTitle>
-                    <CardDescription>Gestiona tu plan y método de pago.</CardDescription>
+                    <CardDescription>Gestiona tu plan y método de pago para procesar cobros.</CardDescription>
                 </CardHeader>
                 <CardContent className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-4 p-4 border rounded-lg bg-secondary/30">

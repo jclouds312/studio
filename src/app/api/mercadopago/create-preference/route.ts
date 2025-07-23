@@ -10,11 +10,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Faltan el título o el precio.' }, { status: 400 });
     }
     
+    // Ahora, el token viene desde el frontend, permitiendo que cada empresa use su propia cuenta.
     if (!accessToken || !accessToken.startsWith('APP_USR-')) {
-      return NextResponse.json({ error: 'Falta el Access Token de Mercado Pago o es inválido. El administrador debe conectar su cuenta.' }, { status: 401 });
+      return NextResponse.json({ error: 'Falta el Access Token de Mercado Pago o es inválido. La empresa debe conectar su cuenta.' }, { status: 401 });
     }
 
-    // 1. Inicializar el cliente de Mercado Pago con el Access Token del admin
+    // 1. Inicializar el cliente de Mercado Pago con el Access Token de la empresa
     const client = new MercadoPagoConfig({ 
         accessToken: accessToken,
         options: { timeout: 5000 }

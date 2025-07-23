@@ -67,11 +67,11 @@ function PaymentModal({ plan, pricingOption }: { plan: SubscriptionPlan, pricing
         return;
       }
       
-      const adminToken = localStorage.getItem('mp_access_token');
-      if (!adminToken) {
+      const companyToken = localStorage.getItem('company_mp_access_token');
+      if (!companyToken) {
           toast({
               title: "Error de Configuración",
-              description: "El administrador no ha configurado una cuenta de Mercado Pago para recibir pagos.",
+              description: "La empresa no ha configurado una cuenta de Mercado Pago para recibir pagos.",
               variant: "destructive"
           });
           return;
@@ -85,7 +85,7 @@ function PaymentModal({ plan, pricingOption }: { plan: SubscriptionPlan, pricing
             body: JSON.stringify({
                 title: `Suscripción Plan ${plan.name} (${pricingOption.duration})`,
                 unit_price: pricingOption.priceAmount,
-                accessToken: adminToken,
+                accessToken: companyToken,
             }),
         });
 
