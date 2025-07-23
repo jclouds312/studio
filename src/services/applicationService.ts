@@ -1,47 +1,49 @@
 
 'use server';
 
-import type { Application, Job, User } from '@prisma/client';
-import { getAllJobs, incrementApplicantCount } from './jobService';
+import prisma from '@/lib/prisma';
+import { incrementApplicantCount } from './jobService';
+import type { Application, Job } from '@prisma/client';
 import type { CustomAnswer } from '@/lib/types';
 
+type ExtendedApplication = Application & { job: Job };
 
-// Simulate a database connection by using static data
-let applications: (Application & { job: Job })[] = [];
-
-export async function getApplicationsByUserId(userId: string): Promise<(Application & { job: Job })[]> {
-    const userApplications = applications.filter(app => app.userId === userId);
-    return Promise.resolve(userApplications);
+export async function getApplicationsByUserId(userId: string): Promise<ExtendedApplication[]> {
+    return prisma.application.findMany({
+        where: { userId },
+        include: { job: true },
+    });
 }
 
-export async function createApplication(applicationData: {userId: string, jobId: string, customAnswers: CustomAnswer[]}): Promise<Application & { job: Job }> {
-    const allJobs = await getAllJobs();
-    const job = allJobs.find(j => j.id === applicationData.jobId);
-    if (!job) {
-        throw new Error("Job not found for this application.");
-    }
-    
-    // Check if application already exists
-    const existingApplication = applications.find(app => app.userId === applicationData.userId && app.jobId === applicationData.jobId);
-    if (existingApplication) {
-        return Promise.resolve(existingApplication);
-    }
+export async function createApplication(applicationData: {
+  userId: string;
+  jobId: string;
+  customAnswers?: CustomAnswer[];
+}): Promise<ExtendedApplication> {
+  const { userId, jobId, customAnswers } = applicationData;
 
-    // Increment the applicant count for the job
-    await incrementApplicantCount(applicationData.jobId);
+  const existingApplication = await prisma.application.findFirst({
+    where: { userId, jobId },
+    include: { job: true },
+  });
 
-    const newApplication: Application & { job: Job } = {
-        id: String(Date.now()),
-        createdAt: new Date(),
-        status: 'EN_REVISION',
-        userId: applicationData.userId,
-        jobId: applicationData.jobId,
-        customAnswers: applicationData.customAnswers || [],
-        job: job,
-    };
+  if (existingApplication) {
+    return existingApplication;
+  }
 
-    applications.push(newApplication);
-    return Promise.resolve(newApplication);
+  await incrementApplicantCount(jobId);
+
+  const newApplication = await prisma.application.create({
+    data: {
+      userId,
+      jobId,
+      customAnswers: customAnswers || [],
+      status: 'EN_REVISION',
+    },
+    include: {
+      job: true,
+    },
+  });
+
+  return newApplication;
 }
-
-    

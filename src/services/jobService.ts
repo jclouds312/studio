@@ -1,78 +1,68 @@
 
 'use server';
 
+import prisma from '@/lib/prisma';
 import type { Job } from '@prisma/client';
-import { allJobs as staticJobs } from '@/data/jobs';
-import { allCompanies } from "@/data/companies";
-
-function toJob(job: any): Job {
-    return {
-        ...job,
-        skills: Array.isArray(job.skills) ? job.skills : [],
-        customQuestions: Array.isArray(job.customQuestions) ? job.customQuestions : [],
-    } as Job;
-}
-
-// Simulate a database connection by using static data from a file
-let jobs: Job[] = staticJobs.map(job => {
-    const company = allCompanies.find(c => c.name === job.company);
-    return toJob({
-        ...job,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        companyProfileId: company?.id ?? null,
-    });
-});
-
 
 export async function getAllJobs(filters?: { companyId?: string }): Promise<Job[]> {
-    let filteredJobs = jobs;
-    if (filters?.companyId) {
-        filteredJobs = jobs.filter(job => job.companyProfileId === filters.companyId);
-    }
-    return Promise.resolve(filteredJobs.map(toJob));
+    const whereClause = filters?.companyId ? { companyProfileId: filters.companyId } : {};
+    return prisma.job.findMany({ where: whereClause });
 }
 
 export async function getJobById(id: string): Promise<Job | null> {
-    const job = jobs.find(j => j.id === id) || null;
-    if (!job) return null;
-    return Promise.resolve(toJob(job));
+    return prisma.job.findUnique({ where: { id } });
 }
 
 export async function createJob(data: Partial<Omit<Job, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Job> {
-    const newJob: Job = toJob({
+    // Ensure JSON fields are handled correctly
+    const jobDataForCreation = {
         ...data,
-        id: String(Date.now()),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        applicantsCount: 0,
-    });
-    jobs.push(newJob);
-    return Promise.resolve(newJob);
+        title: data.title || 'Untitled Job',
+        company: data.company || 'Unknown Company',
+        location: data.location || 'Unknown Location',
+        type: data.type || 'Full-time',
+        category: data.category || 'other',
+        skills: data.skills || [],
+        customQuestions: data.customQuestions || [],
+    };
+    // @ts-ignore
+    return prisma.job.create({ data: jobDataForCreation });
 }
 
 export async function updateJob(id: string, data: Partial<Omit<Job, 'id'>>): Promise<Job | null> {
-    const jobIndex = jobs.findIndex(j => j.id === id);
-    if (jobIndex === -1) return null;
-    
-    const updatedJob = toJob({ ...jobs[jobIndex], ...data, updatedAt: new Date() });
-    jobs[jobIndex] = updatedJob;
-    return Promise.resolve(updatedJob);
+    try {
+        return await prisma.job.update({
+            where: { id },
+            data,
+        });
+    } catch (error) {
+        console.error("Error updating job:", error);
+        return null;
+    }
 }
 
 export async function deleteJob(id: string): Promise<boolean> {
-    const initialLength = jobs.length;
-    jobs = jobs.filter(j => j.id !== id);
-    return Promise.resolve(jobs.length < initialLength);
+    try {
+        await prisma.job.delete({ where: { id } });
+        return true;
+    } catch (error) {
+        console.error("Error deleting job:", error);
+        return false;
+    }
 }
 
 export async function incrementApplicantCount(jobId: string): Promise<Job | null> {
-    const jobIndex = jobs.findIndex(j => j.id === jobId);
-    if (jobIndex === -1) return null;
-
-    const job = jobs[jobIndex];
-    job.applicantsCount = (job.applicantsCount || 0) + 1;
-    return Promise.resolve(job);
+    try {
+        return await prisma.job.update({
+            where: { id: jobId },
+            data: {
+                applicantsCount: {
+                    increment: 1,
+                },
+            },
+        });
+    } catch (error) {
+        console.error("Error incrementing applicant count:", error);
+        return null;
+    }
 }
-
-    

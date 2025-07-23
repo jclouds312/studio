@@ -1,0 +1,162 @@
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// -------------------
+// MODELS
+// -------------------
+
+model User {
+  id               String            @id @default(cuid())
+  name             String
+  email            String            @unique
+  password         String?
+  role             String            @default("TRABAJADOR") // TRABAJADOR, EMPRESA, ADMIN
+  socialProvider   String?
+  socialId         String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  
+  // Worker-specific fields
+  phone            String?
+  location         String?
+  professionalSummary String?
+  experience       String?
+  savedJobIds      String?           // Stored as JSON string
+  
+  // Company-specific fields
+  companyProfile   CompanyProfile?
+  
+  // Relations
+  applications     Application[]
+  savedJobs        SavedJob[]
+  transactions     MercadoPagoTransactions[]
+  premiumSubscriptions EmpresaPremium[] // Missing back-relation added
+}
+
+model CompanyProfile {
+  id          String   @id @default(cuid())
+  name        String
+  cuit        String   @unique
+  address     String?
+  city        String?
+  province    String?
+  phone       String?
+  logoUrl     String?
+  status      String   @default("Pendiente") // Activa, Inactiva, Pendiente
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relation to User
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+
+  // Relation to Jobs
+  jobs        Job[]
+}
+
+model Job {
+  id              String        @id @default(cuid())
+  title           String
+  description     String?
+  category        String
+  type            String        // Full-time, Part-time, etc.
+  location        String
+  isFeatured      Boolean       @default(false)
+  isNew           Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Extended fields
+  salary          String?
+  skills          String?       // Stored as JSON string
+  customQuestions String?       // Stored as JSON string
+  horario         String?
+  modalidad       String?
+  direccionCompleta String?
+  imageUrl        String?
+  whatsapp        String?
+  applicantsCount Int           @default(0)
+  
+  // Relations
+  companyProfileId String?
+  companyProfile  CompanyProfile? @relation(fields: [companyProfileId], references: [id])
+  company         String
+  companyLogo     String?
+
+  applications    Application[]
+  savedBy         SavedJob[]
+}
+
+model Application {
+  id            String   @id @default(cuid())
+  status        String   @default("EN_REVISION")
+  createdAt     DateTime @default(now())
+
+  // Relations
+  userId        String
+  jobId         String
+  user          User     @relation(fields: [userId], references: [id])
+  job           Job      @relation(fields: [jobId], references: [id])
+
+  // Custom field not in SQL, Prisma handles JSON well
+  customAnswers String? // Stored as JSON string
+}
+
+model SavedJob {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  // Relations
+  userId    String
+  jobId     String
+  user      User     @relation(fields: [userId], references: [id])
+  job       Job      @relation(fields: [jobId], references: [id])
+
+  @@unique([userId, jobId])
+}
+
+model PlanPremium {
+    id            String   @id @default(cuid())
+    name          String
+    price         Float
+    durationDays  Int
+    createdAt     DateTime @default(now())
+
+    // Relations
+    empresaPremiums EmpresaPremium[]
+}
+
+model EmpresaPremium {
+    id        String   @id @default(cuid())
+    startDate DateTime @default(now())
+    endDate   DateTime
+
+    // Relations
+    userId    String
+    planId    String
+    user      User        @relation(fields: [userId], references: [id])
+    plan      PlanPremium @relation(fields: [planId], references: [id])
+}
+
+model MercadoPagoTransactions {
+    id        String   @id @default(cuid())
+    paymentId String
+    amount    Float
+    status    String
+    createdAt DateTime @default(now())
+    
+    // Relations
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+}
