@@ -6,13 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building, Settings, Star, Gem, LifeBuoy } from 'lucide-react';
+import { Menu, Briefcase, UserPlus, Shield, User, LogIn, LogOut, MessageSquare, Building, Settings, Star, Gem, LifeBuoy, Calculator, FileText } from 'lucide-react';
 import { SidebarTrigger } from '../ui/sidebar';
 import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 import { ChatPanel } from '../chat/chat-panel';
 import { useSession } from '@/hooks/use-session';
 import { Separator } from '../ui/separator';
+import { Badge } from '../ui/badge';
 
 export function Header() {
   const { session, logout } = useSession();
@@ -22,9 +23,9 @@ export function Header() {
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith('/admin');
 
-  const isAdmin = session.isLoggedIn && session.user?.role === 'admin';
-  const isCompany = session.isLoggedIn && session.user?.role === 'company';
-  const isWorker = session.isLoggedIn && session.user?.role === 'user';
+  const isAdmin = session.isLoggedIn && session.user?.role === 'ADMIN';
+  const isCompany = session.isLoggedIn && session.user?.role === 'EMPRESA';
+  const isWorker = session.isLoggedIn && session.user?.role === 'TRABAJADOR';
 
   if (!session.isMounted) {
     return (
@@ -148,29 +149,42 @@ export function Header() {
                       </SheetTitle>
                   </SheetHeader>
                   <div className="flex flex-col h-full">
-                    <div className="flex flex-col gap-2 p-4 flex-grow">
+                    <div className="flex flex-col gap-1 p-4 flex-grow overflow-y-auto">
                       {session.isLoggedIn ? (
                         <>
-                          <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
-                              <Link href="/profile">
-                                  <Avatar className="w-8 h-8 mr-1 border-2 border-primary/50">
-                                      <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
-                                      <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
-                                  </Avatar>
-                                  Mi Perfil
-                              </Link>
-                          </Button>
-                          {isWorker && (
+                           {isWorker && (
                               <>
-                                  <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
-                                      <Link href="/profile"><Briefcase className={menuIconClass} />Mis Postulaciones</Link>
-                                  </Button>
-                                  <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleChatClick}>
-                                  <div className='flex items-center gap-4'>
-                                      <MessageSquare className={menuIconClass} />Mensajes
-                                  </div>
-                                  </Button>
-                            </>
+                                <Button variant="ghost" asChild size="lg" className="justify-start gap-4 text-base h-14" onClick={handleLinkClick}>
+                                    <Link href="/profile">
+                                        <Avatar className="w-10 h-10 border-2 border-primary/50">
+                                            <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
+                                            <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                                        </Avatar>
+                                        <div className='text-left'>
+                                            <p className='font-semibold'>{session.user?.name}</p>
+                                            <p className='text-xs text-muted-foreground'>Ver mi perfil</p>
+                                        </div>
+                                    </Link>
+                                </Button>
+                                <Separator className="my-2 bg-white/10" />
+                                <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
+                                    <Link href="/profile"><Briefcase className={menuIconClass} />Mis Postulaciones</Link>
+                                </Button>
+                                <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleChatClick}>
+                                <div className='flex items-center gap-4'>
+                                    <MessageSquare className={menuIconClass} /><span className='flex-1'>Mensajes</span>
+                                    <Badge>2</Badge>
+                                </div>
+                                </Button>
+                                <Separator className="my-2 bg-white/10" />
+                                <p className='text-sm font-semibold text-muted-foreground px-2 pt-2'>Recursos para el Candidato</p>
+                                <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
+                                    <Link href="#"><Calculator className={menuIconClass}/>Calculadora de Sueldo</Link>
+                                </Button>
+                                 <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
+                                    <Link href="#"><FileText className={menuIconClass}/>Guía de Convenios</Link>
+                                </Button>
+                              </>
                           )}
                           {isAdmin && (
                             <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
@@ -178,8 +192,17 @@ export function Header() {
                             </Button>
                           )}
                           {isCompany && (
-                            <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
-                              <Link href="/company/dashboard"><Building className={menuIconClass} />Panel de Empresa</Link>
+                             <Button variant="ghost" asChild size="lg" className="justify-start gap-4 text-base h-14" onClick={handleLinkClick}>
+                                <Link href="/company/dashboard">
+                                    <Avatar className="w-10 h-10 border-2 border-primary/50">
+                                        <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
+                                        <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                                    </Avatar>
+                                    <div className='text-left'>
+                                        <p className='font-semibold'>{session.user?.name}</p>
+                                        <p className='text-xs text-muted-foreground'>Ir al Panel de Empresa</p>
+                                    </div>
+                                </Link>
                             </Button>
                           )}
                           <Separator className="my-2 bg-white/10" />
@@ -190,7 +213,7 @@ export function Header() {
                             </Link>
                           </Button>
                           <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
-                              <Link href="/subscriptions"><Gem className={menuIconClass}/>Planes Premium</Link>
+                              <Link href="/subscriptions"><Gem className={menuIconClass}/>Ver Planes</Link>
                           </Button>
                         </>
                       ) : (
@@ -204,8 +227,8 @@ export function Header() {
                         </>
                       )}
                     </div>
-                     <div className="p-4 border-t border-white/10">
-                        <Button variant="ghost" size="lg" className={menuButtonClass} onClick={handleChatClick}>
+                     <div className="p-4 border-t border-white/10 mt-auto">
+                        <Button variant="ghost" size="lg" className={menuButtonClass} onClick={() => {}}>
                             <LifeBuoy className={menuIconClass} />Contactar Soporte
                         </Button>
                         {session.isLoggedIn && (

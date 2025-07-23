@@ -153,6 +153,7 @@ export function CompanyDashboard() {
   const { hasActiveSubscription, activePlan, subscriptionEndDate } = React.useContext(UserProfileContext);
   const { toast } = useToast();
   const [isMpConnected, setIsMpConnected] = React.useState(false);
+  const [accessToken, setAccessToken] = React.useState('');
   const [selectedCandidate, setSelectedCandidate] = React.useState<Candidate | null>(null);
   const [companyApplicants, setCompanyApplicants] = React.useState<Candidate[]>([]);
   const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
@@ -191,6 +192,11 @@ export function CompanyDashboard() {
     if (session.isMounted) {
       fetchCompanyJobs();
       fetchApplicants();
+       const storedToken = localStorage.getItem('mp_access_token');
+       if (storedToken) {
+           setAccessToken(storedToken);
+           setIsMpConnected(true);
+       }
     }
   }, [session.isMounted, session.user]);
 
@@ -241,13 +247,32 @@ export function CompanyDashboard() {
       setCompanyJobs(prevJobs => prevJobs.map(j => j.id === jobId ? { ...j, isFeatured: true } : j));
   };
 
-
   const handleConnectMp = () => {
+    if (!accessToken || !accessToken.startsWith('APP_USR-')) {
+        toast({
+            title: "Token Inválido",
+            description: "Por favor, ingresa un Access Token válido de Mercado Pago.",
+            variant: "destructive",
+        });
+        return;
+    }
+    localStorage.setItem('mp_access_token', accessToken);
     toast({
-        title: "Conexión Simulada",
-        description: "Tu Access Token ha sido guardado (simulado).",
+        title: "Conexión Exitosa",
+        description: "Tu Access Token ha sido guardado de forma segura (simulado).",
     });
     setIsMpConnected(true);
+  };
+
+  const handleDisconnectMp = () => {
+    localStorage.removeItem('mp_access_token');
+    setAccessToken('');
+    setIsMpConnected(false);
+    toast({
+        title: "Desconectado",
+        description: "Tu cuenta de Mercado Pago ha sido desconectada.",
+        variant: "destructive",
+    })
   }
 
   if (!session.isMounted) {
@@ -352,7 +377,7 @@ export function CompanyDashboard() {
                                         <Badge>Activa</Badge>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant="secondary">3</Badge>
+                                        <Badge variant="secondary">{job.applicantsCount || 0}</Badge>
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex gap-2 justify-end">
@@ -410,14 +435,14 @@ export function CompanyDashboard() {
                             <div className="flex flex-col items-center justify-center text-center p-2 bg-green-500/10 border border-green-500/20 rounded-lg">
                                 <Sparkles className="h-8 w-8 text-green-400 mb-2"/>
                                 <p className="font-semibold text-green-300">¡Mercado Pago Conectado!</p>
-                                <Button variant="link" size="sm" className="mt-1 text-xs text-muted-foreground h-auto p-0" onClick={() => setIsMpConnected(false)}>Desconectar</Button>
+                                <Button variant="link" size="sm" className="mt-1 text-xs text-muted-foreground h-auto p-0" onClick={handleDisconnectMp}>Desconectar</Button>
                             </div>
                         ) : (
                              <div className="space-y-2">
                                 <Label htmlFor="mp-token">Access Token de Mercado Pago</Label>
                                 <div className="relative">
                                     <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
-                                    <Input id="mp-token" type="password" placeholder="APP_USR-..." className="pl-10"/>
+                                    <Input id="mp-token" type="password" placeholder="APP_USR-..." className="pl-10" value={accessToken} onChange={(e) => setAccessToken(e.target.value)} />
                                 </div>
                                 <Button onClick={handleConnectMp} className="w-full">
                                     <Star className="mr-2 h-4 w-4"/>

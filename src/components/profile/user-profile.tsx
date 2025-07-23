@@ -114,6 +114,7 @@ function EditProfileTab() {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = React.useState<string | null>(null);
   const isAdmin = session.user?.role === 'ADMIN';
+  const isWorker = session.user?.role === 'TRABAJADOR';
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -121,13 +122,16 @@ function EditProfileTab() {
     setIsSubmitting(true);
 
     const formData = new FormData(event.currentTarget);
-    const updatedData = {
+    const updatedData: Partial<AppUser> = {
         name: formData.get('name') as string,
-        phone: formData.get('phone') as string,
-        location: formData.get('location') as string,
-        professionalSummary: formData.get('summary') as string,
-        experience: formData.get('experience') as string,
     };
+
+    if (isWorker) {
+        updatedData.phone = formData.get('phone') as string;
+        updatedData.location = formData.get('location') as string;
+        updatedData.professionalSummary = formData.get('summary') as string;
+        updatedData.experience = formData.get('experience') as string;
+    }
     
     try {
         const updatedUser = await updateUser(session.user.id, updatedData);
@@ -166,7 +170,7 @@ function EditProfileTab() {
         </CardHeader>
         <CardContent>
             <form className="space-y-6" onSubmit={handleSubmit}>
-                 {!isAdmin && (
+                 {isWorker && (
                   <div className="rounded-lg border-2 border-green-400 bg-secondary/30 shadow-[0_0_15px_rgba(74,222,128,0.4)]">
                     <div className="p-6 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="text-center md:text-left">
@@ -196,7 +200,7 @@ function EditProfileTab() {
                             <Input id="email" type="email" className="pl-10" defaultValue={session.user?.email || ''} disabled/>
                         </div>
                     </div>
-                    {!isAdmin && (
+                    {isWorker && (
                         <>
                              <div className="space-y-4">
                                 <Label htmlFor="phone">Número de WhatsApp</Label>
@@ -241,7 +245,7 @@ function EditProfileTab() {
                     )}
                 </div>
 
-                {!isAdmin && (
+                {isWorker && (
                     <>
                         <Separator />
                         
@@ -436,16 +440,17 @@ export function UserProfile() {
   }, [session.isMounted, session.user]);
 
 
-  if (!session.isMounted || (!profileData && !companyProfile)) return <div className='flex justify-center items-center h-64'><Loader2 className="h-8 w-8 animate-spin" /></div>;
+  if (!session.isMounted || !profileData) return <div className='flex justify-center items-center h-64'><Loader2 className="h-8 w-8 animate-spin" /></div>;
   if (!session.user) return <div>Usuario no encontrado.</div>;
   
   const { user } = session;
   const isAdmin = user.role === 'ADMIN';
   const isCompany = user.role === 'EMPRESA';
+  const isWorker = user.role === 'TRABAJADOR';
   const roleDisplay = roleDisplayMap[user.role as keyof typeof roleDisplayMap] || user.role;
 
   const getAvatarUrl = () => {
-    if (isCompany) return companyProfile?.logoUrl || 'https://placehold.co/128x128.png';
+    if (isCompany && companyProfile) return companyProfile.logoUrl || 'https://placehold.co/128x128.png';
     return user.avatar || 'https://placehold.co/128x128.png';
   }
 
