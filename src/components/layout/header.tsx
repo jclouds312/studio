@@ -208,9 +208,6 @@ export function Header() {
                           <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
                               <Link href="/subscriptions"><Gem className={menuIconClass}/>Ver Todos los Planes</Link>
                           </Button>
-                           <Button variant="ghost" size="lg" className={cn(menuButtonClass, "text-destructive hover:text-destructive")} onClick={handleLogoutClick}>
-                              <LogOut className={cn(menuIconClass, "text-destructive")} />Cerrar Sesión
-                          </Button>
                           {isWorker && (
                             <>
                                 <Separator className="my-2 bg-white/10" />
@@ -223,6 +220,10 @@ export function Header() {
                                 </Button>
                             </>
                           )}
+                           <Separator className="my-2 bg-white/10" />
+                           <Button variant="ghost" size="lg" className={cn(menuButtonClass, "text-destructive hover:text-destructive")} onClick={handleLogoutClick}>
+                              <LogOut className={cn(menuIconClass, "text-destructive")} />Cerrar Sesión
+                          </Button>
                         </>
                       ) : (
                         <>
