@@ -50,7 +50,9 @@ export function useSession() {
         user: null,
         isMounted: false,
     });
+    const [loginUser, setLoginUser] = useState<User | null>(null);
 
+    // Effect to check session on initial mount
     useEffect(() => {
         const checkSession = async () => {
             const loggedInStatus = safeLocalStorage.getItem('isLoggedIn') === 'true';
@@ -60,6 +62,7 @@ export function useSession() {
                 if (currentUser) {
                     setSession({ isLoggedIn: true, user: currentUser, isMounted: true });
                 } else {
+                    // Clean up if user is not found in DB
                     safeLocalStorage.removeItem('isLoggedIn');
                     safeLocalStorage.removeItem('userEmail');
                     setSession({ isLoggedIn: false, user: null, isMounted: true });
@@ -71,20 +74,29 @@ export function useSession() {
         checkSession();
     }, []);
 
+    // Effect to handle redirection after login state is set
+    useEffect(() => {
+        if (loginUser) {
+            if (loginUser.role === 'EMPRESA') {
+                router.push('/company/dashboard');
+            } else if (loginUser.role === 'ADMIN') {
+                router.push('/admin');
+            } else {
+                router.push('/');
+            }
+            // Reset loginUser after redirection to prevent re-triggering
+            setLoginUser(null);
+        }
+    }, [loginUser, router]);
+
     const performLogin = useCallback((user: User) => {
         safeLocalStorage.setItem('isLoggedIn', 'true');
         safeLocalStorage.setItem('userEmail', user.email);
         setSession({ isLoggedIn: true, user, isMounted: true });
         toast({ title: `¡Bienvenido, ${user.name}!` });
-        
-        if (user.role === 'EMPRESA') {
-            router.push('/company/dashboard');
-        } else if (user.role === 'ADMIN') {
-            router.push('/admin');
-        } else {
-            router.push('/');
-        }
-    }, [router, toast]);
+        // Set the user to be redirected by the useEffect
+        setLoginUser(user);
+    }, [toast]);
 
     const register = useCallback(async (data: RegisterData) => {
         const existingUser = await getUserByEmail(data.email);
