@@ -14,7 +14,7 @@ const conversationsData = [
   { 
     id: 1, 
     name: 'Tech Solutions Inc.', 
-    avatar: 'https://placehold.co/40x40.png', 
+    avatar: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=40&h=40&fit=crop', 
     lastMessage: 'Claro, buscamos a alguien con...', 
     time: '10:32',
     unread: 1,
@@ -27,7 +27,7 @@ const conversationsData = [
   {
     id: 2,
     name: 'Creative Minds',
-    avatar: 'https://placehold.co/40x40.png',
+    avatar: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=40&h=40&fit=crop',
     lastMessage: 'Perfecto, CV recibido. Lo revisamos y te...',
     time: 'Ayer',
     unread: 0,
@@ -39,7 +39,7 @@ const conversationsData = [
   {
     id: 3,
     name: 'Recursos Humanos ABC',
-    avatar: 'https://placehold.co/40x40.png',
+    avatar: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=40&h=40&fit=crop',
     lastMessage: '¿Tendrías disponibilidad para una entrevista mañana?',
     time: '11/07',
     unread: 2,

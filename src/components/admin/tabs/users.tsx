@@ -105,7 +105,7 @@ export function UsersTab() {
                                 <TableRow key={user.id}>
                                     <TableCell className="font-medium">
                                         <div className="flex items-center gap-3">
-                                            <Image src={user.avatar!} alt={user.name} width={40} height={40} className="rounded-full" data-ai-hint="person user"/>
+                                            <Image src={user.avatar!} alt={user.name} width={40} height={40} className="rounded-full object-cover" data-ai-hint="person user"/>
                                             <div className="grid gap-0.5">
                                                 <span className="font-semibold">{user.name}</span>
                                                 <span className="text-xs text-muted-foreground">{user.email}</span>
@@ -114,7 +114,7 @@ export function UsersTab() {
                                     </TableCell>
                                     <TableCell className="capitalize">{user.role}</TableCell>
                                     <TableCell>
-                                        <Badge variant={user.status === 'Verificado' ? 'default' : 'secondary'} className={user.status === 'Verificado' ? 'bg-green-500/80 text-white' : ''}>
+                                        <Badge variant={user.status === 'VERIFICADO' ? 'default' : 'secondary'} className={user.status === 'VERIFICADO' ? 'bg-green-500/80 text-white' : ''}>
                                             {user.status || 'Pendiente'}
                                         </Badge>
                                     </TableCell>

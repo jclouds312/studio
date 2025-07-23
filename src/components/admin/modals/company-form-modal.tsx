@@ -38,7 +38,7 @@ export function CompanyFormModal({ isOpen, setIsOpen, company, onSave }: Company
         province: '',
         phone: '',
         status: 'Pendiente',
-        logoUrl: 'https://placehold.co/40x40.png'
+        logoUrl: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=40&h=40&fit=crop'
       });
     }
   }, [company, isOpen]);

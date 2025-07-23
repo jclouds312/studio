@@ -14,9 +14,9 @@ import { Textarea } from '@/components/ui/textarea';
 import Image from 'next/image';
 
 const adsData = [
-    { id: 'ad_1', name: 'Banner Superior (Home)', type: 'Imagen', status: 'Activo', clicks: 1250, impressions: 85000, imageUrl: 'https://placehold.co/728x90.png' },
-    { id: 'ad_2', name: 'Anuncio Lateral (Listado)', type: 'Imagen', status: 'Activo', clicks: 830, impressions: 62000, imageUrl: 'https://placehold.co/300x250.png' },
-    { id: 'ad_3', name: 'Pop-up Suscripción', type: 'Modal', status: 'Inactivo', clicks: 2100, impressions: 40000, imageUrl: 'https://placehold.co/400x300.png' },
+    { id: 'ad_1', name: 'Banner Superior (Home)', type: 'Imagen', status: 'Activo', clicks: 1250, impressions: 85000, imageUrl: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=728&h=90&fit=crop' },
+    { id: 'ad_2', name: 'Anuncio Lateral (Listado)', type: 'Imagen', status: 'Activo', clicks: 830, impressions: 62000, imageUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=300&h=250&fit=crop' },
+    { id: 'ad_3', name: 'Pop-up Suscripción', type: 'Modal', status: 'Inactivo', clicks: 2100, impressions: 40000, imageUrl: 'https://images.unsplash.com/photo-1556740758-90de374c12ad?w=400&h=300&fit=crop' },
 ];
 
 const upcomingPayments = [

@@ -40,7 +40,7 @@ import type { Job } from "@prisma/client";
 const transactionsData: Transaction[] = [
     {
         id: 'txn_1',
-        user: { name: 'Juan Pérez', email: 'juan.perez@example.com', avatar: 'https://placehold.co/40x40.png' },
+        user: { name: 'Juan Pérez', email: 'juan.perez@example.com', avatar: 'https://images.unsplash.com/photo-1557862921-37829c790f19?w=40&h=40&fit=crop' },
         plan: 'Profesional',
         status: 'Pagado',
         amount: 2000,
@@ -48,7 +48,7 @@ const transactionsData: Transaction[] = [
     },
     {
         id: 'txn_2',
-        user: { name: 'Tech Solutions Inc.', email: 'empresa.facebook@example.com', avatar: 'https://placehold.co/40x40.png' },
+        user: { name: 'Tech Solutions Inc.', email: 'empresa.facebook@example.com', avatar: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=40&h=40&fit=crop' },
         plan: 'Empresa',
         status: 'Pagado',
         amount: 10000,
@@ -56,7 +56,7 @@ const transactionsData: Transaction[] = [
     },
     {
         id: 'txn_3',
-        user: { name: 'Ana García', email: 'ana.garcia@example.com', avatar: 'https://placehold.co/40x40.png' },
+        user: { name: 'Ana García', email: 'ana.garcia@example.com', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop' },
         plan: 'Profesional',
         status: 'Pendiente',
         amount: 2000,

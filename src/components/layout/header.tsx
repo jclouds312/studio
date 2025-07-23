@@ -79,7 +79,7 @@ export function Header() {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="flex items-center gap-2">
                             <Avatar className='h-9 w-9 border-2 border-primary/50'>
-                                <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
+                                <AvatarImage src={session.user?.avatar} data-ai-hint="person user" />
                                 <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
                             </Avatar>
                             <span className="hidden lg:inline">{session.user?.name}</span>
@@ -115,7 +115,7 @@ export function Header() {
                             <Settings className="mr-2 h-4 w-4" />Configuración
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={logout}>
+                        <DropdownMenuItem onClick={logout} className="text-destructive">
                             <LogOut className="mr-2 h-4 w-4" />Cerrar Sesión
                         </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -158,7 +158,7 @@ export function Header() {
                                 <Button variant="ghost" asChild size="lg" className="justify-start gap-4 text-base h-14" onClick={handleLinkClick}>
                                     <Link href="/profile">
                                         <Avatar className="w-10 h-10 border-2 border-primary/50">
-                                            <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
+                                            <AvatarImage src={session.user?.avatar} data-ai-hint="person user" />
                                             <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
                                         </Avatar>
                                         <div className='text-left'>
@@ -188,7 +188,7 @@ export function Header() {
                              <Button variant="ghost" asChild size="lg" className="justify-start gap-4 text-base h-14" onClick={handleLinkClick}>
                                 <Link href="/company/dashboard">
                                     <Avatar className="w-10 h-10 border-2 border-primary/50">
-                                        <AvatarImage src={session.user?.avatar || "https://placehold.co/40x40.png"} data-ai-hint="person user" />
+                                        <AvatarImage src={session.user?.avatar} data-ai-hint="person user" />
                                         <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
                                     </Avatar>
                                     <div className='text-left'>
@@ -198,12 +198,8 @@ export function Header() {
                                 </Link>
                             </Button>
                           )}
-                          <Button variant="ghost" size="lg" className={cn(menuButtonClass, "text-destructive hover:text-destructive")} onClick={handleLogoutClick}>
-                              <LogOut className={cn(menuIconClass, "text-destructive")} />Cerrar Sesión
-                          </Button>
-                          <Separator className="my-2 bg-white/10" />
-                          <p className='text-sm font-semibold text-muted-foreground px-2 pt-2'>Planes</p>
-                          <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
+                           <Separator className="my-2 bg-white/10" />
+                           <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
                             <Link href={isCompany ? "/premium-post" : "/subscriptions"}>
                                 <Star className={menuIconClass}/>
                                 {isCompany ? 'Publicación Premium' : 'Postulación Premium'}
@@ -211,6 +207,9 @@ export function Header() {
                           </Button>
                           <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
                               <Link href="/subscriptions"><Gem className={menuIconClass}/>Ver Todos los Planes</Link>
+                          </Button>
+                           <Button variant="ghost" size="lg" className={cn(menuButtonClass, "text-destructive hover:text-destructive")} onClick={handleLogoutClick}>
+                              <LogOut className={cn(menuIconClass, "text-destructive")} />Cerrar Sesión
                           </Button>
                           {isWorker && (
                             <>
