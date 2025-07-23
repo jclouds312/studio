@@ -163,17 +163,11 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
         });
     }, [filteredJobs]);
     
-    const featuredJobsOnPage = useMemo(() => sortedJobs.filter(j => j.isFeatured), [sortedJobs]);
-    const regularJobsOnPage = useMemo(() => {
-        const nonFeatured = sortedJobs.filter(j => !j.isFeatured);
-        return nonFeatured.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE);
+    const jobsOnThisPage = useMemo(() => {
+        return sortedJobs.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE);
     }, [currentPage, sortedJobs]);
 
-    const jobsToShowOnThisPage = useMemo(() => {
-       return [...featuredJobsOnPage, ...regularJobsOnPage];
-    }, [featuredJobsOnPage, regularJobsOnPage]);
-
-    const totalPages = Math.ceil(sortedJobs.filter(j => !j.isFeatured).length / JOBS_PER_PAGE);
+    const totalPages = Math.ceil(sortedJobs.length / JOBS_PER_PAGE);
 
 
     return (
@@ -298,8 +292,8 @@ export function JobListings({ initialJobs }: { initialJobs: Job[] }) {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {jobsToShowOnThisPage.length > 0 ? (
-                    jobsToShowOnThisPage.map(job => <JobListingCard key={job.id} job={job} />)
+                {jobsOnThisPage.length > 0 ? (
+                    jobsOnThisPage.map(job => <JobListingCard key={job.id} job={job} />)
                 ) : (
                     <Card className="col-span-full">
                         <CardContent className="pt-6">

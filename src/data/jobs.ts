@@ -1,7 +1,7 @@
 
 import type { Job } from '@prisma/client';
 
-export const allJobs: Job[] = [
+export let allJobs: Job[] = [
     {
         id: 'job_1',
         title: 'Frontend Developer (React)',
