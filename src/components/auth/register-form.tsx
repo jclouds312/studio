@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useSession } from '@/hooks/use-session';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import type { Role } from '@prisma/client';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -31,7 +32,7 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function RegisterForm() {
     const { register, loginWithSocial } = useSession();
-    const [role, setRole] = React.useState<'user' | 'company'>('user');
+    const [role, setRole] = React.useState<Role>('TRABAJADOR');
 
     const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -43,7 +44,7 @@ export function RegisterForm() {
         register({ name, email, password, role });
     };
 
-    const isWorker = role === 'user';
+    const isWorker = role === 'TRABAJADOR';
 
     return (
         <div className="mt-2 space-y-4">
@@ -70,15 +71,15 @@ export function RegisterForm() {
             <form className="space-y-4" onSubmit={handleRegister}>
                  <div className="space-y-2">
                     <Label>¿Qué estás buscando?</Label>
-                    <RadioGroup defaultValue="user" onValueChange={(value) => setRole(value as 'user' | 'company')} className="grid grid-cols-2 gap-4">
+                    <RadioGroup defaultValue="TRABAJADOR" onValueChange={(value) => setRole(value as Role)} className="grid grid-cols-2 gap-4">
                         <div>
-                            <RadioGroupItem value="user" id="r1" className="peer sr-only" />
+                            <RadioGroupItem value="TRABAJADOR" id="r1" className="peer sr-only" />
                             <Label htmlFor="r1" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">
                                 Busco Trabajo
                             </Label>
                         </div>
                         <div>
-                             <RadioGroupItem value="company" id="r2" className="peer sr-only" />
+                             <RadioGroupItem value="EMPRESA" id="r2" className="peer sr-only" />
                              <Label htmlFor="r2" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">
                                 Quiero Contratar
                             </Label>

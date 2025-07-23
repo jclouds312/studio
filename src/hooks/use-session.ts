@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { getUserByEmail, createUser } from '@/services/userService';
-import type { User } from '@prisma/client';
+import type { User, Role } from '@prisma/client';
 
 interface Session {
     isLoggedIn: boolean;
@@ -17,7 +17,7 @@ interface RegisterData {
     name: string;
     email: string;
     password?: string;
-    role: 'user' | 'company' | 'admin';
+    role: Role;
 }
 
 type SocialProvider = 'google' | 'facebook' | 'microsoft';
@@ -64,9 +64,9 @@ export function useSession() {
             setSession({ isLoggedIn: true, user, isMounted: true });
             toast({ title: `¡Bienvenido, ${user.name}!` });
             
-            if (user.role === 'company') {
+            if (user.role === 'EMPRESA') {
                 router.push('/company/dashboard');
-            } else if (user.role === 'admin') {
+            } else if (user.role === 'ADMIN') {
                 router.push('/admin');
             } else {
                 router.push('/');
@@ -101,7 +101,7 @@ export function useSession() {
         performLogin(newUser);
     }, [performLogin, toast]);
     
-    const loginWithSocial = useCallback(async (provider: SocialProvider, role: 'user' | 'company' = 'user') => {
+    const loginWithSocial = useCallback(async (provider: SocialProvider, role: Role = 'TRABAJADOR') => {
         const simulatedEmail = `user.${provider}@example.com`;
         
         let user = await getUserByEmail(simulatedEmail);
