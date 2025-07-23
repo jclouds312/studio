@@ -54,7 +54,6 @@ body {
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     opacity: 0.5;
-    animation: keyframes-border-spin 10s linear infinite;
   }
   .card-marble-border > * {
     background: linear-gradient(145deg, hsl(var(--card)) 70%, hsl(var(--card) / 0.9));
