@@ -236,8 +236,8 @@ export function Header() {
                         </>
                       )}
                       <Separator className="my-2 bg-white/10" />
-                      <Button variant="ghost" size="lg" className={menuButtonClass} onClick={() => {}}>
-                          <LifeBuoy className={menuIconClass} />Contactar Soporte
+                      <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
+                         <a href="mailto:soporte@laburoya.com"><LifeBuoy className={menuIconClass} />Contactar Soporte</a>
                       </Button>
                     </div>
                   </div>
