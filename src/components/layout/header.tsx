@@ -14,6 +14,7 @@ import { ChatPanel } from '../chat/chat-panel';
 import { useSession } from '@/hooks/use-session';
 import { Separator } from '../ui/separator';
 import { Badge } from '../ui/badge';
+import { cn } from '@/lib/utils';
 
 export function Header() {
   const { session, logout } = useSession();
@@ -176,14 +177,6 @@ export function Header() {
                                     <Badge>2</Badge>
                                 </div>
                                 </Button>
-                                <Separator className="my-2 bg-white/10" />
-                                <p className='text-sm font-semibold text-muted-foreground px-2 pt-2'>Recursos para el Candidato</p>
-                                <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
-                                    <Link href="#"><Calculator className={menuIconClass}/>Calculadora de Sueldo</Link>
-                                </Button>
-                                 <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
-                                    <Link href="#"><FileText className={menuIconClass}/>Guía de Convenios</Link>
-                                </Button>
                               </>
                           )}
                           {isAdmin && (
@@ -205,7 +198,11 @@ export function Header() {
                                 </Link>
                             </Button>
                           )}
+                          <Button variant="ghost" size="lg" className={cn(menuButtonClass, "text-destructive hover:text-destructive")} onClick={handleLogoutClick}>
+                              <LogOut className={cn(menuIconClass, "text-destructive")} />Cerrar Sesión
+                          </Button>
                           <Separator className="my-2 bg-white/10" />
+                          <p className='text-sm font-semibold text-muted-foreground px-2 pt-2'>Planes</p>
                           <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
                             <Link href={isCompany ? "/premium-post" : "/subscriptions"}>
                                 <Star className={menuIconClass}/>
@@ -213,8 +210,20 @@ export function Header() {
                             </Link>
                           </Button>
                           <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
-                              <Link href="/subscriptions"><Gem className={menuIconClass}/>Ver Planes</Link>
+                              <Link href="/subscriptions"><Gem className={menuIconClass}/>Ver Todos los Planes</Link>
                           </Button>
+                          {isWorker && (
+                            <>
+                                <Separator className="my-2 bg-white/10" />
+                                <p className='text-sm font-semibold text-muted-foreground px-2 pt-2'>Recursos para el Candidato</p>
+                                <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
+                                    <Link href="/tools/salary-calculator"><Calculator className={menuIconClass}/>Calculadora de Sueldo</Link>
+                                </Button>
+                                 <Button variant="ghost" asChild size="lg" className={menuButtonClass} onClick={handleLinkClick}>
+                                    <Link href="/tools/agreements-guide"><FileText className={menuIconClass}/>Guía de Convenios</Link>
+                                </Button>
+                            </>
+                          )}
                         </>
                       ) : (
                         <>
@@ -226,16 +235,10 @@ export function Header() {
                           </Button>
                         </>
                       )}
-                    </div>
-                     <div className="p-4 border-t border-white/10 mt-auto">
-                        <Button variant="ghost" size="lg" className={menuButtonClass} onClick={() => {}}>
-                            <LifeBuoy className={menuIconClass} />Contactar Soporte
-                        </Button>
-                        {session.isLoggedIn && (
-                        <Button variant="destructive" size="lg" className="justify-center w-full mt-2 h-12 text-base" onClick={handleLogoutClick}>
-                            <LogOut className="mr-2 h-5 w-5" />Cerrar Sesión
-                        </Button>
-                        )}
+                      <Separator className="my-2 bg-white/10" />
+                      <Button variant="ghost" size="lg" className={menuButtonClass} onClick={() => {}}>
+                          <LifeBuoy className={menuIconClass} />Contactar Soporte
+                      </Button>
                     </div>
                   </div>
                 </SheetContent>
