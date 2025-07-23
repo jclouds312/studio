@@ -55,8 +55,9 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
                     if (userProfile) {
                         setProfileData(userProfile);
                         
+                        const savedJobIds = Array.isArray(userProfile.savedJobIds) ? userProfile.savedJobIds : [];
                         // Fetch saved jobs details
-                        const jobPromises = (userProfile.savedJobIds || []).map(id => getJobById(id));
+                        const jobPromises = savedJobIds.map(id => getJobById(id));
                         const resolvedJobs = (await Promise.all(jobPromises)).filter((job): job is Job => job !== null);
                         setSavedJobs(resolvedJobs);
 
@@ -149,5 +150,3 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
         </UserProfileContext.Provider>
     );
 };
-
-    

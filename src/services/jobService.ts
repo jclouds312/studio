@@ -1,20 +1,19 @@
 
 'use server';
 
-import prisma from '@/lib/prisma';
 import type { Job } from '@prisma/client';
+import { fetchFromPrisma } from './prismaProxy';
 
 export async function getAllJobs(filters?: { companyId?: string }): Promise<Job[]> {
     const whereClause = filters?.companyId ? { companyProfileId: filters.companyId } : {};
-    return prisma.job.findMany({ where: whereClause });
+    return fetchFromPrisma('job', 'findMany', { where: whereClause });
 }
 
 export async function getJobById(id: string): Promise<Job | null> {
-    return prisma.job.findUnique({ where: { id } });
+    return fetchFromPrisma('job', 'findUnique', { where: { id } });
 }
 
 export async function createJob(data: Partial<Omit<Job, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Job> {
-    // Ensure JSON fields are handled correctly
     const jobDataForCreation = {
         ...data,
         title: data.title || 'Untitled Job',
@@ -22,18 +21,27 @@ export async function createJob(data: Partial<Omit<Job, 'id' | 'createdAt' | 'up
         location: data.location || 'Unknown Location',
         type: data.type || 'Full-time',
         category: data.category || 'other',
-        skills: data.skills || [],
-        customQuestions: data.customQuestions || [],
+        skills: JSON.stringify(data.skills || []),
+        customQuestions: JSON.stringify(data.customQuestions || []),
     };
     // @ts-ignore
-    return prisma.job.create({ data: jobDataForCreation });
+    return fetchFromPrisma('job', 'create', { data: jobDataForCreation });
 }
 
 export async function updateJob(id: string, data: Partial<Omit<Job, 'id'>>): Promise<Job | null> {
     try {
-        return await prisma.job.update({
+        // Stringify JSON fields before sending
+        const dataToUpdate = { ...data };
+        if (data.skills && Array.isArray(data.skills)) {
+            dataToUpdate.skills = JSON.stringify(data.skills);
+        }
+        if (data.customQuestions && Array.isArray(data.customQuestions)) {
+            dataToUpdate.customQuestions = JSON.stringify(data.customQuestions);
+        }
+
+        return await fetchFromPrisma('job', 'update', {
             where: { id },
-            data,
+            data: dataToUpdate,
         });
     } catch (error) {
         console.error("Error updating job:", error);
@@ -43,7 +51,7 @@ export async function updateJob(id: string, data: Partial<Omit<Job, 'id'>>): Pro
 
 export async function deleteJob(id: string): Promise<boolean> {
     try {
-        await prisma.job.delete({ where: { id } });
+        await fetchFromPrisma('job', 'delete', { where: { id } });
         return true;
     } catch (error) {
         console.error("Error deleting job:", error);
@@ -53,7 +61,7 @@ export async function deleteJob(id: string): Promise<boolean> {
 
 export async function incrementApplicantCount(jobId: string): Promise<Job | null> {
     try {
-        return await prisma.job.update({
+        return await fetchFromPrisma('job', 'update', {
             where: { id: jobId },
             data: {
                 applicantsCount: {

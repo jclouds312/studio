@@ -2,7 +2,7 @@
 import type { LucideIcon } from "lucide-react";
 import type { User as PrismaUser, Job as PrismaJob, Application as PrismaApplication, CompanyProfile as PrismaCompanyProfile } from '@prisma/client';
 
-export type Job = Omit<PrismaJob, 'skills' | 'customQuestions'> & {
+export type Job = Omit<PrismaJob, 'skills' | 'customQuestions' | 'savedJobIds'> & {
     skills: string[];
     customQuestions: string[];
     desiredProfile: string | null;
@@ -13,7 +13,8 @@ export type Job = Omit<PrismaJob, 'skills' | 'customQuestions'> & {
     applicantsCount: number;
 };
 
-export type User = PrismaUser & {
+export type User = Omit<PrismaUser, 'savedJobIds'> & {
+    savedJobIds: string[];
     subscriptionPlan?: string | null;
     subscriptionUntil?: string | null;
 };
