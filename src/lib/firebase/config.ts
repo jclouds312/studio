@@ -1,4 +1,3 @@
-
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
@@ -17,14 +16,20 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
+let app;
+let auth;
+
 // Validate that all required environment variables are set
-if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
-    throw new Error("Firebase config is missing. Make sure you have a .env.local file with your Firebase credentials.");
+if (firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId) {
+    // Initialize Firebase
+    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    auth = getAuth(app);
+} else {
+    console.warn("Firebase config is missing. Authentication features will be disabled. Make sure you have a .env.local file with your Firebase credentials.");
+    // Provide mock objects if Firebase is not initialized
+    app = null;
+    auth = null;
 }
 
-
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
 
 export { app, auth };
