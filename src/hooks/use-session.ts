@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { getUserByEmail, createUser } from '@/services/userService';
 import type { User, Role } from '@prisma/client';
-import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
+import { GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithPopup, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 
 interface Session {
@@ -32,7 +32,6 @@ export function useSession() {
         firebaseUser: null,
         isMounted: false,
     });
-    const [loginUser, setLoginUser] = useState<User | null>(null);
 
     const performRedirect = useCallback((user: User | null) => {
         if (!user) return;
@@ -45,7 +44,7 @@ export function useSession() {
         }
     }, [router]);
 
-    const performLogin = useCallback(async (appUser: User, firebaseUser?: FirebaseUser) => {
+    const performLogin = useCallback((appUser: User, firebaseUser?: FirebaseUser) => {
         setSession({
             isLoggedIn: true,
             user: appUser,
@@ -53,19 +52,28 @@ export function useSession() {
             isMounted: true,
         });
         toast({ title: `¡Bienvenido, ${appUser.name}!` });
-        performRedirect(appUser);
-    }, [toast, performRedirect, session.firebaseUser]);
+        // The redirect is now handled by the useEffect below
+    }, [toast, session.firebaseUser]);
+    
+    useEffect(() => {
+        if(session.isLoggedIn && session.user) {
+            performRedirect(session.user);
+        }
+    }, [session.isLoggedIn, session.user, performRedirect]);
 
     useEffect(() => {
+        // Only run if auth is initialized
+        if (!auth) {
+            setSession(prev => ({ ...prev, isMounted: true }));
+            return;
+        }
+        
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             if (firebaseUser) {
                 const appUser = await getUserByEmail(firebaseUser.email!);
                 if (appUser) {
                     setSession({ isLoggedIn: true, user: appUser, firebaseUser, isMounted: true });
                 } else {
-                    // This case handles a user authenticated with Firebase but not in our DB.
-                    // It's a good place to create the user profile if it doesn't exist.
-                    // For now, we log them out from our app state.
                     setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
                 }
             } else {
@@ -114,8 +122,15 @@ export function useSession() {
         performLogin(newUser);
     }, [performLogin, toast]);
     
-    const loginWithGoogle = useCallback(async (role: Role = 'TRABAJADOR') => {
-        const provider = new GoogleAuthProvider();
+    const socialLogin = useCallback(async (provider: GoogleAuthProvider | FacebookAuthProvider | OAuthProvider, role: Role) => {
+        if (!auth) {
+            toast({
+                title: "Servicio no disponible",
+                description: "La autenticación no está configurada. Contacta al administrador.",
+                variant: "destructive",
+            });
+            return;
+        }
         try {
             const result = await signInWithPopup(auth, provider);
             const firebaseUser = result.user;
@@ -125,32 +140,49 @@ export function useSession() {
             if (appUser) {
                 performLogin(appUser, firebaseUser);
             } else {
-                // If user doesn't exist, create a new one
                 const newUser = await createUser({
-                    name: firebaseUser.displayName || 'Usuario de Google',
+                    name: firebaseUser.displayName || 'Nuevo Usuario',
                     email: firebaseUser.email!,
                     role: role,
-                    password: 'social-login', // Not used for social auth
+                    password: 'social-login',
                     avatar: firebaseUser.photoURL,
                 });
                 performLogin(newUser, firebaseUser);
             }
         } catch (error) {
-            console.error("Error during Google sign-in:", error);
+            console.error("Error during social sign-in:", error);
             toast({
                 title: "Error de autenticación",
-                description: "No se pudo iniciar sesión con Google.",
+                description: "No se pudo iniciar sesión. Por favor, intenta de nuevo.",
                 variant: "destructive",
             });
         }
     }, [performLogin, toast]);
 
+
+    const loginWithGoogle = useCallback((role: Role = 'TRABAJADOR') => {
+        const provider = new GoogleAuthProvider();
+        socialLogin(provider, role);
+    }, [socialLogin]);
+    
+    const loginWithFacebook = useCallback((role: Role = 'TRABAJADOR') => {
+        const provider = new FacebookAuthProvider();
+        socialLogin(provider, role);
+    }, [socialLogin]);
+
+    const loginWithMicrosoft = useCallback((role: Role = 'TRABAJADOR') => {
+        const provider = new OAuthProvider('microsoft.com');
+        socialLogin(provider, role);
+    }, [socialLogin]);
+
     const logout = useCallback(async () => {
-        await signOut(auth);
+        if (auth) {
+            await signOut(auth);
+        }
         setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
         toast({ title: 'Has cerrado sesión exitosamente.' });
         router.push('/login');
     }, [router, toast]);
 
-    return { session, login, loginWithGoogle, register, logout };
+    return { session, login, loginWithGoogle, loginWithFacebook, loginWithMicrosoft, register, logout };
 }
