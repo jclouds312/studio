@@ -52,6 +52,8 @@ const nextConfig = {
       },
     ],
   },
+  // Añadido para exportar a estático para Capacitor
+  output: 'export',
 };
 
 module.exports = withPWA(nextConfig);

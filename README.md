@@ -65,62 +65,68 @@ Esta aplicación es una Progressive Web App (PWA), lo que significa que puedes i
     *   **En iOS (Safari):** Toca el icono de "Compartir" (un cuadrado con una flecha hacia arriba) en la barra de navegación, luego desplázate hacia abajo y selecciona "Añadir a pantalla de inicio".
 3.  **Lanzar desde la Pantalla de Inicio:** Una vez instalada, encontrarás el icono de la aplicación en tu pantalla de inicio. Puedes lanzarla desde allí para una experiencia que se siente como una aplicación nativa.
 
-## Generar un APK desde Android (Usando Termux)
+## Empaquetado como App Nativa (Android/iOS con Capacitor)
 
-Para usuarios avanzados que deseen compilar un paquete APK nativo directamente desde un dispositivo Android, se puede usar Termux. Este proceso utiliza una herramienta de línea de comandos para empaquetar la Progressive Web App (PWA) en un APK instalable.
+Para generar un archivo `.apk` (Android) o un proyecto de Xcode (iOS), puedes usar Capacitor para envolver tu PWA en una aplicación nativa.
 
-**Prerrequisitos:**
-*   Un smartphone Android.
-*   La aplicación Termux instalada (se recomienda obtenerla de F-Droid, ya que la versión de Google Play está desactualizada).
-*   Una conexión a internet estable.
+### 1. Preparar la Aplicación Next.js
 
-### Instrucciones Paso a Paso:
+Primero, necesitas generar la versión estática de la PWA. Este proyecto ya está configurado para ello. Simplemente ejecuta:
 
-1.  **Configurar Termux:**
-    Abre Termux y actualiza sus paquetes:
+```bash
+npm run export
+```
+
+Este comando creará una carpeta `out` en la raíz de tu proyecto. Esta carpeta contiene todos los archivos HTML, CSS y JavaScript que Capacitor necesita.
+
+### 2. Configurar Capacitor
+
+Abre una nueva terminal en la raíz de tu proyecto.
+
+1.  **Instalar Capacitor CLI:**
     ```bash
-    pkg update && pkg upgrade
+    npm install @capacitor/cli @capacitor/core
     ```
 
-2.  **Instalar Dependencias:**
-    Necesitarás `git` y `nodejs-lts`:
+2.  **Inicializar Capacitor:**
     ```bash
-    pkg install git nodejs-lts
+    npx cap init
+    ```
+    Capacitor te hará algunas preguntas:
+    *   **App Name:** `LaburoYA`
+    *   **App ID:** `com.laburoya.app` (o el que prefieras)
+    *   **Web dir:** `out` (¡Este es el paso más importante!)
+
+3.  **Instalar Plataformas Nativas:**
+    Añade las plataformas para las que quieres construir.
+
+    *   **Para Android:**
+        ```bash
+        npm install @capacitor/android
+        npx cap add android
+        ```
+    *   **Para iOS:**
+        ```bash
+        npm install @capacitor/ios
+        npx cap add ios
+        ```
+
+### 3. Sincronizar y Construir
+
+1.  **Sincronizar la PWA:** Cada vez que hagas cambios en tu aplicación y los compiles con `npm run export`, debes sincronizarlos con Capacitor:
+    ```bash
+    npx cap sync
     ```
 
-3.  **Clonar el Proyecto:**
-    Clona el repositorio de tu aplicación desde GitHub en Termux:
-    ```bash
-    git clone https://github.com/your-username/your-repo-name.git
-    cd your-repo-name
-    ```
-    (Reemplaza `your-username/your-repo-name` con la URL de tu repositorio).
+2.  **Abrir el Proyecto Nativo:**
+    *   **Para Android:**
+        ```bash
+        npx cap open android
+        ```
+        Esto abrirá el proyecto en Android Studio. Desde allí, puedes construir y generar un APK firmado o un App Bundle.
 
-4.  **Instalar Dependencias del Proyecto:**
-    Instala los paquetes `npm` requeridos por el proyecto:
-    ```bash
-    npm install
-    ```
-
-5.  **Construir la PWA:**
-    Antes de crear el APK, necesitas una compilación de producción de tu PWA. Esto genera los archivos estáticos en el directorio `out`.
-    ```bash
-    npm run build
-    ```
-
-6.  **Instalar la Herramienta PWA-to-APK:**
-    Instala una herramienta que pueda convertir PWA a APK. Usaremos `pwa-to-apk`.
-    ```bash
-    npm install -g pwa-to-apk
-    ```
-
-7.  **Generar el APK:**
-    Ejecuta la herramienta, apuntando al archivo de manifiesto público de tu aplicación. La herramienta te pedirá alguna información para construir el `AndroidManifest.xml` y luego generará un APK firmado.
-    ```bash
-    pwa-to-apk --manifest public/manifest.json
-    ```
-    La herramienta te guiará a través de algunas preguntas (como el nombre de la aplicación, la versión, etc.) y luego iniciará el proceso de compilación.
-
-8.  **Localizar e Instalar el APK:**
-    Una vez terminado, la herramienta te informará dónde se ha guardado el archivo APK. Luego puedes navegar a ese directorio y tocar el archivo para instalarlo en tu dispositivo (es posible que necesites permitir instalaciones de fuentes desconocidas en la configuración de Android).
-
+    *   **Para iOS (requiere macOS):**
+        ```bash
+        npx cap open ios
+        ```
+        Esto abrirá el proyecto en Xcode. Desde allí, puedes compilar y ejecutar en un simulador o en un dispositivo físico.
