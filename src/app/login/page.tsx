@@ -43,7 +43,7 @@ function MicrosoftIcon(props: React.SVGProps<SVGSVGElement>) {
 
 
 export default function LoginPage() {
-  const { login, loginWithGoogle } = useSession();
+  const { login, loginWithGoogle, loginWithFacebook, loginWithMicrosoft } = useSession();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -69,11 +69,11 @@ export default function LoginPage() {
                   <GoogleIcon className="mr-2 h-6 w-6" />
                   Ingresar con Google
                 </Button>
-                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => {}}>
+                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithFacebook()}>
                   <FacebookIcon className="mr-2 h-6 w-6" />
                   Ingresar con Facebook
                 </Button>
-                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => {}}>
+                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithMicrosoft()}>
                   <MicrosoftIcon className="mr-2 h-6 w-6" />
                   Ingresar con Outlook / Microsoft
                 </Button>
