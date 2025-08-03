@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { getUserByEmail, createUser } from '@/services/userService';
 import type { User, Role } from '@prisma/client';
-import { GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithPopup, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 
 interface Session {
@@ -122,7 +122,7 @@ export function useSession() {
         performLogin(newUser);
     }, [performLogin, toast]);
     
-    const socialLogin = useCallback(async (provider: GoogleAuthProvider | FacebookAuthProvider | OAuthProvider, role: Role) => {
+    const socialLogin = useCallback(async (provider: GoogleAuthProvider, role: Role) => {
         if (!auth) {
             toast({
                 title: "Servicio no disponible",
@@ -164,16 +164,6 @@ export function useSession() {
         const provider = new GoogleAuthProvider();
         socialLogin(provider, role);
     }, [socialLogin]);
-    
-    const loginWithFacebook = useCallback((role: Role = 'TRABAJADOR') => {
-        const provider = new FacebookAuthProvider();
-        socialLogin(provider, role);
-    }, [socialLogin]);
-
-    const loginWithMicrosoft = useCallback((role: Role = 'TRABAJADOR') => {
-        const provider = new OAuthProvider('microsoft.com');
-        socialLogin(provider, role);
-    }, [socialLogin]);
 
     const logout = useCallback(async () => {
         if (auth) {
@@ -184,5 +174,5 @@ export function useSession() {
         router.push('/login');
     }, [router, toast]);
 
-    return { session, login, loginWithGoogle, loginWithFacebook, loginWithMicrosoft, register, logout };
+    return { session, login, loginWithGoogle, register, logout };
 }
