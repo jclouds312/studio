@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { cn } from '@/lib/utils';
 import { useSession } from '@/hooks/use-session';
 import type { Job } from '@prisma/client';
@@ -18,6 +18,22 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useRouter } from 'next/navigation';
+
+// Simula la llamada a la API de envío de correo
+async function sendApplicationEmail(data: { jobTitle: string; companyName: string; companyEmail: string; userName: string; userEmail: string; }) {
+    console.log('--- SIMULANDO ENVÍO DE CORREO ---');
+    console.log(`Destinatario (Empresa): ${data.companyEmail}`);
+    console.log(`Remitente (Candidato): ${data.userEmail}`);
+    console.log(`Asunto: Nueva postulación para la oferta de "${data.jobTitle}"`);
+    console.log(`Cuerpo del correo:`);
+    console.log(`Hola ${data.companyName},`);
+    console.log(`El candidato ${data.userName} (${data.userEmail}) se ha postulado a tu oferta de empleo: "${data.jobTitle}".`);
+    console.log('Te recomendamos revisar su perfil en la plataforma.');
+    console.log('---------------------------------');
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+    return { message: 'Correo de postulación enviado (simulado) exitosamente.' };
+}
+
 
 // --- This is the Client Component for UI and interactivity ---
 export function JobDetailClient({ job: initialJob }: { job: Job }) {
@@ -60,16 +76,12 @@ export function JobDetailClient({ job: initialJob }: { job: Job }) {
     if(isQuestionsModalOpen) setIsQuestionsModalOpen(false);
 
     try {
-        await fetch('/api/send-application-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                jobTitle: currentJob.title,
-                companyName: currentJob.company,
-                companyEmail: 'hr@example.com', // En una app real, esto vendría del perfil de la empresa
-                userName: session.user!.name,
-                userEmail: session.user!.email,
-            }),
+        await sendApplicationEmail({
+            jobTitle: currentJob.title,
+            companyName: currentJob.company,
+            companyEmail: 'hr@example.com', // En una app real, esto vendría del perfil de la empresa
+            userName: session.user!.name,
+            userEmail: session.user!.email,
         });
         
         handleApplyForJob(currentJob, answers);
