@@ -2,9 +2,16 @@
 // This file is now a Server Component responsible for fetching data.
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { getJobById } from '@/services/jobService';
+import { getJobById, getAllJobs } from '@/services/jobService';
 import { JobDetailClient } from '@/components/job-detail-client';
 import type { Job } from '@prisma/client';
+
+export async function generateStaticParams() {
+  const jobs = await getAllJobs();
+  return jobs.map((job) => ({
+    id: job.id,
+  }));
+}
 
 export default async function JobPage({ params }: { params: { id: string } }) {
   const job = await getJobById(params.id);
