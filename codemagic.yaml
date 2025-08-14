@@ -1,0 +1,30 @@
+
+# Documentación de Codemagic: https://docs.codemagic.io/yaml/yaml-getting-started/
+workflows:
+  android-build:
+    name: Build Android App
+    instance_type: mac_mini_m1
+    max_build_duration: 15
+    environment:
+      node: 20
+      java: 17
+    scripts:
+      - name: Instalar dependencias de Node.js
+        script: |
+          npm install
+      - name: Construir la PWA para exportar
+        script: |
+          npm run export
+      - name: Instalar dependencias de Capacitor
+        script: |
+          npm install @capacitor/android
+          npx cap add android
+      - name: Sincronizar la PWA con el proyecto Android
+        script: |
+          npx cap sync android
+      - name: Construir el APK de Release
+        script: |
+          cd android
+          ./gradlew assembleRelease
+    artifacts:
+      - android/app/build/outputs/apk/release/*.apk
