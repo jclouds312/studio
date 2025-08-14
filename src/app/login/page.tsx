@@ -21,6 +21,17 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+function MercadoPagoIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
+        <path fill="#009ee3" d="M24,5C12.954,5,4,13.954,4,24s8.954,19,20,19s20-8.954,20-20S35.046,5,24,5z"/>
+        <path fill="#fff" d="M24.7,33.5c-2.3,0-4.2-1.9-4.2-4.2s1.9-4.2,4.2-4.2c1,0,2,0.4,2.7,1.1l-2.1,1.9c-0.3-0.3-0.7-0.5-1.1-0.5 c-0.9,0-1.6,0.7-1.6,1.6s0.7,1.6,1.6,1.6c0.4,0,0.8-0.2,1.1-0.5l2.1,1.9C26.7,33.1,25.7,33.5,24.7,33.5z"/>
+        <path fill="#fff" d="M32.2,27.1h-3.4v-6.8h3.4c1.1,0,2,0.9,2,2v2.8C34.2,26.2,33.3,27.1,32.2,27.1z M32.2,22.3h-1.4v2.8h1.4 c0,0,0,0,0,0c0.3,0,0.5-0.2,0.5-0.5v-1.8C32.8,22.5,32.5,22.3,32.2,22.3C32.2,22.3,32.2,22.3,32.2,22.3z"/>
+        <path fill="#fff" d="M15.4,20.3h1.5v3.4l3-3.4h2.2l-3.3,3.3l3.4,4.2h-2.2l-2.4-3.2l-1.3,1.2v2H15.4V20.3z"/>
+    </svg>
+  )
+}
+
 function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
@@ -30,20 +41,8 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
     )
 }
 
-function MicrosoftIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
-      <path fill="#f25022" d="M22,22H6V6h16V22z"/>
-      <path fill="#7fba00" d="M42,22H26V6h16V22z"/>
-      <path fill="#00a4ef" d="M22,42H6V26h16V42z"/>
-      <path fill="#ffb900" d="M42,42H26V26h16V42z"/>
-    </svg>
-  )
-}
-
-
 export default function LoginPage() {
-  const { login, loginWithGoogle, loginWithFacebook, loginWithMicrosoft } = useSession();
+  const { login, loginWithGoogle, loginWithFacebook, loginWithMercadoPago } = useSession();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -73,9 +72,9 @@ export default function LoginPage() {
                   <FacebookIcon className="mr-2 h-6 w-6" />
                   Facebook
                 </Button>
-                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithMicrosoft()}>
-                  <MicrosoftIcon className="mr-2 h-6 w-6" />
-                  Microsoft
+                 <Button variant="outline" className="w-full h-auto py-3" onClick={() => loginWithMercadoPago()}>
+                  <MercadoPagoIcon className="mr-2 h-6 w-6" />
+                  Mercado Pago
                 </Button>
             </div>
              <div className="relative">
@@ -103,7 +102,7 @@ export default function LoginPage() {
             </form>
             <p className="text-center text-sm text-muted-foreground">
               ¿No tienes una cuenta?{' '}
-              <Link href="/register" className="underline hover:text-primary">
+              <Link href="/register" className="font-bold text-lg text-amber-400 hover:text-amber-300 transition-colors">
                 Regístrate
               </Link>
             </p>

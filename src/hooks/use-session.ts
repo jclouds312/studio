@@ -59,12 +59,18 @@ export function useSession() {
     }, [toast, session.firebaseUser, performRedirect]);
 
     const handleUserSession = useCallback(async (firebaseUser: FirebaseUser | null) => {
+        if (!auth) {
+            setSession(prev => ({ ...prev, isMounted: true }));
+            return;
+        }
         if (firebaseUser) {
             const appUser = await getUserByEmail(firebaseUser.email!);
             if (appUser) {
                  setSession({ isLoggedIn: true, user: appUser, firebaseUser, isMounted: true });
             } else {
-                await signOut(auth!);
+                // If user is authenticated with Firebase but not in our DB, log them out from Firebase
+                // This case happens if DB is cleared but Firebase session persists.
+                await signOut(auth);
                 setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
             }
         } else {
@@ -168,14 +174,27 @@ export function useSession() {
         socialLogin(provider, role);
     }, [socialLogin]);
 
-    const loginWithMicrosoft = useCallback((role: Role = 'TRABAJADOR') => {
-        const provider = new OAuthProvider('microsoft.com');
-        socialLogin(provider, role);
-    }, [socialLogin]);
+    const loginWithMercadoPago = useCallback(async (role: Role = 'TRABAJADOR') => {
+        // This is a simulated login as Firebase does not have a native MP provider.
+        const mockEmail = `user.mp.${Date.now()}@example.com`;
+        const mockName = 'Usuario de Mercado Pago';
+        
+        let appUser = await getUserByEmail(mockEmail);
+        if (!appUser) {
+            appUser = await createUser({
+                name: mockName,
+                email: mockEmail,
+                role: role,
+                password: 'social-login',
+                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop'
+            });
+        }
+        performLogin(appUser);
+    }, [performLogin]);
 
 
     const logout = useCallback(async () => {
-        if (auth) {
+        if (auth && auth.currentUser) {
             await signOut(auth);
         }
         setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
@@ -183,5 +202,5 @@ export function useSession() {
         toast({ title: 'Has cerrado sesión exitosamente.' });
     }, [router, toast]);
 
-    return { session, login, loginWithGoogle, loginWithFacebook, loginWithMicrosoft, register, logout };
+    return { session, login, loginWithGoogle, loginWithFacebook, loginWithMercadoPago, register, logout };
 }

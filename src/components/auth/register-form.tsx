@@ -21,28 +21,19 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
-    return (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
-            <path fill="#039be5" d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z" />
-            <path fill="#fff" d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z" />
-        </svg>
-    )
-}
-
-function MicrosoftIcon(props: React.SVGProps<SVGSVGElement>) {
+function MercadoPagoIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
-      <path fill="#f25022" d="M22,22H6V6h16V22z"/>
-      <path fill="#7fba00" d="M42,22H26V6h16V22z"/>
-      <path fill="#00a4ef" d="M22,42H6V26h16V42z"/>
-      <path fill="#ffb900" d="M42,42H26V26h16V42z"/>
+        <path fill="#009ee3" d="M24,5C12.954,5,4,13.954,4,24s8.954,19,20,19s20-8.954,20-20S35.046,5,24,5z"/>
+        <path fill="#fff" d="M24.7,33.5c-2.3,0-4.2-1.9-4.2-4.2s1.9-4.2,4.2-4.2c1,0,2,0.4,2.7,1.1l-2.1,1.9c-0.3-0.3-0.7-0.5-1.1-0.5 c-0.9,0-1.6,0.7-1.6,1.6s0.7,1.6,1.6,1.6c0.4,0,0.8-0.2,1.1-0.5l2.1,1.9C26.7,33.1,25.7,33.5,24.7,33.5z"/>
+        <path fill="#fff" d="M32.2,27.1h-3.4v-6.8h3.4c1.1,0,2,0.9,2,2v2.8C34.2,26.2,33.3,27.1,32.2,27.1z M32.2,22.3h-1.4v2.8h1.4 c0,0,0,0,0,0c0.3,0,0.5-0.2,0.5-0.5v-1.8C32.8,22.5,32.5,22.3,32.2,22.3C32.2,22.3,32.2,22.3,32.2,22.3z"/>
+        <path fill="#fff" d="M15.4,20.3h1.5v3.4l3-3.4h2.2l-3.3,3.3l3.4,4.2h-2.2l-2.4-3.2l-1.3,1.2v2H15.4V20.3z"/>
     </svg>
   )
 }
 
 export function RegisterForm() {
-    const { register, loginWithGoogle, loginWithFacebook, loginWithMicrosoft } = useSession();
+    const { register, loginWithGoogle, loginWithMercadoPago } = useSession();
     const [role, setRole] = React.useState<Role>('TRABAJADOR');
 
     const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
@@ -59,18 +50,14 @@ export function RegisterForm() {
 
     return (
         <div className="mt-2 space-y-4">
-             <div className="grid grid-cols-3 gap-2">
+             <div className="grid grid-cols-2 gap-2">
                 <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithGoogle(role)}>
                   <GoogleIcon className="mr-2 h-5 w-5" />
                   Google
                 </Button>
-                 <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithFacebook(role)}>
-                  <FacebookIcon className="mr-2 h-5 w-5" />
-                  Facebook
-                </Button>
-                <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithMicrosoft(role)}>
-                  <MicrosoftIcon className="mr-2 h-5 w-5" />
-                  Microsoft
+                 <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithMercadoPago(role)}>
+                  <MercadoPagoIcon className="mr-2 h-5 w-5" />
+                  Mercado Pago
                 </Button>
             </div>
             <div className="relative my-2">

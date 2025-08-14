@@ -75,6 +75,14 @@ export function Header() {
           <div className="flex items-center gap-2">
             {session.isLoggedIn ? (
               <div className="hidden md:flex items-center gap-2">
+                {isCompany && (
+                    <Button variant="ghost" asChild>
+                        <Link href="/premium-post">
+                            <Star className="mr-2 h-4 w-4 text-amber-400"/>
+                            Publicación Premium
+                        </Link>
+                    </Button>
+                )}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="flex items-center gap-2">
