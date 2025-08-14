@@ -30,6 +30,19 @@ import { UserProfileContext } from '@/context/user-profile-context';
 import { updateUser } from '@/services/userService';
 import { useRouter } from 'next/navigation';
 
+// Simula la creación de una preferencia de pago en Mercado Pago
+async function createPaymentPreference(data: { title: string; unit_price: number; accessToken: string; }) {
+    console.log("Simulating payment preference creation with data:", data);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+    if (!data.accessToken || !data.accessToken.startsWith('APP_USR-')) {
+        throw new Error('El Access Token de Mercado Pago no está configurado o es inválido.');
+    }
+    return {
+        id: `pref_${Date.now()}`,
+        init_point: 'https://mercadopago.com.ar/checkout/simulated_url'
+    };
+}
+
 
 function PaymentModal({ plan, pricingOption }: { plan: SubscriptionPlan, pricingOption: PricingOption }) {
     const { session } = useSession();
@@ -79,23 +92,12 @@ function PaymentModal({ plan, pricingOption }: { plan: SubscriptionPlan, pricing
 
       setIsPaying(true);
       try {
-        const response = await fetch('/api/mercadopago/create-preference', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                title: `Suscripción Plan ${plan.name} (${pricingOption.duration})`,
-                unit_price: pricingOption.priceAmount,
-                accessToken: companyToken,
-            }),
+        const preference = await createPaymentPreference({
+            title: `Suscripción Plan ${plan.name} (${pricingOption.duration})`,
+            unit_price: pricingOption.priceAmount,
+            accessToken: companyToken,
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'No se pudo crear la preferencia de pago.');
-        }
-
-        const preference = await response.json();
-        
         // En una app real, rediriges al usuario.
         // window.location.href = preference.init_point;
         

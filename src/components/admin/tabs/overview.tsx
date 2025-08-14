@@ -135,6 +135,20 @@ interface OverviewTabProps {
   setActiveTab: (tab: string) => void;
 }
 
+// Simula la creación de una preferencia de pago en Mercado Pago
+async function createPaymentPreference(data: { title: string; unit_price: number; accessToken: string; }) {
+    console.log("Simulating payment preference creation with data:", data);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+    if (!data.accessToken || !data.accessToken.startsWith('APP_USR-')) {
+        throw new Error('El Access Token de Mercado Pago no está configurado o es inválido.');
+    }
+    return {
+        id: `pref_${Date.now()}`,
+        init_point: 'https://mercadopago.com.ar/checkout/simulated_url'
+    };
+}
+
+
 export function OverviewTab({ setActiveTab }: OverviewTabProps) {
   const { toast } = useToast();
   const [isPaying, setIsPaying] = React.useState(false);
@@ -158,19 +172,12 @@ export function OverviewTab({ setActiveTab }: OverviewTabProps) {
           throw new Error('El Access Token de Mercado Pago no está configurado por el administrador.');
       }
 
-      const response = await fetch('/api/mercadopago/create-preference', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: 'Publicación Destacada',
-          unit_price: 500,
-          accessToken: adminToken,
-        }),
+      const preference = await createPaymentPreference({
+        title: 'Publicación Destacada',
+        unit_price: 500,
+        accessToken: adminToken,
       });
 
-      if (!response.ok) throw new Error('No se pudo crear la preferencia de pago. Revisa la consola para más detalles.');
-      
-      const preference = await response.json();
       console.log('Preferencia de pago creada:', preference.id);
       toast({
         title: "Redirigiendo a Mercado Pago...",

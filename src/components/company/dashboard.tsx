@@ -33,6 +33,19 @@ import { cn } from '@/lib/utils';
 import { UserProfileContext } from '@/context/user-profile-context';
 import { getAllUsers } from '@/services/userService';
 
+// Simula la creación de una preferencia de pago en Mercado Pago
+async function createPaymentPreference(data: { title: string; unit_price: number; accessToken: string; }) {
+    console.log("Simulating payment preference creation with data:", data);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+    if (!data.accessToken || !data.accessToken.startsWith('APP_USR-')) {
+        throw new Error('El Access Token de Mercado Pago no está configurado o es inválido.');
+    }
+    return {
+        id: `pref_${Date.now()}`,
+        init_point: 'https://mercadopago.com.ar/checkout/simulated_url'
+    };
+}
+
 function FeatureJobModal({ job, onFeatured }: { job: Job, onFeatured: (jobId: string) => void }) {
     const { toast } = useToast();
     const [isPaying, setIsPaying] = useState(false);
@@ -47,23 +60,12 @@ function FeatureJobModal({ job, onFeatured }: { job: Job, onFeatured: (jobId: st
                 throw new Error('Debes conectar tu cuenta de Mercado Pago en el panel antes de destacar una publicación.');
             }
 
-            const response = await fetch('/api/mercadopago/create-preference', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: `Destacar: ${job.title}`,
-                    unit_price: 500,
-                    accessToken: companyToken,
-                }),
+            const preference = await createPaymentPreference({
+                title: `Destacar: ${job.title}`,
+                unit_price: 500,
+                accessToken: companyToken,
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'No se pudo crear la preferencia de pago.');
-            }
-
-            const preference = await response.json();
-            
             console.log('Preferencia de pago creada:', preference.id);
             toast({
                 title: "Redirigiendo a Mercado Pago...",

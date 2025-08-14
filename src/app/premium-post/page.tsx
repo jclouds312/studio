@@ -19,6 +19,20 @@ import {
 } from "@/components/ui/alert-dialog";
 import Image from "next/image";
 
+// Simula la creación de una preferencia de pago en Mercado Pago
+async function createPaymentPreference(data: { title: string; unit_price: number; accessToken: string; }) {
+    console.log("Simulating payment preference creation with data:", data);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+    if (!data.accessToken || !data.accessToken.startsWith('APP_USR-')) {
+        throw new Error('El Access Token de Mercado Pago no está configurado o es inválido.');
+    }
+    return {
+        id: `pref_${Date.now()}`,
+        init_point: 'https://mercadopago.com.ar/checkout/simulated_url'
+    };
+}
+
+
 function PremiumPostPaymentModal() {
     const { toast } = useToast();
     const router = useRouter();
@@ -34,22 +48,11 @@ function PremiumPostPaymentModal() {
                 throw new Error('Debes conectar tu cuenta de Mercado Pago en tu panel de empresa antes de poder realizar cobros.');
             }
             
-            const response = await fetch('/api/mercadopago/create-preference', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: `Publicación de Vacante Premium`,
-                    unit_price: 500,
-                    accessToken: companyToken,
-                }),
+            const preference = await createPaymentPreference({
+                title: `Publicación de Vacante Premium`,
+                unit_price: 500,
+                accessToken: companyToken,
             });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'No se pudo crear la preferencia de pago.');
-            }
-            
-            const preference = await response.json();
             
             // En una app real, aquí es donde redirigirías al usuario a la URL de pago.
             // window.location.href = preference.init_point;
