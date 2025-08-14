@@ -43,7 +43,7 @@ export const allUsers: User[] = [
     {
         id: 'user_admin_test',
         name: 'Admin User',
-        email: 'admin@test.com',
+        email: 'admin@laburoya.com',
         password: 'password',
         role: 'ADMIN',
         avatar: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=40&h=40&fit=crop',

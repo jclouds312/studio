@@ -13,5 +13,5 @@ Email: empresa@test.com
 Contraseña: password
 
 **Rol: Administrador**
-Email: admin@test.com
+Email: admin@laburoya.com
 Contraseña: password

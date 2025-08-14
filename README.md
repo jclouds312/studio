@@ -24,7 +24,7 @@ Para facilitar las pruebas y la revisión de la plataforma, se han preconfigurad
     *   **Email:** `empresa@test.com`
     *   **Contraseña:** `password`
 *   **Rol de Administrador:**
-    *   **Email:** `admin@test.com`
+    *   **Email:** `admin@laburoya.com`
     *   **Contraseña:** `password`
 
 ## Opciones de Despliegue
@@ -131,4 +131,3 @@ Abre una nueva terminal en la raíz de tu proyecto.
         ```
         Esto abrirá el proyecto en Xcode. Desde allí, puedes compilar y ejecutar en un simulador o en un dispositivo físico.
 
-```
