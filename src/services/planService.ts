@@ -1,6 +1,4 @@
 
-'use server';
-
 import type { SubscriptionPlan } from '@/lib/types';
 import { allPlans as staticPlans } from '@/data/plans';
 
@@ -12,5 +10,3 @@ export async function getAllPlans(): Promise<SubscriptionPlan[]> {
     await new Promise(resolve => setTimeout(resolve, 500));
     return Promise.resolve(staticPlans);
 }
-
-    

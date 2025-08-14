@@ -1,6 +1,4 @@
 
-'use server';
-
 import type { CompanyProfile } from '@prisma/client';
 import { allCompanies } from '@/data/db';
 

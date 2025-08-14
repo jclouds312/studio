@@ -1,6 +1,4 @@
 
-'use server';
-
 import type { Application, Job } from '@prisma/client';
 import type { CustomAnswer } from '@/lib/types';
 import { allApplications, allJobs } from '@/data/db';

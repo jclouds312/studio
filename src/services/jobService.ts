@@ -1,6 +1,4 @@
 
-'use server';
-
 import type { Job } from '@prisma/client';
 import { allJobs } from '@/data/db';
 
