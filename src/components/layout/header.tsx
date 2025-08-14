@@ -144,7 +144,7 @@ export function Header() {
               <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <Menu className="h-6 w-6" />
+                    <Menu className="h-6 w-6 text-amber-400" />
                     <span className="sr-only">Abrir menú</span>
                   </Button>
                 </SheetTrigger>
