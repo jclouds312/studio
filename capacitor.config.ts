@@ -6,7 +6,8 @@ const config: CapacitorConfig = {
   appName: 'LaburoYA',
   webDir: 'out',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    hostname: 'app.laburoya.com'
   }
 };
 
