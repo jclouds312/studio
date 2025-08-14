@@ -64,8 +64,6 @@ export function useSession() {
             if (appUser) {
                  setSession({ isLoggedIn: true, user: appUser, firebaseUser, isMounted: true });
             } else {
-                // If user exists in Firebase but not in our DB, it's likely a stale session.
-                // Log them out to force a clean re-login.
                 await signOut(auth!);
                 setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
             }
@@ -144,7 +142,7 @@ export function useSession() {
                     name: firebaseUser.displayName || 'Nuevo Usuario',
                     email: firebaseUser.email!,
                     role: role,
-                    password: 'social-login', // Indicates a social login user
+                    password: 'social-login',
                     avatar: firebaseUser.photoURL,
                 });
                 performLogin(newUser, firebaseUser);
