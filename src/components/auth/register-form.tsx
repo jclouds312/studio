@@ -30,8 +30,19 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
     )
 }
 
+function MicrosoftIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
+      <path fill="#f25022" d="M22,22H6V6h16V22z"/>
+      <path fill="#7fba00" d="M42,22H26V6h16V22z"/>
+      <path fill="#00a4ef" d="M22,42H6V26h16V42z"/>
+      <path fill="#ffb900" d="M42,42H26V26h16V42z"/>
+    </svg>
+  )
+}
+
 export function RegisterForm() {
-    const { register, loginWithGoogle } = useSession();
+    const { register, loginWithGoogle, loginWithFacebook, loginWithMicrosoft } = useSession();
     const [role, setRole] = React.useState<Role>('TRABAJADOR');
 
     const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
@@ -48,14 +59,18 @@ export function RegisterForm() {
 
     return (
         <div className="mt-2 space-y-4">
-             <div className="grid grid-cols-2 gap-2">
+             <div className="grid grid-cols-3 gap-2">
                 <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithGoogle(role)}>
                   <GoogleIcon className="mr-2 h-5 w-5" />
                   Google
                 </Button>
-                 <Button variant="outline" className="w-full" size="lg" onClick={() => {}}>
+                 <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithFacebook(role)}>
                   <FacebookIcon className="mr-2 h-5 w-5" />
                   Facebook
+                </Button>
+                <Button variant="outline" className="w-full" size="lg" onClick={() => loginWithMicrosoft(role)}>
+                  <MicrosoftIcon className="mr-2 h-5 w-5" />
+                  Microsoft
                 </Button>
             </div>
             <div className="relative my-2">

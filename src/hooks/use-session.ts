@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { getUserByEmail, createUser } from '@/services/userService';
 import type { User, Role } from '@prisma/client';
-import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
+import { GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithPopup, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 
 interface Session {
@@ -34,11 +34,14 @@ export function useSession() {
     });
 
     const performRedirect = useCallback((user: User | null) => {
-        if (!user) return;
-        if (user.role === 'EMPRESA') {
-            router.push('/company/dashboard');
-        } else if (user.role === 'ADMIN') {
+        if (!user) {
+            router.push('/login');
+            return;
+        }
+        if (user.role === 'ADMIN') {
             router.push('/admin');
+        } else if (user.role === 'EMPRESA') {
+            router.push('/company/dashboard');
         } else {
             router.push('/');
         }
@@ -52,37 +55,34 @@ export function useSession() {
             isMounted: true,
         });
         toast({ title: `¡Bienvenido, ${appUser.name}!` });
-        // The redirect is now handled by the useEffect below
-    }, [toast, session.firebaseUser]);
-    
-    useEffect(() => {
-        if(session.isLoggedIn && session.user) {
-            performRedirect(session.user);
+        performRedirect(appUser);
+    }, [toast, session.firebaseUser, performRedirect]);
+
+    const handleUserSession = useCallback(async (firebaseUser: FirebaseUser | null) => {
+        if (firebaseUser) {
+            const appUser = await getUserByEmail(firebaseUser.email!);
+            if (appUser) {
+                 setSession({ isLoggedIn: true, user: appUser, firebaseUser, isMounted: true });
+            } else {
+                // If user exists in Firebase but not in our DB, it's likely a stale session.
+                // Log them out to force a clean re-login.
+                await signOut(auth!);
+                setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
+            }
+        } else {
+            setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
         }
-    }, [session.isLoggedIn, session.user, performRedirect]);
+    }, []);
 
     useEffect(() => {
-        // Only run if auth is initialized
         if (!auth) {
+            console.warn("Firebase Auth is not initialized. Skipping session check.");
             setSession(prev => ({ ...prev, isMounted: true }));
             return;
         }
-        
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-            if (firebaseUser) {
-                const appUser = await getUserByEmail(firebaseUser.email!);
-                if (appUser) {
-                    setSession({ isLoggedIn: true, user: appUser, firebaseUser, isMounted: true });
-                } else {
-                    setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
-                }
-            } else {
-                setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
-            }
-        });
-
+        const unsubscribe = onAuthStateChanged(auth, handleUserSession);
         return () => unsubscribe();
-    }, []);
+    }, [handleUserSession]);
 
     const login = useCallback(async (email: string, password?: string) => {
         const user = await getUserByEmail(email);
@@ -122,11 +122,11 @@ export function useSession() {
         performLogin(newUser);
     }, [performLogin, toast]);
     
-    const socialLogin = useCallback(async (provider: GoogleAuthProvider, role: Role) => {
+    const socialLogin = useCallback(async (provider: GoogleAuthProvider | FacebookAuthProvider | OAuthProvider, role: Role) => {
         if (!auth) {
             toast({
                 title: "Servicio no disponible",
-                description: "La autenticación no está configurada. Contacta al administrador.",
+                description: "La autenticación no está configurada.",
                 variant: "destructive",
             });
             return;
@@ -144,7 +144,7 @@ export function useSession() {
                     name: firebaseUser.displayName || 'Nuevo Usuario',
                     email: firebaseUser.email!,
                     role: role,
-                    password: 'social-login',
+                    password: 'social-login', // Indicates a social login user
                     avatar: firebaseUser.photoURL,
                 });
                 performLogin(newUser, firebaseUser);
@@ -152,8 +152,8 @@ export function useSession() {
         } catch (error) {
             console.error("Error during social sign-in:", error);
             toast({
-                title: "Error de autenticación",
-                description: "No se pudo iniciar sesión. Por favor, intenta de nuevo.",
+                title: "Error de autenticación social",
+                description: "No se pudo completar el inicio de sesión. Intenta de nuevo.",
                 variant: "destructive",
             });
         }
@@ -165,14 +165,25 @@ export function useSession() {
         socialLogin(provider, role);
     }, [socialLogin]);
 
+    const loginWithFacebook = useCallback((role: Role = 'TRABAJADOR') => {
+        const provider = new FacebookAuthProvider();
+        socialLogin(provider, role);
+    }, [socialLogin]);
+
+    const loginWithMicrosoft = useCallback((role: Role = 'TRABAJADOR') => {
+        const provider = new OAuthProvider('microsoft.com');
+        socialLogin(provider, role);
+    }, [socialLogin]);
+
+
     const logout = useCallback(async () => {
         if (auth) {
             await signOut(auth);
         }
         setSession({ isLoggedIn: false, user: null, firebaseUser: null, isMounted: true });
-        toast({ title: 'Has cerrado sesión exitosamente.' });
         router.push('/login');
+        toast({ title: 'Has cerrado sesión exitosamente.' });
     }, [router, toast]);
 
-    return { session, login, loginWithGoogle, register, logout };
+    return { session, login, loginWithGoogle, loginWithFacebook, loginWithMicrosoft, register, logout };
 }
