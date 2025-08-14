@@ -22,9 +22,10 @@ workflows:
       - name: Sincronizar la PWA con el proyecto Android
         script: |
           npx cap sync android
-      - name: Construir el APK de Release
+      - name: Construir el APK de Debug (Instalable para pruebas)
         script: |
           cd android
-          ./gradlew assembleRelease
+          ./gradlew assembleDebug
     artifacts:
-      - android/app/build/outputs/apk/release/*.apk
+      - android/app/build/outputs/apk/debug/*.apk
+
