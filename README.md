@@ -69,9 +69,11 @@ Esta aplicación es una Progressive Web App (PWA), lo que significa que puedes i
 
 Para generar un archivo `.apk` (Android) o un proyecto de Xcode (iOS), puedes usar Capacitor para envolver tu PWA en una aplicación nativa.
 
+**Nota Importante:** Los siguientes comandos deben ejecutarse en tu **terminal o línea de comandos local**, no en este entorno de chat. Este asistente de IA prepara el código, pero tú ejecutas la compilación.
+
 ### 1. Preparar la Aplicación Next.js
 
-Primero, necesitas generar la versión estática de la PWA. Este proyecto ya está configurado para ello. Simplemente ejecuta:
+Primero, necesitas generar la versión estática de la PWA. Este proyecto ya está configurado para ello. Simplemente ejecuta en tu terminal:
 
 ```bash
 npm run export
